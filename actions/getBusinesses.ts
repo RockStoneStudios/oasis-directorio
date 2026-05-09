@@ -3,6 +3,7 @@
 import { sanityFetch } from "@/lib/sanity/live";
 import { BUSINESS_SEARCH_QUERY } from "@/lib/sanity/queries";
 import type {
+  BusinessCardData,
   BusinessFilters,
   BusinessSearchResult,
   BusinessSort,
@@ -71,7 +72,7 @@ export async function getBusinesses({
     },
   });
 
-  const businesses = sortBusinesses((data || []).slice(0, pageSize), safeSort);
+  const businesses = sortBusinesses((data || []).slice(0, pageSize) as BusinessCardData[], safeSort);
 
   return {
     businesses,
@@ -81,10 +82,10 @@ export async function getBusinesses({
   };
 }
 
-function sortBusinesses<T extends { name?: string | null; rating?: number | null }>(
-  businesses: T[],
+function sortBusinesses(
+  businesses: BusinessCardData[],
   sort: BusinessSort,
-) {
+): BusinessCardData[] {
   if (sort === "name_asc") {
     return [...businesses].sort((a, b) =>
       (a.name || "").localeCompare(b.name || "", "es"),

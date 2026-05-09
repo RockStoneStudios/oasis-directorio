@@ -6,12 +6,13 @@ import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { urlFor } from "@/lib/sanity/image";
-import type { LoadedSanityImage, SanityImage } from "@/types";
+import type { SanityImage, LoadedSanityImage } from "@/types";
 
 interface ImageGalleryProps {
   images: (SanityImage | LoadedSanityImage)[];
   title: string;
 }
+
 export function ImageGallery({ images, title }: ImageGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -24,7 +25,6 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
     setSelectedIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
   }, [images.length]);
 
-  // Keyboard navigation
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
@@ -52,10 +52,15 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
   if (!images || images.length === 0) {
     return (
       <div className="aspect-video bg-muted rounded-2xl flex items-center justify-center">
-        <span className="text-muted-foreground">No images available</span>
+        <span className="text-muted-foreground">Galeria no disponible</span>
       </div>
     );
   }
+
+  const getAssetId = (image: SanityImage | LoadedSanityImage): string => {
+    const asset = image.asset as any;
+    return asset?._id || asset?._ref || "";
+  };
 
   return (
     <>
@@ -64,7 +69,6 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
         aria-label="Image gallery"
         onKeyDown={handleKeyDown}
       >
-        {/* Main image + arrows: wrapper is position container; lightbox trigger and prev/next are siblings to avoid nested buttons */}
         <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden group shadow-warm">
           <button
             type="button"
@@ -81,7 +85,6 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
               className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
               priority
             />
-            {/* Hover Overlay */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-[background-color] duration-300 flex items-center justify-center">
               <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="bg-background/90 backdrop-blur-sm rounded-full p-3">
@@ -89,13 +92,11 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
                 </div>
               </div>
             </div>
-            {/* Counter Badge */}
             <span className="absolute bottom-4 right-4 bg-background/90 backdrop-blur-sm text-foreground px-4 py-2 rounded-full text-sm font-medium shadow-warm tabular-nums">
               {selectedIndex + 1} / {images.length}
             </span>
           </button>
 
-          {/* Navigation Arrows: siblings of lightbox trigger (no nested buttons) */}
           {images.length > 1 && (
             <>
               <Button
@@ -126,7 +127,6 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
           )}
         </div>
 
-        {/* Thumbnails */}
         {images.length > 1 && (
           <div
             className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
@@ -135,7 +135,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
           >
             {images.map((image, index) => (
               <button
-                  key={(image.asset as any)?._id || (typeof image.asset === 'string' ? image.asset : `image-${index}`)}
+                key={getAssetId(image) || index}
                 type="button"
                 onClick={() => setSelectedIndex(index)}
                 role="option"
@@ -160,7 +160,6 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
         )}
       </section>
 
-      {/* Lightbox */}
       <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
         <DialogContent className="max-w-6xl p-0 bg-black/95 border-none overscroll-contain">
           <DialogTitle className="sr-only">
@@ -179,7 +178,6 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
               className="object-contain"
             />
 
-            {/* Navigation */}
             {images.length > 1 && (
               <>
                 <Button
@@ -203,7 +201,6 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
               </>
             )}
 
-            {/* Counter */}
             <span className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-4 py-2 rounded-full text-sm font-medium tabular-nums">
               {selectedIndex + 1} / {images.length}
             </span>

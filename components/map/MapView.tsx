@@ -4,68 +4,59 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import MapGL, { Marker, NavigationControl, Popup } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
-import type { Property } from "@/types";
+import type { BusinessCardData } from "@/types/business";
 
 interface MapViewProps {
-  properties: Property[];
-  onPropertyClick?: (property: Property) => void;
+  businesses: BusinessCardData[];
+  onBusinessClick?: (business: BusinessCardData) => void;
   className?: string;
 }
 
 export function MapView({
-  properties,
-  onPropertyClick,
+  businesses,
+  onBusinessClick,
   className,
 }: MapViewProps) {
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(
-    null,
-  );
+  const [selectedBusiness, setSelectedBusiness] = useState<BusinessCardData | null>(null);
   const [viewState, setViewState] = useState({
-    longitude: -98.5795,
-    latitude: 39.8283,
-    zoom: 4,
+    longitude: -75.5849,
+    latitude: 6.2442,
+    zoom: 12,
   });
 
   const hasCenteredRef = useRef(false);
 
-  // Calculate bounds from properties if they exist
-  const validProperties = properties.filter(
-    (p) => p.location?.lat && p.location?.lng,
+  const validBusinesses = businesses.filter(
+    (b) => b.location?.lat && b.location?.lng,
   );
 
-  // Center on first property when properties load (only once)
   useEffect(() => {
     if (hasCenteredRef.current) return;
-    if (validProperties.length > 0) {
-      const firstProperty = validProperties[0];
-      if (firstProperty.location) {
+    if (validBusinesses.length > 0) {
+      const firstBusiness = validBusinesses[0];
+      if (firstBusiness.location) {
         setViewState({
-          longitude: firstProperty.location.lng,
-          latitude: firstProperty.location.lat,
-          zoom: 10,
+          longitude: firstBusiness.location.lng,
+          latitude: firstBusiness.location.lat,
+          zoom: 13,
         });
         hasCenteredRef.current = true;
       }
     }
-  }, [validProperties]);
+  }, [validBusinesses]);
 
   const handleMarkerClick = useCallback(
-    (property: Property) => {
-      setSelectedProperty(property);
-      if (onPropertyClick) {
-        onPropertyClick(property);
+    (business: BusinessCardData) => {
+      setSelectedBusiness(business);
+      if (onBusinessClick) {
+        onBusinessClick(business);
       }
     },
-    [onPropertyClick],
+    [onBusinessClick],
   );
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  const getSlugString = (slug: BusinessCardData["slug"]) =>
+    typeof slug === "string" ? slug : slug.current;
 
   return (
     <div className={className ?? "w-full h-full"}>
@@ -78,62 +69,65 @@ export function MapView({
       >
         <NavigationControl position="top-right" />
 
-        {validProperties.map((property) => (
+        {validBusinesses.map((business) => (
           <Marker
-            key={property._id}
-            longitude={property.location?.lng ?? 0}
-            latitude={property.location?.lat ?? 0}
+            key={business._id}
+            longitude={business.location?.lng ?? 0}
+            latitude={business.location?.lat ?? 0}
             anchor="bottom"
             onClick={(e) => {
               e.originalEvent.stopPropagation();
-              handleMarkerClick(property);
+              handleMarkerClick(business);
             }}
           >
             <div className="cursor-pointer">
               <div className="bg-primary text-primary-foreground px-2 py-1 rounded-md text-xs font-semibold shadow-md hover:bg-primary/90 transition-colors">
-                {formatPrice(property.price)}
+                {business.name}
               </div>
             </div>
           </Marker>
         ))}
 
-        {selectedProperty?.location && (
+        {selectedBusiness?.location && (
           <Popup
-            longitude={selectedProperty.location.lng}
-            latitude={selectedProperty.location.lat}
+            longitude={selectedBusiness.location.lng}
+            latitude={selectedBusiness.location.lat}
             anchor="bottom"
-            onClose={() => setSelectedProperty(null)}
+            onClose={() => setSelectedBusiness(null)}
             closeButton={true}
             closeOnClick={false}
-            className="property-popup"
+            className="business-popup"
           >
             <Link
-              href={`/properties/${selectedProperty._id}`}
-              className="block p-2 min-w-[200px] hover:bg-muted/50 transition-colors rounded-md cursor-pointer"
+              href={`/business/${getSlugString(selectedBusiness.slug)}`}
+              className="block p-2 min-w-50 hover:bg-muted/50 transition-colors rounded-md cursor-pointer"
             >
-              <h3 className="font-semibold text-sm">
-                {selectedProperty.title}
-              </h3>
-              <p className="text-lg font-bold text-primary">
-                {formatPrice(selectedProperty.price)}
-              </p>
-              <div className="flex gap-2 text-xs text-muted-foreground mt-1">
-                <span>{selectedProperty.bedrooms} beds</span>
-                <span>•</span>
-                <span>{selectedProperty.bathrooms} baths</span>
-                {selectedProperty.squareFeet && (
-                  <>
-                    <span>•</span>
-                    <span>
-                      {selectedProperty.squareFeet.toLocaleString()} sqft
-                    </span>
-                  </>
-                )}
-              </div>
-              {selectedProperty.address && (
+              <h3 className="font-semibold text-sm">{selectedBusiness.name}</h3>
+
+              {selectedBusiness.category?.name && (
+                <p className="text-xs text-primary font-medium mt-1">
+                  {selectedBusiness.category.name}
+                </p>
+              )}
+
+              {selectedBusiness.description && (
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                  {selectedBusiness.description}
+                </p>
+              )}
+
+              {selectedBusiness.address && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  {selectedProperty.address.city},{" "}
-                  {selectedProperty.address.state}
+                  {selectedBusiness.address.street}
+                  {selectedBusiness.address.neighborhood
+                    ? `, ${selectedBusiness.address.neighborhood}`
+                    : ""}
+                </p>
+              )}
+
+              {selectedBusiness.phone && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  📞 {selectedBusiness.phone}
                 </p>
               )}
             </Link>

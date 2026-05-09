@@ -27,7 +27,7 @@ import {
 } from "@/lib/formatBusinessData";
 import { urlFor } from "@/lib/sanity/image";
 import type { LoadedSanityImage } from "@/types";
-import { ImageGallery } from "@/components/property/ImageGallery";
+import { ImageGallery } from "@/components/business/ImageGallery";
 
 interface BusinessDetailPageProps {
   params: Promise<{ slug: string }>;
