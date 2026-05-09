@@ -82,10 +82,13 @@ export default async function BusinessDetailPage({
 
   return (
     <div>
+      {/* Header */}
       <header className="border-b border-border/50 bg-accent/30">
-        <div className="container py-10">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center">
-            <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded-2xl border border-border/50 bg-background shadow-warm">
+        <div className="container px-4 py-6 sm:py-10">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+
+            {/* Logo */}
+            <div className="relative h-20 w-20 sm:h-28 sm:w-28 shrink-0 overflow-hidden rounded-2xl border border-border/50 bg-background shadow-warm">
               {business.logo?.asset ? (
                 <Image
                   src={urlFor(business.logo).width(240).height(240).url()}
@@ -97,15 +100,14 @@ export default async function BusinessDetailPage({
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
-                  <Store
-                    className="h-10 w-10 text-muted-foreground"
-                    aria-hidden="true"
-                  />
+                  <Store className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground" aria-hidden="true" />
                 </div>
               )}
             </div>
+
+            {/* Info */}
             <div className="min-w-0 flex-1">
-              <div className="mb-3 flex flex-wrap gap-2">
+              <div className="mb-2 flex flex-wrap gap-2">
                 {business.category?.name && (
                   <Badge variant="outline">{business.category.name}</Badge>
                 )}
@@ -114,19 +116,31 @@ export default async function BusinessDetailPage({
                 )}
                 {business.isFeatured && <Badge>Destacado</Badge>}
               </div>
-              <h1 className="text-3xl font-bold font-heading md:text-5xl">
+              <h1 className="text-2xl font-bold font-heading sm:text-3xl md:text-5xl leading-tight">
                 {business.name}
               </h1>
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
                 <RatingStars rating={business.rating} />
                 {normalized.addressLabel && (
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4" aria-hidden="true" />
-                    <span>{normalized.addressLabel}</span>
+                    <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    <span className="truncate">{normalized.addressLabel}</span>
                   </div>
                 )}
               </div>
             </div>
+
+            {/* WhatsApp — solo visible en md+ en el header */}
+            <div className="hidden md:block">
+              <WhatsAppButton
+                phone={business.whatsapp}
+                businessName={business.name}
+              />
+            </div>
+          </div>
+
+          {/* WhatsApp visible en móvil debajo del info */}
+          <div className="mt-4 md:hidden">
             <WhatsAppButton
               phone={business.whatsapp}
               businessName={business.name}
@@ -135,25 +149,23 @@ export default async function BusinessDetailPage({
         </div>
       </header>
 
-      <div className="container py-10">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="space-y-10">
-            {/* <Gallery
-              businessName={business.name}
-              images={business.gallery || []}
-            /> */}
-            <ImageGallery
-  images={business.gallery || []}
-  title={business.name}
-/>
+      {/* Body */}
+      <div className="container px-4 py-8 sm:py-10">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
 
-            <section className="rounded-2xl border border-border/50 bg-background p-6 shadow-warm">
-              <h2 className="text-2xl font-bold font-heading">
+          {/* Main content */}
+          <div className="space-y-8">
+            <ImageGallery
+              images={business.gallery || []}
+              title={business.name}
+            />
+
+            <section className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
+              <h2 className="text-xl sm:text-2xl font-bold font-heading">
                 Sobre el negocio
               </h2>
-              <p className="mt-4 leading-7 text-muted-foreground">
-                {business.description ||
-                  "Este negocio aun no tiene descripcion."}
+              <p className="mt-3 leading-7 text-muted-foreground text-sm sm:text-base">
+                {business.description || "Este negocio aun no tiene descripcion."}
               </p>
             </section>
 
@@ -164,9 +176,10 @@ export default async function BusinessDetailPage({
             />
           </div>
 
-          <aside className="space-y-6">
-            <section className="rounded-2xl border border-border/50 bg-background p-6 shadow-warm">
-              <h2 className="mb-5 text-xl font-bold font-heading">Contacto</h2>
+          {/* Sidebar — en móvil va debajo del main */}
+          <aside className="space-y-5">
+            <section className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
+              <h2 className="mb-4 text-lg sm:text-xl font-bold font-heading">Contacto</h2>
               <div className="space-y-3">
                 {business.phone && (
                   <ContactLink href={`tel:${business.phone}`} icon={<Phone />}>
@@ -174,63 +187,52 @@ export default async function BusinessDetailPage({
                   </ContactLink>
                 )}
                 {business.website && (
-                  <ContactLink
-                    href={business.website}
-                    icon={<Globe />}
-                    external
-                  >
+                  <ContactLink href={business.website} icon={<Globe />} external>
                     Sitio web
                   </ContactLink>
                 )}
                 {business.facebook && (
-                  <ContactLink
-                    href={business.facebook}
-                    icon={<Facebook />}
-                    external
-                  >
+                  <ContactLink href={business.facebook} icon={<Facebook />} external>
                     Facebook
                   </ContactLink>
                 )}
                 {business.instagram && (
-                  <ContactLink
-                    href={business.instagram}
-                    icon={<Instagram />}
-                    external
-                  >
+                  <ContactLink href={business.instagram} icon={<Instagram />} external>
                     Instagram
                   </ContactLink>
                 )}
               </div>
-              <WhatsAppButton
-                phone={business.whatsapp}
-                businessName={business.name}
-              />
+              <div className="mt-4">
+                <WhatsAppButton
+                  phone={business.whatsapp}
+                  businessName={business.name}
+                />
+              </div>
             </section>
 
             <BusinessHours hours={business.hours} />
           </aside>
         </div>
 
+        {/* Negocios relacionados */}
         {relatedBusinesses.length > 0 && (
-          <section className="mt-16">
-            <div className="mb-8 flex items-end justify-between gap-4">
+          <section className="mt-12 sm:mt-16">
+            <div className="mb-6 sm:mb-8 flex items-end justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold font-heading">
+                <h2 className="text-xl sm:text-2xl font-bold font-heading">
                   Negocios relacionados
                 </h2>
-                <p className="mt-2 text-muted-foreground">
+                <p className="mt-1 sm:mt-2 text-sm text-muted-foreground">
                   Mas opciones en la misma zona o categoria.
                 </p>
               </div>
-              <Button variant="outline" asChild>
-                <Link
-                  href={`/business?category=${categorySlug}&municipality=${municipalitySlug}`}
-                >
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/business?category=${categorySlug}&municipality=${municipalitySlug}`}>
                   Ver mas
                 </Link>
               </Button>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
               {relatedBusinesses.map((item) => (
                 <BusinessCard key={item._id} business={item} />
               ))}
@@ -239,6 +241,7 @@ export default async function BusinessDetailPage({
         )}
       </div>
 
+      {/* Floating WhatsApp */}
       <WhatsAppButton
         phone={business.whatsapp}
         businessName={business.name}
@@ -266,7 +269,7 @@ function Gallery({
   const [first, ...rest] = images;
 
   return (
-    <section className="grid gap-4 md:grid-cols-[2fr_1fr]">
+    <section className="grid gap-3 sm:gap-4 md:grid-cols-[2fr_1fr]">
       <div className="relative aspect-video overflow-hidden rounded-2xl bg-muted shadow-warm">
         <Image
           src={urlFor(first).width(1200).height(675).url()}
@@ -277,7 +280,7 @@ function Gallery({
           priority
         />
       </div>
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-1">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-1">
         {rest.slice(0, 2).map((image, index) => (
           <div
             key={image.asset?._id || index}
@@ -309,16 +312,16 @@ function ContactLink({
   external?: boolean;
 }) {
   return (
-    <Button variant="outline" className="w-full justify-start" asChild>
-      <a
-        href={href}
+    <Button variant="outline" className="w-full justify-start text-sm" asChild>
+      
+       <a href={href}
         target={external ? "_blank" : undefined}
         rel={external ? "noreferrer" : undefined}
       >
         {icon}
-        <span>{children}</span>
+        <span className="truncate">{children}</span>
         {external && (
-          <ExternalLink className="ml-auto h-4 w-4" aria-hidden="true" />
+          <ExternalLink className="ml-auto h-4 w-4 shrink-0" aria-hidden="true" />
         )}
       </a>
     </Button>
