@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Expand, ImageIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -29,107 +29,140 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
     (e: React.KeyboardEvent) => {
       if (e.key === "ArrowLeft") goToPrevious();
       else if (e.key === "ArrowRight") goToNext();
-      else if (e.key === "Escape") setLightboxOpen(false);
     },
-    [goToPrevious, goToNext]
+    [goToPrevious, goToNext],
+  );
+
+  const openLightbox = useCallback(() => setLightboxOpen(true), []);
+
+  const handleMainImageKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openLightbox();
+      }
+      handleKeyDown(e);
+    },
+    [openLightbox, handleKeyDown],
   );
 
   if (!images || images.length === 0) {
     return (
-      <div className="aspect-[4/3] sm:aspect-[16/9] bg-muted rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-border/50">
-        <ImageIcon className="h-10 w-10 text-muted-foreground/40 mb-2" />
-        <span className="text-muted-foreground text-sm font-medium">Galería no disponible</span>
+      <div className="aspect-video bg-muted rounded-2xl flex items-center justify-center">
+        <span className="text-muted-foreground text-sm">Galeria no disponible</span>
       </div>
     );
   }
 
-  const getAssetId = (image: any): string => image.asset?._id || image.asset?._ref || "";
+  const getAssetId = (image: SanityImage | LoadedSanityImage): string => {
+    const asset = image.asset as any;
+    return asset?._id || asset?._ref || "";
+  };
 
   return (
     <>
-      <section 
-        className="space-y-3 sm:space-y-4" 
-        aria-label="Galería de imágenes"
+      <section
+        className="space-y-3 sm:space-y-4"
+        aria-label="Image gallery"
+        onKeyDown={handleKeyDown}
       >
-        {/* Contenedor Imagen Principal */}
-        <div className="relative aspect-[4/3] sm:aspect-[16/9] w-full rounded-2xl overflow-hidden group shadow-warm bg-muted">
+        {/* Imagen principal */}
+        <div className="relative aspect-[4/3] sm:aspect-[16/9] w-full rounded-xl sm:rounded-2xl overflow-hidden group shadow-warm">
           <button
             type="button"
-            className="absolute inset-0 w-full h-full cursor-zoom-in"
-            onClick={() => setLightboxOpen(true)}
-            aria-label="Ampliar imagen"
+            className="absolute inset-0 cursor-pointer rounded-xl sm:rounded-2xl overflow-hidden"
+            onClick={openLightbox}
+            onKeyDown={handleMainImageKeyDown}
+            aria-label="Open image gallery"
           >
             <Image
               src={urlFor(images[selectedIndex]).width(1200).height(675).url()}
               alt={images[selectedIndex].alt || title}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 800px"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 66vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
               priority
             />
-            
-            {/* Indicador visual de expansión en móvil */}
-            <div className="absolute top-3 right-3 sm:hidden bg-background/80 backdrop-blur-md p-2 rounded-full shadow-sm">
-              <Expand className="h-4 w-4 text-foreground" />
-            </div>
 
-            {/* Overlay Desktop */}
-            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex items-center justify-center">
-              <div className="bg-background/90 backdrop-blur-sm rounded-full p-3 transform scale-90 group-hover:scale-100 transition-transform">
-                <Expand className="h-6 w-6 text-foreground" />
+            {/* Overlay hover — solo en desktop */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-[background-color] duration-300 hidden sm:flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="bg-background/90 backdrop-blur-sm rounded-full p-3">
+                  <Expand className="h-6 w-6" aria-hidden="true" />
+                </div>
               </div>
             </div>
 
-            {/* Badge de contador */}
-            <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-background/90 backdrop-blur-md text-foreground px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-sm tabular-nums border border-border/50">
-              {selectedIndex + 1} / {images.length}
+            {/* Icono expand visible siempre en móvil */}
+            <div className="absolute top-3 right-3 sm:hidden">
+              <div className="bg-background/80 backdrop-blur-sm rounded-full p-2">
+                <Expand className="h-4 w-4" aria-hidden="true" />
+              </div>
             </div>
+
+            {/* Contador */}
+            <span className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-background/90 backdrop-blur-sm text-foreground px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium shadow-warm tabular-nums">
+              {selectedIndex + 1} / {images.length}
+            </span>
           </button>
 
-          {/* Flechas Navegación */}
+          {/* Flechas navegación — siempre visibles en móvil, hover en desktop */}
           {images.length > 1 && (
             <>
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-md hover:bg-background shadow-md h-9 w-9 sm:h-11 sm:w-11 rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all"
-                onClick={(e) => { e.stopPropagation(); goToPrevious(); }}
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm hover:bg-background shadow-warm opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 h-8 w-8 sm:h-10 sm:w-10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToPrevious();
+                }}
+                aria-label="Previous image"
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-md hover:bg-background shadow-md h-9 w-9 sm:h-11 sm:w-11 rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all"
-                onClick={(e) => { e.stopPropagation(); goToNext(); }}
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm hover:bg-background shadow-warm opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 h-8 w-8 sm:h-10 sm:w-10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToNext();
+                }}
+                aria-label="Next image"
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
               </Button>
             </>
           )}
         </div>
 
-        {/* Miniaturas con Scroll Táctil Optimizado */}
+        {/* Thumbnails */}
         {images.length > 1 && (
-          <div 
-            className="flex gap-2 sm:gap-3 overflow-x-auto pb-1 scrollbar-hide snap-x snap-mandatory"
+          <div
+            className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 scrollbar-hide"
+            role="listbox"
+            aria-label="Image thumbnails"
           >
             {images.map((image, index) => (
               <button
                 key={getAssetId(image) || index}
                 type="button"
                 onClick={() => setSelectedIndex(index)}
-                className={`relative shrink-0 w-20 h-14 sm:w-28 sm:h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
+                role="option"
+                aria-selected={index === selectedIndex}
+                aria-label={`Ver imagen ${index + 1} de ${images.length}`}
+                className={`relative shrink-0 w-16 h-12 sm:w-28 sm:h-20 rounded-lg sm:rounded-xl overflow-hidden border-2 transition-[border-color,transform,box-shadow] duration-200 ${
                   index === selectedIndex
-                    ? "border-primary ring-2 ring-primary/20 scale-[0.98]"
-                    : "border-transparent opacity-70 hover:opacity-100"
+                    ? "border-primary shadow-warm scale-105"
+                    : "border-transparent hover:border-primary/50 hover:shadow-warm"
                 }`}
               >
                 <Image
-                  src={urlFor(image).width(200).height(150).url()}
-                  alt={`Miniatura ${index + 1}`}
+                  src={urlFor(image).width(112).height(80).url()}
+                  alt={image.alt || `${title} - Image ${index + 1}`}
                   fill
-                  sizes="112px"
+                  sizes="(max-width: 640px) 64px, 112px"
                   className="object-cover"
                 />
               </button>
@@ -138,50 +171,52 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
         )}
       </section>
 
-      {/* Lightbox con Fullscreen en Móvil */}
+      {/* Lightbox */}
       <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-        <DialogContent 
-          className="max-w-[100vw] sm:max-w-7xl w-full h-[100dvh] sm:h-auto p-0 bg-black/95 border-none flex flex-col justify-center items-center"
-          onKeyDown={handleKeyDown}
-        >
-          <DialogTitle className="sr-only">Imagen ampliada de {title}</DialogTitle>
-          
-          <div className="relative w-full h-full flex items-center justify-center">
+        <DialogContent className="max-w-[100vw] sm:max-w-6xl w-full p-0 bg-black/95 border-none overscroll-contain">
+          <DialogTitle className="sr-only">
+            Image gallery: {title} — image {selectedIndex + 1} of {images.length}
+          </DialogTitle>
+          <section
+            className="relative aspect-[4/3] sm:aspect-[16/9] w-full"
+            aria-label="Lightbox image viewer"
+            onKeyDown={handleKeyDown}
+          >
             <Image
-              src={urlFor(images[selectedIndex]).width(1920).url()}
+              src={urlFor(images[selectedIndex]).width(1920).height(1080).url()}
               alt={images[selectedIndex].alt || title}
               fill
-              className="object-contain"
               sizes="100vw"
+              className="object-contain"
             />
 
-            {/* Navegación Lightbox */}
             {images.length > 1 && (
               <>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 text-white bg-white/10 hover:bg-white/20 rounded-full h-12 w-12"
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white h-9 w-9 sm:h-12 sm:w-12"
                   onClick={goToPrevious}
+                  aria-label="Previous image"
                 >
-                  <ChevronLeft className="h-8 w-8" />
+                  <ChevronLeft className="h-5 w-5 sm:h-8 sm:w-8" aria-hidden="true" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 text-white bg-white/10 hover:bg-white/20 rounded-full h-12 w-12"
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white h-9 w-9 sm:h-12 sm:w-12"
                   onClick={goToNext}
+                  aria-label="Next image"
                 >
-                  <ChevronRight className="h-8 w-8" />
+                  <ChevronRight className="h-5 w-5 sm:h-8 sm:w-8" aria-hidden="true" />
                 </Button>
               </>
             )}
 
-            {/* Contador Lightbox */}
-            <div className="absolute bottom-6 bg-black/50 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium border border-white/10">
+            <span className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium tabular-nums">
               {selectedIndex + 1} / {images.length}
-            </div>
-          </div>
+            </span>
+          </section>
         </DialogContent>
       </Dialog>
     </>
