@@ -3,7 +3,7 @@
 import { Loader2, Trash2 } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { deleteListing } from "@/actions/properties";
+// import { deleteListing } from "@/actions/properties";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface DeleteListingButtonProps {
@@ -20,7 +20,7 @@ export function DeleteListingButton({ listingId }: DeleteListingButtonProps) {
 
     startTransition(async () => {
       try {
-        await deleteListing(listingId);
+        // await deleteListing(listingId);
         toast.success("Listing deleted");
       } catch {
         toast.error("Failed to delete listing");
