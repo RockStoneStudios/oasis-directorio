@@ -23,7 +23,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await sanityFetch({ query: CATEGORIES_LIST_QUERY });
-  const category = (data || []).find(
+  
+  // Asegurar que data sea un array
+  const categoriesArray = Array.isArray(data) ? data : [];
+  const category = categoriesArray.find(
     (item: FilterOption) => getSlugValue(item.slug) === slug,
   );
 
@@ -39,11 +42,15 @@ export default async function CategoryPage({
 }: CategoryPageProps) {
   const [{ slug }, query] = await Promise.all([params, searchParams]);
   const page = Math.max(Number(query.page) || 1, 1);
+  
   const [{ businesses, hasMore }, { data: categories }] = await Promise.all([
     getBusinesses({ category: slug, page, pageSize: 12 }),
     sanityFetch({ query: CATEGORIES_LIST_QUERY }),
   ]);
-  const category = (categories || []).find(
+  
+  // Asegurar que categories sea un array
+  const categoriesArray = Array.isArray(categories) ? categories : [];
+  const category = categoriesArray.find(
     (item: FilterOption) => getSlugValue(item.slug) === slug,
   );
   const subcategories = (category as any)?.subcategories || [];

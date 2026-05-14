@@ -10,7 +10,7 @@ import type {
   Subcategory,
 } from "@/types";
 
-export type BusinessStatus = "open" | "closed" | "temporarily_closed";
+export type BusinessStatus = "open" | "closed" | "temporarily_closed" | "always_open";
 export type BusinessSort =
   | "relevance"
   | "rating_desc"

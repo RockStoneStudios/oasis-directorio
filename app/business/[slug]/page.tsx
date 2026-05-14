@@ -1,12 +1,13 @@
 import {
   ExternalLink,
-  Facebook,
   Globe,
-  Instagram,
   MapPin,
   Phone,
   Store,
 } from "lucide-react";
+// Importamos los iconos de marcas desde Simple Icons (dentro de react-icons)
+import { SiFacebook, SiInstagram, SiWhatsapp } from "react-icons/si";
+
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,6 +40,15 @@ export async function generateMetadata({
   const { slug } = await params;
   const business = await getBusinessBySlug(slug);
 
+
+  // AÑADE ESTO AQUÍ:
+  console.log("Datos de Sanity para Bomberos:", JSON.stringify(business, null, 2));
+
+  if (!business) {
+    console.log("No se encontró el negocio en Sanity");
+    return notFound();
+  }
+
   if (!business) {
     return {
       title: "Negocio no encontrado",
@@ -47,7 +57,7 @@ export async function generateMetadata({
 
   const description =
     business.description ||
-    `Informacion, horarios y contacto de ${business.name}.`;
+    `Información, horarios y contacto de ${business.name}.`;
 
   return {
     title: business.name,
@@ -71,11 +81,13 @@ export default async function BusinessDetailPage({
   const normalized = normalizeBusinessData(business);
   const categorySlug = getSlugValue(business.category?.slug);
   const municipalitySlug = getSlugValue(business.municipality?.slug);
+
   const { businesses: related } = await getBusinesses({
     category: categorySlug,
     municipality: municipalitySlug,
     pageSize: 5,
   });
+
   const relatedBusinesses = related
     .filter((item) => item._id !== business._id)
     .slice(0, 4);
@@ -86,7 +98,6 @@ export default async function BusinessDetailPage({
       <header className="border-b border-border/50 bg-accent/30">
         <div className="container px-4 py-6 sm:py-10">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-
             {/* Logo */}
             <div className="relative h-20 w-20 sm:h-28 sm:w-28 shrink-0 overflow-hidden rounded-2xl border border-border/50 bg-background shadow-warm">
               {business.logo?.asset ? (
@@ -130,7 +141,6 @@ export default async function BusinessDetailPage({
               </div>
             </div>
 
-            {/* WhatsApp — solo visible en md+ en el header */}
             <div className="hidden md:block">
               <WhatsAppButton
                 phone={business.whatsapp}
@@ -139,7 +149,6 @@ export default async function BusinessDetailPage({
             </div>
           </div>
 
-          {/* WhatsApp visible en móvil debajo del info */}
           <div className="mt-4 md:hidden">
             <WhatsAppButton
               phone={business.whatsapp}
@@ -152,7 +161,6 @@ export default async function BusinessDetailPage({
       {/* Body */}
       <div className="container px-4 py-8 sm:py-10">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
-
           {/* Main content */}
           <div className="space-y-8">
             <ImageGallery
@@ -165,7 +173,7 @@ export default async function BusinessDetailPage({
                 Sobre el negocio
               </h2>
               <p className="mt-3 leading-7 text-muted-foreground text-sm sm:text-base">
-                {business.description || "Este negocio aun no tiene descripcion."}
+                {business.description || "Este negocio aún no tiene descripción."}
               </p>
             </section>
 
@@ -176,28 +184,36 @@ export default async function BusinessDetailPage({
             />
           </div>
 
-          {/* Sidebar — en móvil va debajo del main */}
+          {/* Sidebar */}
           <aside className="space-y-5">
             <section className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
               <h2 className="mb-4 text-lg sm:text-xl font-bold font-heading">Contacto</h2>
               <div className="space-y-3">
                 {business.phone && (
-                  <ContactLink href={`tel:${business.phone}`} icon={<Phone />}>
+                  <ContactLink href={`tel:${business.phone}`} icon={<Phone className="h-4 w-4" />}>
                     {business.phone}
                   </ContactLink>
                 )}
                 {business.website && (
-                  <ContactLink href={business.website} icon={<Globe />} external>
+                  <ContactLink href={business.website} icon={<Globe className="h-4 w-4" />} external>
                     Sitio web
                   </ContactLink>
                 )}
                 {business.facebook && (
-                  <ContactLink href={business.facebook} icon={<Facebook />} external>
+                  <ContactLink
+                    href={business.facebook}
+                    icon={<SiFacebook className="h-4 w-4 text-[#1877F2]" />}
+                    external
+                  >
                     Facebook
                   </ContactLink>
                 )}
                 {business.instagram && (
-                  <ContactLink href={business.instagram} icon={<Instagram />} external>
+                  <ContactLink
+                    href={business.instagram}
+                    icon={<SiInstagram className="h-4 w-4 text-[#E4405F]" />}
+                    external
+                  >
                     Instagram
                   </ContactLink>
                 )}
@@ -210,7 +226,10 @@ export default async function BusinessDetailPage({
               </div>
             </section>
 
-            <BusinessHours hours={business.hours} />
+            <BusinessHours
+              hours={business.hours ?? []}
+              isAlwaysOpen={business.hours?.some((h: any) => h.isOpen === true && !h.day)}
+            />
           </aside>
         </div>
 
@@ -223,12 +242,12 @@ export default async function BusinessDetailPage({
                   Negocios relacionados
                 </h2>
                 <p className="mt-1 sm:mt-2 text-sm text-muted-foreground">
-                  Mas opciones en la misma zona o categoria.
+                  Más opciones en la misma zona o categoría.
                 </p>
               </div>
               <Button variant="outline" size="sm" asChild>
                 <Link href={`/business?category=${categorySlug}&municipality=${municipalitySlug}`}>
-                  Ver mas
+                  Ver más
                 </Link>
               </Button>
             </div>
@@ -241,62 +260,12 @@ export default async function BusinessDetailPage({
         )}
       </div>
 
-      {/* Floating WhatsApp */}
       <WhatsAppButton
         phone={business.whatsapp}
         businessName={business.name}
         floating
       />
     </div>
-  );
-}
-
-function Gallery({
-  businessName,
-  images,
-}: {
-  businessName: string;
-  images: LoadedSanityImage[];
-}) {
-  if (!images || images.length === 0) {
-    return (
-      <div className="flex aspect-video items-center justify-center rounded-2xl bg-muted text-muted-foreground">
-        Galeria no disponible
-      </div>
-    );
-  }
-
-  const [first, ...rest] = images;
-
-  return (
-    <section className="grid gap-3 sm:gap-4 md:grid-cols-[2fr_1fr]">
-      <div className="relative aspect-video overflow-hidden rounded-2xl bg-muted shadow-warm">
-        <Image
-          src={urlFor(first).width(1200).height(675).url()}
-          alt={first.alt || businessName}
-          fill
-          sizes="(max-width: 768px) 100vw, 66vw"
-          className="object-cover"
-          priority
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-1">
-        {rest.slice(0, 2).map((image, index) => (
-          <div
-            key={image.asset?._id || index}
-            className="relative aspect-video overflow-hidden rounded-2xl bg-muted shadow-warm"
-          >
-            <Image
-              src={urlFor(image).width(600).height(338).url()}
-              alt={image.alt || `${businessName} ${index + 2}`}
-              fill
-              sizes="(max-width: 768px) 50vw, 33vw"
-              className="object-cover"
-            />
-          </div>
-        ))}
-      </div>
-    </section>
   );
 }
 
@@ -312,16 +281,16 @@ function ContactLink({
   external?: boolean;
 }) {
   return (
-    <Button variant="outline" className="w-full justify-start text-sm" asChild>
-      
-       <a href={href}
+    <Button variant="outline" className="w-full justify-start text-sm gap-3 px-4" asChild>
+      <a
+        href={href}
         target={external ? "_blank" : undefined}
         rel={external ? "noreferrer" : undefined}
       >
         {icon}
-        <span className="truncate">{children}</span>
+        <span className="truncate flex-1 text-left">{children}</span>
         {external && (
-          <ExternalLink className="ml-auto h-4 w-4 shrink-0" aria-hidden="true" />
+          <ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0 opacity-50" aria-hidden="true" />
         )}
       </a>
     </Button>

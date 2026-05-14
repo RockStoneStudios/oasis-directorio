@@ -8,7 +8,7 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { Heart, Home, LayoutDashboard, Menu, User, X } from "lucide-react";
+import { Heart, Home, LayoutDashboard, Menu, User, X, MapPin, Grid3x3, List, Newspaper } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -171,7 +171,7 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-[300px] sm:w-[350px] overscroll-contain"
+              className="w-75 sm:w-87.5 overscroll-contain"
             >
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2">
@@ -188,6 +188,45 @@ export function Navbar() {
                 className="flex flex-col gap-2 mt-8"
                 aria-label="Mobile navigation"
               >
+                {/* Nuevos enlaces del directorio */}
+                <Link
+                  href="/clasico"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-[background-color] duration-200"
+                >
+                  <List className="h-5 w-5" aria-hidden="true" />
+                  Directorio clásico
+                </Link>
+                
+                <Link
+                  href="/categorias"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-[background-color] duration-200"
+                >
+                  <Grid3x3 className="h-5 w-5" aria-hidden="true" />
+                  Directorio por categorías
+                </Link>
+                
+                <Link
+                  href="/mapa"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-[background-color] duration-200"
+                >
+                  <MapPin className="h-5 w-5" aria-hidden="true" />
+                  Mapa de negocios
+                </Link>
+                
+                <Link
+                  href="/clasificados"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-[background-color] duration-200"
+                >
+                  <Newspaper className="h-5 w-5" aria-hidden="true" />
+                  Clasificados
+                </Link>
+
+                <div className="h-px bg-border my-2" />
+
                 <Link
                   href="/business"
                   onClick={() => setIsOpen(false)}
@@ -195,6 +234,7 @@ export function Navbar() {
                 >
                   Negocios
                 </Link>
+                
                 <SignedIn>
                   <Protect
                     plan="agent"
@@ -227,6 +267,7 @@ export function Navbar() {
                     Registrar negocio
                   </Link>
                 </SignedOut>
+                
                 <SignedIn>
                   <div className="h-px bg-border my-2" />
                   <Link
@@ -246,6 +287,7 @@ export function Navbar() {
                     Mi perfil
                   </Link>
                 </SignedIn>
+                
                 <SignedOut>
                   <div className="h-px bg-border my-2" />
                   <div className="flex flex-col gap-2 px-4 mt-2">

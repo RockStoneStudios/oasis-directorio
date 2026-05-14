@@ -117,7 +117,7 @@ export default async function HomePage() {
                   Eventos proximos
                 </h2>
               </div>
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 {(events || []).length > 0 ? (
                   events.map((event: any) => (
                     <Link
@@ -179,7 +179,7 @@ export default async function HomePage() {
                     description="Las novedades locales apareceran en esta seccion."
                   />
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </section>

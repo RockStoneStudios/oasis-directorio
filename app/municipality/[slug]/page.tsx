@@ -22,7 +22,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const { data } = await sanityFetch({ query: MUNICIPALITIES_LIST_QUERY });
-  const municipality = (data || []).find(
+  
+  // Asegurar que data sea un array
+  const municipalitiesArray = Array.isArray(data) ? data : [];
+  const municipality = municipalitiesArray.find(
     (item: FilterOption) => getSlugValue(item.slug) === slug,
   );
 
@@ -38,11 +41,15 @@ export default async function MunicipalityPage({
 }: MunicipalityPageProps) {
   const [{ slug }, query] = await Promise.all([params, searchParams]);
   const page = Math.max(Number(query.page) || 1, 1);
+  
   const [{ businesses, hasMore }, { data: municipalities }] = await Promise.all([
     getBusinesses({ municipality: slug, page, pageSize: 12 }),
     sanityFetch({ query: MUNICIPALITIES_LIST_QUERY }),
   ]);
-  const municipality = (municipalities || []).find(
+  
+  // Asegurar que municipalities sea un array
+  const municipalitiesArray = Array.isArray(municipalities) ? municipalities : [];
+  const municipality = municipalitiesArray.find(
     (item: FilterOption) => getSlugValue(item.slug) === slug,
   );
 

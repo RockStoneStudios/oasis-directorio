@@ -1,5 +1,7 @@
 // schemas/business.ts
 
+import { title } from "process";
+
 export const business = {
   name: 'business',
   title: 'Business',
@@ -19,6 +21,7 @@ export const business = {
           { title: 'Open', value: 'open' },
           { title: 'Closed', value: 'closed' },
           { title: 'Temporarily Closed', value: 'temporarily_closed' },
+           {title : 'always open', value : "alwaysopen"}
         ],
       },
     },

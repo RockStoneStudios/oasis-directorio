@@ -127,6 +127,18 @@ export const CATEGORIES_LIST_QUERY = defineQuery(/* groq */ `
   }
 `);
 
+// sanity/queries.ts - Agrega esto
+
+export const CATEGORIES_WITH_COUNTS_QUERY = defineQuery(/* groq */ `
+  *[_type == "category"] | order(name asc) {
+    _id,
+    name,
+    "slug": slug,
+    "image": image { ${imageFragment} },  // ← Cambiado de "icon" a "image"
+    "count": count(*[_type == "business" && references(^._id)])
+  }
+`);
+
 export const MUNICIPALITIES_LIST_QUERY = defineQuery(/* groq */ `
   *[_type == "municipality"] | order(name asc) {
     _id,
@@ -159,5 +171,46 @@ export const RECENT_NEWS_QUERY = defineQuery(/* groq */ `
     publishedAt,
     "image": image { ${imageFragment} },
     category->{ name }
+  }
+`);
+
+// Agrega esto a tu archivo de queries
+
+// ============================================
+// BÚSQUEDA ALFABÉTICA (A-Z)
+// ============================================
+
+// sanity/queries.ts - Agrega esto
+
+// sanity/queries.ts
+// sanity/queries.ts - Agrega esta query usando tu imageFragment
+
+export const CLASSIC_DIRECTORY_BY_LETTER_QUERY = defineQuery(/* groq */ `
+  *[_type == "business" && name match $letter + "*"] | order(name asc) {
+    _id,
+    _type,
+    name,
+    "slug": slug,
+    "logo": logo { ${imageFragment} },
+    description,
+    status,
+    rating,
+    address { ${addressFragment} },
+    municipality->{ _id, name, "slug": slug },
+    category->{ _id, name, "slug": slug, icon },
+    isFeatured,
+    createdAt
+  }
+`);
+// Para contar cuántos negocios hay por letra (útil para UI)
+export const BUSINESS_COUNT_BY_LETTER_QUERY = defineQuery(/* groq */ `
+  {
+    "letters": *[_type == "business" && status == "active"] {
+      "letter": upper(substr(name, 0, 1))
+    } | {letter: upper(letter)} | group by letter {
+      "letter": letter,
+      "count": count(*)
+    } | order(letter asc),
+    "total": count(*[_type == "business" && status == "active"])
   }
 `);

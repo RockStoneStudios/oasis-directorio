@@ -30,5 +30,6 @@ export const businessHours = {
     { name: 'open', type: 'string', title: 'Opening Time (e.g. 08:00)' },
     { name: 'close', type: 'string', title: 'Closing Time (e.g. 22:00)' },
     { name: 'isClosed', type: 'boolean', title: 'Is it closed all day?', initialValue: false },
+     { name: 'isOpen', type: 'boolean', title: 'Is it Open all day?', initialValue: false },
   ],
 };

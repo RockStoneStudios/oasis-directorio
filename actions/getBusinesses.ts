@@ -72,13 +72,16 @@ export async function getBusinesses({
     },
   });
 
-  const businesses = sortBusinesses((data || []).slice(0, pageSize) as BusinessCardData[], safeSort);
+  // Asegurar que data sea un array
+  const dataArray = Array.isArray(data) ? data : [];
+  
+  const businesses = sortBusinesses(dataArray.slice(0, pageSize) as BusinessCardData[], safeSort);
 
   return {
     businesses,
     page,
     pageSize,
-    hasMore: Boolean(data && data.length > pageSize),
+    hasMore: dataArray.length > pageSize,
   };
 }
 
