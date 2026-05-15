@@ -42,7 +42,6 @@ export async function generateMetadata({
 
 
   // AÑADE ESTO AQUÍ:
-  console.log("Datos de Sanity para Bomberos:", JSON.stringify(business, null, 2));
 
   if (!business) {
     console.log("No se encontró el negocio en Sanity");
@@ -177,11 +176,14 @@ export default async function BusinessDetailPage({
               </p>
             </section>
 
-            <Map
-              location={business.location}
-              title={business.name}
-              address={formatAddress(business.address)}
-            />
+            <div className="h-80 w-full overflow-hidden rounded-2xl">
+              <Map
+                location={business.location}
+                title={business.name}
+                address={formatAddress(business.address)}
+                
+              />
+            </div>
           </div>
 
           {/* Sidebar */}

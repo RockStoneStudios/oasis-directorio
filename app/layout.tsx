@@ -4,6 +4,7 @@ import { Geist_Mono, Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SanityLive } from "@/lib/sanity/live";
 import "./globals.css";
+// import "leaflet/dist/leaflet.css"; // A
 
 // Body font - highly readable
 const inter = Inter({
