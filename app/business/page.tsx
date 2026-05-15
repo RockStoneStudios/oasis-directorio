@@ -90,8 +90,11 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
           <div className="lg:w-80 lg:shrink-0">
             <div className="lg:sticky lg:top-24">
               <Suspense fallback={<Skeleton className="h-96 rounded-2xl" />}>
-               categories={Array.isArray(categories) ? categories : []}
-            municipalities={Array.isArray(municipalities) ? municipalities : []}
+                {/* Añade el componente BusinessFilters aquí */}
+                <BusinessFilters
+                  categories={Array.isArray(categories) ? categories : []}
+                  municipalities={Array.isArray(municipalities) ? municipalities : []}
+                />
               </Suspense>
             </div>
           </div>

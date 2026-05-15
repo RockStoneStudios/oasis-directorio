@@ -65,10 +65,13 @@ export default function CategoriasPage() {
     }
   };
 
+  // const handleSubcategoryClick = (subcategorySlug: string) => {
+  //   // Redirige a /business/[slug]
+  //   router.push(`/business/${subcategorySlug}`);
+  // };
   const handleSubcategoryClick = (subcategorySlug: string) => {
-    // Redirige a /business/[slug]
-    router.push(`/business/${subcategorySlug}`);
-  };
+  router.push(`/categorias/${subcategorySlug}`);
+};
 
   const getSubcategories = (categoryId: string) => {
     const category = categoriesWithSubs.find(cat => cat._id === categoryId);

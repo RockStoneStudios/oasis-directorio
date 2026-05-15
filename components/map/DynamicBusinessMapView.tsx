@@ -8,7 +8,7 @@ export const DynamicBusinessMapView = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-full min-h-[480px] w-full items-center justify-center rounded-2xl bg-muted">
+      <div className="flex h-full min-h-120 w-full items-center justify-center rounded-2xl bg-muted">
         <Skeleton className="h-full w-full" />
       </div>
     ),

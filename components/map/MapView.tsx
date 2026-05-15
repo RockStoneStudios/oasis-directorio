@@ -23,6 +23,7 @@ export function MapView({
     latitude: 6.2442,
     zoom: 12,
   });
+  console.log("Token:+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
 
   const hasCenteredRef = useRef(false);
 

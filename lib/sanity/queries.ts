@@ -127,6 +127,34 @@ export const CATEGORIES_LIST_QUERY = defineQuery(/* groq */ `
   }
 `);
 
+export const BUSINESS_BY_SUBCATEGORY_QUERY = `
+  *[_type == "business" && (
+    category->slug.current == $slug || 
+    $slug in subcategories[]->slug.current
+  )] {
+    _id,
+    name,
+    slug,
+    description,
+    rating,
+    logo {
+      asset->{
+        url
+      }
+    },
+    category->{
+      name,
+      slug
+    },
+    municipality->{
+      name
+    },
+    address,
+    whatsapp,
+    isFeatured
+  }
+`;
+
 // sanity/queries.ts - Agrega esto
 
 export const CATEGORIES_WITH_COUNTS_QUERY = defineQuery(/* groq */ `
