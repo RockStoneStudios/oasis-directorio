@@ -22,11 +22,6 @@ import {
 import type { BusinessSort } from "@/types/business";
 import { SortSelect } from "./sort-select";
 
-export const metadata: Metadata = {
-  title: "Negocios",
-  description: "Busca negocios por categoria, municipio, estado y calificacion.",
-};
-
 const PAGE_SIZE = 12;
 const SORT_VALUES: BusinessSort[] = [
   "relevance",
@@ -38,6 +33,63 @@ const SORT_VALUES: BusinessSort[] = [
 
 interface BusinessPageProps {
   searchParams: Promise<Record<string, string | undefined>>;
+}
+
+// 🚀 FUNCIÓN DE SEO DINÁMICA AVANZADA
+export async function generateMetadata({ searchParams }: BusinessPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  
+  // Extraemos los filtros actuales para armar frases ultra semánticas para Google
+  const category = params.category ? decodeURIComponent(params.category) : "";
+  const municipality = params.municipality ? decodeURIComponent(params.municipality) : "";
+  const searchQuery = params.search ? decodeURIComponent(params.search) : "";
+
+  // 1. Construcción inteligente del título basado en lo que busca el usuario
+  let title = "Directorio de Negocios y Comercios Locales";
+  if (category && municipality) {
+    title = `${category} en ${municipality} | Directorio Comercial`;
+  } else if (category) {
+    title = `${category} Locales | Guía Comercial`;
+  } else if (municipality) {
+    title = `Negocios y Comercios en ${municipality}`;
+  } else if (searchQuery) {
+    title = `Resultados para "${searchQuery}" | Directorio de Negocios`;
+  }
+
+  // 2. Construcción inteligente de la descripción para mejorar el CTR en Google
+  let description = "Explora el directorio comercial más completo. Encuentra restaurantes, servicios, hospedajes y comercios locales con opiniones y ubicaciones en tiempo real.";
+  if (category || municipality) {
+    description = `¿Buscas ${category || "negocios"} en ${municipality || "tu región"}? Encuentra horarios, teléfonos, WhatsApp y ubicaciones en el mapa interactivo de Oasis.`;
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://oasis-directorio-ccg7.vercel.app";
+  
+  // 3. Crear una URL canónica limpia libre de desorden de ordenamientos secundarios
+  const canonicalUrl = `${baseUrl}/business${category ? `?category=${params.category}` : ""}${municipality ? `${category ? '&' : '?'}municipality=${params.municipality}` : ""}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${title} | Oasis`,
+      description,
+      url: canonicalUrl,
+      type: "website",
+      images: [
+        {
+          url: `${baseUrl}/og-directory.png`, // Recuerda crear esta imagen de portada general en tu carpeta public
+          width: 1200,
+          height: 630,
+          alt: `Directorio Local Oasis - ${title}`,
+        },
+      ],
+    },
+    // Evitamos que Google indexe páginas de ordenamiento duplicado o paginaciones profundas si no es necesario
+    robots: params.sort || params.page ? "index, follow" : "index, follow",
+  };
 }
 
 export default async function BusinessPage({ searchParams }: BusinessPageProps) {
@@ -90,7 +142,6 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
           <div className="lg:w-80 lg:shrink-0">
             <div className="lg:sticky lg:top-24">
               <Suspense fallback={<Skeleton className="h-96 rounded-2xl" />}>
-                {/* Añade el componente BusinessFilters aquí */}
                 <BusinessFilters
                   categories={Array.isArray(categories) ? categories : []}
                   municipalities={Array.isArray(municipalities) ? municipalities : []}
