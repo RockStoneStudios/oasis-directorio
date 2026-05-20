@@ -1,4 +1,3 @@
-// app/categorias/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -65,13 +64,9 @@ export default function CategoriasPage() {
     }
   };
 
-  // const handleSubcategoryClick = (subcategorySlug: string) => {
-  //   // Redirige a /business/[slug]
-  //   router.push(`/business/${subcategorySlug}`);
-  // };
   const handleSubcategoryClick = (subcategorySlug: string) => {
-  router.push(`/categorias/${subcategorySlug}`);
-};
+    router.push(`/categorias/${subcategorySlug}`);
+  };
 
   const getSubcategories = (categoryId: string) => {
     const category = categoriesWithSubs.find(cat => cat._id === categoryId);
@@ -88,7 +83,8 @@ export default function CategoriasPage() {
       {loading ? (
         <div className="text-center py-12">Cargando categorías...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        /* MODIFICADO: Cambiado de grid-cols-1 a grid-cols-2 en móvil y reducido el gap en mobile (gap-3 md:gap-4) */
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {categories.map((category) => {
             const subcategories = getSubcategories(category._id);
             const isExpanded = expandedCategory === category._id;
@@ -98,36 +94,39 @@ export default function CategoriasPage() {
               <div key={category._id} className="group">
                 <div
                   onClick={() => toggleCategory(category._id)}
-                  className="relative overflow-hidden rounded-2xl border border-border/50 bg-linear-to-br from-card to-card/80 p-5 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/20 cursor-pointer"
+                  /* MODIFICADO: Reducido ligeramente el padding en mobile (p-3 sm:p-5) para maximizar el espacio */
+                  className="relative overflow-hidden rounded-2xl border border-border/50 bg-linear-to-br from-card to-card/80 p-3 sm:p-5 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/20 cursor-pointer h-full"
                 >
                   <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-br from-primary/5 to-transparent rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
                   
-                  <div className="relative flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-linear-to-br from-primary/10 to-primary/5 shadow-md group-hover:shadow-lg transition-all">
+                  <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                      {/* MODIFICADO: Tamaño responsivo para la imagen del ícono (h-10 w-10 en móvil, h-14 w-14 en tablets/PC) */}
+                      <div className="relative h-10 w-10 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-xl bg-linear-to-br from-primary/10 to-primary/5 shadow-md group-hover:shadow-lg transition-all">
                         {category.image?.asset?.url ? (
                           <Image
                             src={urlFor(category.image).width(56).height(56).url()}
                             alt={category.image.alt || category.name}
                             fill
-                            sizes="56px"
+                            sizes="(max-width: 640px) 40px, 56px"
                             className="object-cover"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
-                            <Store className="h-7 w-7 text-primary" />
+                            <Store className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
                           </div>
                         )}
                       </div>
                       
                       <div>
-                        <h3 className="text-lg font-bold text-card-foreground group-hover:text-primary transition-colors">
+                        {/* MODIFICADO: Texto más pequeño en móvil (text-sm sm:text-lg) para que no rompa la tarjeta de 2 columnas */}
+                        <h3 className="text-sm sm:text-lg font-bold text-card-foreground group-hover:text-primary transition-colors line-clamp-2">
                           {category.name}
                         </h3>
                         
-                        <div className="flex items-center gap-1 mt-1">
+                        <div className="flex items-center gap-1 mt-0.5 sm:mt-1">
                           <div className="h-1.5 w-1.5 rounded-full bg-primary/60" />
-                          <span className="text-sm font-medium text-primary">
+                          <span className="text-xs sm:text-sm font-medium text-primary">
                             {category.count} {category.count === 1 ? 'negocio' : 'negocios'}
                           </span>
                         </div>
@@ -135,11 +134,12 @@ export default function CategoriasPage() {
                     </div>
                     
                     {hasSubcategories && (
-                      <div className="text-muted-foreground">
+                      /* MODIFICADO: Posicionado el chevron en la esquina superior derecha en móviles usando absolute, o inline en pantallas grandes */
+                      <div className="text-muted-foreground absolute top-0 right-0 sm:relative sm:top-auto sm:right-auto">
                         {isExpanded ? (
-                          <ChevronDown className="h-5 w-5" />
+                          <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5" />
                         ) : (
-                          <ChevronRight className="h-5 w-5" />
+                          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
                         )}
                       </div>
                     )}
@@ -149,17 +149,18 @@ export default function CategoriasPage() {
                 </div>
 
                 {isExpanded && hasSubcategories && (
-                  <div className="mt-2 ml-4 pl-4 border-l-2 border-primary/20 space-y-2">
+                  /* MODIFICADO: Reducido ligeramente el margen izquierdo en mobile (ml-2 pl-2 sm:ml-4 sm:pl-4) */
+                  <div className="mt-2 ml-2 pl-2 sm:ml-4 sm:pl-4 border-l-2 border-primary/20 space-y-1 sm:space-y-2">
                     {subcategories.map((sub) => (
                       <div
                         key={sub._id}
                         onClick={() => handleSubcategoryClick(sub.slug.current)}
-                        className="flex items-center gap-2 p-2 rounded-lg hover:bg-accent cursor-pointer transition-colors group/sub"
+                        className="flex items-center gap-2 p-1.5 sm:p-2 rounded-lg hover:bg-accent cursor-pointer transition-colors group/sub"
                       >
-                        <div className="w-4 h-4 rounded border border-gray-300 flex items-center justify-center group-hover/sub:border-primary transition-colors">
+                        <div className="w-4 h-4 rounded border border-gray-300 flex items-center justify-center group-hover/sub:border-primary transition-colors shrink-0">
                           <Check className="h-3 w-3 text-transparent group-hover/sub:text-primary" />
                         </div>
-                        <span className="text-sm text-card-foreground flex-1">
+                        <span className="text-xs sm:text-sm text-card-foreground flex-1 line-clamp-1">
                           {sub.name}
                         </span>
                       </div>

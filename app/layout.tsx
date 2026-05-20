@@ -111,3 +111,21 @@ export default function RootLayout({
     </html>
   );
 }
+
+// app/layout.tsx
+// @ts-ignore
+// import "./globals.css";
+
+// export default function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <html lang="es" suppressHydrationWarning>
+//       <body>
+//         {children}
+//       </body>
+//     </html>
+//   );
+// }
