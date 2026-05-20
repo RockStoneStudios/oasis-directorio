@@ -35,7 +35,12 @@ export const metadata: Metadata = {
   },
   description:
     "Descubre negocios, eventos y noticias locales por categoria y municipio.",
-  keywords: [
+  
+    verification : {
+       google : "OBYw5lH6K7WSL2FDIJyNnq9oKEsYHJndvLUQmPjZWrc"
+    },
+
+    keywords: [
     "directorio local",
     "negocios",
     "municipios",
