@@ -5,7 +5,7 @@ import { getBusinesses } from "@/actions/getBusinesses";
 import { DynamicBusinessMapView } from "@/components/map/DynamicBusinessMapView";
 import { Store, Utensils, Syringe, Bed, Car, ShoppingBag } from "lucide-react";
 
-// Mapeo de íconos para que las píldoras se vean profesionales
+// Mapeo opcional de íconos para que las píldoras se vean profesionales
 const CATEGORY_ICONS: Record<string, any> = {
   "restaurantes": Utensils,
   "salud": Syringe,
@@ -48,7 +48,8 @@ export default function MapaPage() {
     fetchMapData();
   }, []);
 
-  // 2. Extraer categorías únicas que realmente tienen negocios
+  // 2. Extraer categorías únicas que realmente tienen negocios para armar los botones
+  // Esto evita botones vacíos y se adapta solo a lo que hay en tu base de datos
   const categoriesAvailable = Array.from(
     new Set(
       allBusinesses
@@ -60,6 +61,7 @@ export default function MapaPage() {
   // 3. Función manejadora del filtro rápido
   const handleCategorySelect = (categoryName: string) => {
     if (selectedCategory === categoryName) {
+      // Si vuelve a tocar la misma, limpiamos el filtro y mostramos todos
       setSelectedCategory(null);
       setFilteredBusinesses(allBusinesses);
     } else {
@@ -91,10 +93,10 @@ export default function MapaPage() {
       {/* Contenedor del Mapa y Elementos Flotantes */}
       <main className="flex-1 relative w-full h-full min-h-0">
         
-        {/* PÍLDORAS FLOTANTES (Filtros Rápidos sin barra de scroll) */}
+        {/* PÍLDORAS FLOTANTES (Filtros Rápidos) */}
         {!loading && categoriesAvailable.length > 0 && (
           <div className="absolute top-4 inset-x-0 z-10 flex justify-center px-4 pointer-events-none">
-            <div className="flex gap-2 overflow-x-auto pb-0 max-w-full pointer-events-auto bg-background/60 backdrop-blur-md p-2 rounded-2xl shadow-lg border border-border/40 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex gap-2 overflow-x-auto pb-2 max-w-full no-scrollbar pointer-events-auto bg-background/60 backdrop-blur-md p-2 rounded-2xl shadow-lg border border-border/40">
               {/* Botón de "Todos" */}
               <button
                 onClick={() => {
@@ -113,6 +115,7 @@ export default function MapaPage() {
               {/* Botones dinámicos de categorías */}
               {categoriesAvailable.map((category) => {
                 const isSelected = selectedCategory === category;
+                // Buscamos si tenemos un ícono asignado, si no, por defecto ponemos el de Store
                 const IconComponent = CATEGORY_ICONS[category.toLowerCase()] || Store;
 
                 return (
