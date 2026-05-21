@@ -97,7 +97,7 @@ export function CategoryGrid({ initialCategories = [], categoriesWithSubs = [] }
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {validCategories.map((category) => {
         // Validación individual: Si la categoría no tiene datos mínimos obligatorios, nos saltamos su renderizado
         if (!category || !category._id) return null;
@@ -123,7 +123,7 @@ export function CategoryGrid({ initialCategories = [], categoriesWithSubs = [] }
                   : 'border-border/60 hover:border-primary/30 shadow-sm'
               }`}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-primary/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-70 group-hover:opacity-100 transition-opacity" />
               
               <div className="relative flex items-start gap-4">
                 {/* Imagen con fallback blindado */}
