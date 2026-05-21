@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
+// Usando tu variable de entorno actual
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
 interface DynamicAtmMapViewProps {
@@ -17,24 +18,70 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
 
-  // 1. Inicialización del Mapa
+  // 1. Inicialización del Mapa con Perspectiva 3D
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Coordenadas fijas por defecto de Sopetrán para asegurar que no se descuadre [Lng, Lat]
-    const defaultCenter: [number, number] = [-75.742505, 6.500962];
-
-    console.log("🗺️ MAP LOG 1 - Inicializando mapa en Sopetrán:", defaultCenter);
+    const defaultCenter: [number, number] = [-75.742410, 6.500957];
 
     try {
-      mapRef.current = new mapboxgl.Map({
+      const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/streets-v12",
         center: defaultCenter,
-        zoom: 15,
+        zoom: 14.5,
+        pitch: 60,
+        bearing: -15,
+        antialias: true
       });
 
-      mapRef.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+      map.addControl(new mapboxgl.NavigationControl(), "top-right");
+      mapRef.current = map;
+
+      // Inyección de los edificios 3D
+      map.on('style.load', () => {
+        const layers = map.getStyle()?.layers;
+        if (!layers) return;
+
+        const labelLayer = layers.find(
+          (layer) => layer.type === 'symbol' && layer.layout && (layer.layout as any)['text-field']
+        );
+
+        map.addLayer(
+          {
+            'id': '3d-buildings',
+            'source': 'composite',
+            'source-layer': 'building',
+            'filter': ['==', 'extrude', 'true'],
+            'type': 'fill-extrusion',
+            'minzoom': 15,
+            'paint': {
+              'fill-extrusion-color': '#aaa',
+              'fill-extrusion-height': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                14,
+                0,
+                15.05,
+                ['get', 'height']
+              ],
+              'fill-extrusion-base': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                15,
+                0,
+                15.05,
+                ['get', 'min_height']
+              ],
+              'fill-extrusion-opacity': 0.6
+            }
+          },
+          labelLayer?.id
+        );
+      });
+
     } catch (err) {
       console.error("❌ MAP ERROR - Error creando el objeto Mapbox:", err);
     }
@@ -48,7 +95,7 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
     };
   }, []);
 
-  // 2. Renderizado de Marcadores (Se ejecuta cada vez que 'atms' cambia)
+  // 2. Renderizado de Marcadores con POPUPS MEJORADOS
   useEffect(() => {
     const map = mapRef.current;
     if (!map) {
@@ -71,15 +118,9 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
       const lng = atm.location?.lng;
       const lat = atm.location?.lat;
 
-      console.log(`📍 MAP LOG 5 [Cajero ${index}] - Evaluando coordenadas:`, { name: atm.name, lng, lat });
-
-      if (!lng || !lat) {
-        console.warn(`❌ MAP LOG 6 - El cajero "${atm.name}" no tiene coordenadas válidas de longitud o latitud.`);
-        return;
-      }
+      if (!lng || !lat) return;
 
       try {
-        // Crear el elemento HTML del pin
         const el = document.createElement("div");
         el.className = "bg-emerald-600 text-white border-2 border-white rounded-full shadow-lg p-2 cursor-pointer flex items-center justify-center transition-transform hover:scale-110 z-50";
         el.style.width = "38px";
@@ -87,41 +128,84 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
         el.style.fontSize = "18px";
         el.innerHTML = "🏧";
 
+        // 🎯 POPUP CON TÍTULO MEJORADO
         const popupHTML = `
-          <div class="p-2.5 font-sans min-w-[210px]">
-            <div class="flex items-center justify-between gap-2 mb-1">
-              <h3 class="font-bold text-sm text-gray-900">${atm.name}</h3>
-              ${atm.is24Hours ? `<span class="bg-green-100 text-green-800 text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase">24H</span>` : ""}
-            </div>
-            <p class="text-xs text-gray-500">📍 ${atm.addressLabel || 'Dirección'}</p>
-            ${atm.address?.directionDetails ? `<p class="text-[10px] text-gray-400 italic mt-0.5">"${atm.address.directionDetails}"</p>` : ""}
-            ${atm.recommendation ? `
-              <div class="mt-2 text-[11px] bg-amber-50 text-amber-800 p-2 rounded-lg border border-amber-100 italic">
-                <strong>Nota:</strong> ${atm.recommendation}
+          <div class="p-0 font-sans min-w-[240px] max-w-[280px]">
+            <!-- HEADER CON TÍTULO -->
+            <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-t-lg px-3 py-2">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🏧</span>
+                <div>
+                  <h3 class="font-bold text-sm leading-tight">${atm.name}</h3>
+                  <p class="text-[10px] text-emerald-100 opacity-90">Cajero Automático</p>
+                </div>
               </div>
-            ` : ""}
+            </div>
+            
+            <!-- CONTENIDO -->
+            <div class="p-3 bg-white rounded-b-lg">
+              <!-- Horario 24H -->
+              ${atm.is24Hours ? `
+                <div class="flex items-center gap-1 mb-2 pb-1 border-b border-gray-100">
+                  <span class="bg-green-100 text-green-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">🕒 24 HORAS</span>
+                </div>
+              ` : ''}
+              
+              <!-- Dirección -->
+              <div class="mb-2">
+                <p class="text-[12px] font-semibold text-gray-800 mb-0.5">📍 Ubicación</p>
+                <p class="text-xs text-gray-800">${atm.addressLabel || 'Dirección no especificada'}</p>
+                ${atm.address?.directionDetails ? `
+                  <p class="text-[11.8px] text-gray-700 italic mt-0.5 flex items-start gap-1">
+                    <span>📝</span>
+                    <span>"${atm.address.directionDetails}"</span>
+                  </p>
+                ` : ''}
+              </div>
+              
+              <!-- Recomendación -->
+              ${atm.recommendation ? `
+                <div class="mt-2 pt-2 border-t border-amber-100">
+                  <div class="flex items-start gap-1.5">
+                    <span class="text-amber-800 text-[12px]">💡</span>
+                    <div class="text-[12px] bg-amber-50 text-amber-900 p-2 rounded-lg border border-amber-100 italic flex-1">
+                      ${atm.recommendation}
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+              
+              <!-- Footer -->
+              <div class="mt-2 pt-1 text-[9px] text-gray-400 text-center border-t border-gray-100">
+                Banco ${atm.bankName || 'No especificado'}
+              </div>
+            </div>
           </div>
         `;
 
-        // Crear e inyectar el marcador en las coordenadas [longitud, latitud]
         const marker = new mapboxgl.Marker(el)
           .setLngLat([lng, lat])
-          .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupHTML))
+          .setPopup(new mapboxgl.Popup({ 
+            offset: 25,
+            closeButton: true,
+            closeOnClick: false,
+            maxWidth: '280px',
+            className: 'custom-atm-popup'
+          }).setHTML(popupHTML))
           .addTo(map);
 
         markersRef.current.push(marker);
-        console.log(`✅ MAP LOG 7 - ¡Marcador añadido con éxito para: ${atm.name}!`);
       } catch (markerError) {
         console.error(`❌ MAP ERROR - Falló la creación del pin para ${atm.name}:`, markerError);
       }
     });
 
-    // Si hay marcadores válidos, forzar a la cámara del mapa a moverse al primer punto disponible
+    // Movimiento de cámara
     if (atms.length > 0 && atms[0].location?.lng && atms[0].location?.lat) {
-      console.log("🎥 MAP LOG 8 - Moviendo la cámara del mapa hacia el primer cajero.");
       map.flyTo({
         center: [atms[0].location.lng, atms[0].location.lat],
-        zoom: 16,
+        zoom: 15.5,
+        pitch: 60,
         essential: true
       });
     }
@@ -131,6 +215,33 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
   return (
     <div className="w-full h-full relative">
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full min-h-[400px]" />
+      
+      {/* Estilos globales para los popups */}
+      <style jsx global>{`
+        .custom-atm-popup .mapboxgl-popup-content {
+          padding: 0 !important;
+          border-radius: 12px !important;
+          overflow: hidden !important;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .custom-atm-popup .mapboxgl-popup-close-button {
+          font-size: 16px !important;
+          padding: 4px 8px !important;
+          color: white !important;
+          background: transparent !important;
+          z-index: 10 !important;
+        }
+        
+        .custom-atm-popup .mapboxgl-popup-close-button:hover {
+          background: rgba(0,0,0,0.2) !important;
+          border-radius: 0 8px 0 8px !important;
+        }
+        
+        .custom-atm-popup .mapboxgl-popup-tip {
+          border-top-color: #059669 !important;
+        }
+      `}</style>
     </div>
   );
 }

@@ -227,6 +227,14 @@ export function Navbar() {
                       <MapPin className="h-5 w-5" aria-hidden="true" />
                       Mapa de negocios
                     </Link>
+                     <Link
+                      href="/atm"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-[background-color] duration-200"
+                    >
+                      <Newspaper className="h-5 w-5" aria-hidden="true" />
+                       Donde retirar dinero?
+                    </Link>
                     
                     <Link
                       href="/clasificados"
