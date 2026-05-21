@@ -1,3 +1,4 @@
+// @/app/business/[slug]/page.tsx
 import {
   ExternalLink,
   Globe,
@@ -5,8 +6,7 @@ import {
   Phone,
   Store,
 } from "lucide-react";
-// Importamos los iconos de marcas desde Simple Icons (dentro de react-icons)
-import { SiFacebook, SiInstagram, SiWhatsapp } from "react-icons/si";
+import { SiFacebook, SiInstagram } from "react-icons/si";
 
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -27,44 +27,75 @@ import {
   normalizeBusinessData,
 } from "@/lib/formatBusinessData";
 import { urlFor } from "@/lib/sanity/image";
-import type { LoadedSanityImage } from "@/types";
 import { ImageGallery } from "@/components/business/ImageGallery";
 
 interface BusinessDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
+// 🚀 1. OPTIMIZACIÓN DE METADATOS LOCALES Y OPEN GRAPH
 export async function generateMetadata({
   params,
 }: BusinessDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
   const business = await getBusinessBySlug(slug);
 
-
-  // AÑADE ESTO AQUÍ:
-
-  if (!business) {
-    console.log("No se encontró el negocio en Sanity");
-    return notFound();
-  }
-
   if (!business) {
     return {
-      title: "Negocio no encontrado",
+      title: "Negocio no encontrado | Oasis",
     };
   }
 
-  const description =
-    business.description ||
-    `Información, horarios y contacto de ${business.name}.`;
+  const businessName = business.name;
+  const category = business.category?.name || "Comercio";
+  const municipality = business.municipality?.name || "Antioquia";
+  
+  // Título e intenciones de búsqueda ultra optimizados para SEO Local (ej: "Restaurante El Sabor en Sopetrán | Teléfono, Horarios y Opiniones")
+  const seoTitle = `${businessName} en ${municipality} | ${category} | Oasis`;
+  const seoDescription = business.description 
+    ? `${business.description.slice(0, 150)}... Encuentra opiniones, ubicación, horarios y contacto directo vía WhatsApp en Oasis.`
+    : `Contacta con ${businessName} en ${municipality}. Información detallada de este establecimiento de ${category}, ubicación en mapa, teléfonos y horarios de atención en el directorio local Oasis.`;
+
+  const imageUrl = business.logo?.asset?.url || "/fallback-og.png";
 
   return {
-    title: business.name,
-    description,
+    title: seoTitle,
+    description: seoDescription,
+    alternates: {
+      canonical: `https://oasis-directorio-ccg7.vercel.app/business/${slug}`, // 💡 Evita penalizaciones por contenido duplicado
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
     openGraph: {
-      title: business.name,
-      description,
-      images: business.logo?.asset?.url ? [business.logo.asset.url] : [],
+      title: seoTitle,
+      description: seoDescription,
+      url: `https://oasis-directorio-ccg7.vercel.app/business/${slug}`,
+      siteName: "Oasis Directorio Local",
+      locale: "es_CO",
+      type: "video.other", // Trata la ficha comercial como entidad enriquecida
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: `Ficha comercial de ${businessName} en Oasis`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seoTitle,
+      description: seoDescription,
+      images: [imageUrl],
     },
   };
 }
@@ -91,8 +122,49 @@ export default async function BusinessDetailPage({
     .filter((item) => item._id !== business._id)
     .slice(0, 4);
 
+  // 🚀 2. CREACIÓN DE DATOS ESTRUCTURADOS (JSON-LD LOCALBUSINESS)
+  // Esto le dice a Google con exactitud matemática qué hace el negocio, dónde está y su reputación
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": business.name,
+    "description": business.description || `Información de contacto de ${business.name}`,
+    "url": `https://oasis-directorio-ccg7.vercel.app/business/${slug}`,
+    "telephone": business.phone || business.whatsapp || "",
+    "priceRange": "$$",
+    "image": business.logo?.asset?.url || [],
+    ...(business.rating && {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": business.rating,
+        "reviewCount": "1", // Next step: hacerlo dinámico con los reviews reales
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    }),
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": normalized.addressLabel || "Dirección conocida",
+      "addressLocality": business.municipality?.name || "Antioquia",
+      "addressCountry": "CO"
+    },
+    ...(business.location?.lat && business.location?.lng && {
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": business.location.lat,
+        "longitude": business.location.lng
+      }
+    })
+  };
+
   return (
     <div>
+      {/* 🚀 Inyección del Script JSON-LD en el Head invisible de la página */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Header */}
       <header className="border-b border-border/50 bg-accent/30">
         <div className="container px-4 py-6 sm:py-10">
@@ -102,7 +174,7 @@ export default async function BusinessDetailPage({
               {business.logo?.asset ? (
                 <Image
                   src={urlFor(business.logo).width(240).height(240).url()}
-                  alt={business.logo.alt || business.name}
+                  alt={business.logo.alt || `Logo oficial de ${business.name}`}
                   fill
                   sizes="112px"
                   className="object-cover"
@@ -126,9 +198,12 @@ export default async function BusinessDetailPage({
                 )}
                 {business.isFeatured && <Badge>Destacado</Badge>}
               </div>
-              <h1 className="text-2xl font-bold font-heading sm:text-3xl md:text-5xl leading-tight">
+              
+              {/* h1 limpio y prioritario para los rastreadores semánticos */}
+              <h1 className="text-2xl font-bold font-heading sm:text-3xl md:text-5xl leading-tight text-foreground">
                 {business.name}
               </h1>
+              
               <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
                 <RatingStars rating={business.rating} />
                 {normalized.addressLabel && (
@@ -158,7 +233,7 @@ export default async function BusinessDetailPage({
       </header>
 
       {/* Body */}
-      <div className="container px-4 py-8 sm:py-10">
+      <main className="container px-4 py-8 sm:py-10">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
           {/* Main content */}
           <div className="space-y-8">
@@ -167,29 +242,29 @@ export default async function BusinessDetailPage({
               title={business.name}
             />
 
-            <section className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
-              <h2 className="text-xl sm:text-2xl font-bold font-heading">
-                Sobre el negocio
+            {/* Semantic <section> tags enhance text relevance architecture */}
+            <section aria-labelledby="about-heading" className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
+              <h2 id="about-heading" className="text-xl sm:text-2xl font-bold font-heading">
+                Sobre {business.name}
               </h2>
               <p className="mt-3 leading-7 text-muted-foreground text-sm sm:text-base">
-                {business.description || "Este negocio aún no tiene descripción."}
+                {business.description || `Encuentra los mejores productos y servicios de ${business.name} en nuestro directorio local actualizado.`}
               </p>
             </section>
 
-            <div className="h-80 w-full overflow-hidden rounded-2xl">
+            <section aria-label="Ubicación en el mapa" className="h-80 w-full overflow-hidden rounded-2xl">
               <Map
                 location={business.location}
                 title={business.name}
                 address={formatAddress(business.address)}
-                
               />
-            </div>
+            </section>
           </div>
 
           {/* Sidebar */}
           <aside className="space-y-5">
-            <section className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
-              <h2 className="mb-4 text-lg sm:text-xl font-bold font-heading">Contacto</h2>
+            <section aria-labelledby="contact-heading" className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
+              <h2 id="contact-heading" className="mb-4 text-lg sm:text-xl font-bold font-heading">Contacto Directo</h2>
               <div className="space-y-3">
                 {business.phone && (
                   <ContactLink href={`tel:${business.phone}`} icon={<Phone className="h-4 w-4" />}>
@@ -198,7 +273,7 @@ export default async function BusinessDetailPage({
                 )}
                 {business.website && (
                   <ContactLink href={business.website} icon={<Globe className="h-4 w-4" />} external>
-                    Sitio web
+                    Sitio web oficial
                   </ContactLink>
                 )}
                 {business.facebook && (
@@ -207,7 +282,7 @@ export default async function BusinessDetailPage({
                     icon={<SiFacebook className="h-4 w-4 text-[#1877F2]" />}
                     external
                   >
-                    Facebook
+                    Perfil de Facebook
                   </ContactLink>
                 )}
                 {business.instagram && (
@@ -216,7 +291,7 @@ export default async function BusinessDetailPage({
                     icon={<SiInstagram className="h-4 w-4 text-[#E4405F]" />}
                     external
                   >
-                    Instagram
+                    Perfil de Instagram
                   </ContactLink>
                 )}
               </div>
@@ -237,19 +312,19 @@ export default async function BusinessDetailPage({
 
         {/* Negocios relacionados */}
         {relatedBusinesses.length > 0 && (
-          <section className="mt-12 sm:mt-16">
+          <section aria-labelledby="related-heading" className="mt-12 sm:mt-16">
             <div className="mb-6 sm:mb-8 flex items-end justify-between gap-4">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold font-heading">
-                  Negocios relacionados
+                <h2 id="related-heading" className="text-xl sm:text-2xl font-bold font-heading">
+                  Otros establecimientos recomendados
                 </h2>
                 <p className="mt-1 sm:mt-2 text-sm text-muted-foreground">
-                  Más opciones en la misma zona o categoría.
+                  Más opciones similares en {business.municipality?.name || "la zona"}.
                 </p>
               </div>
               <Button variant="outline" size="sm" asChild>
                 <Link href={`/business?category=${categorySlug}&municipality=${municipalitySlug}`}>
-                  Ver más
+                  Ver todo
                 </Link>
               </Button>
             </div>
@@ -260,7 +335,7 @@ export default async function BusinessDetailPage({
             </div>
           </section>
         )}
-      </div>
+      </main>
 
       <WhatsAppButton
         phone={business.whatsapp}
@@ -287,7 +362,7 @@ function ContactLink({
       <a
         href={href}
         target={external ? "_blank" : undefined}
-        rel={external ? "noreferrer" : undefined}
+        rel={external ? "noopener noreferrer" : undefined} // 💡 Seguridad y mejora de rendimiento SEO
       >
         {icon}
         <span className="truncate flex-1 text-left">{children}</span>

@@ -1,3 +1,4 @@
+// @/app/business/page.tsx
 import {
   LayoutGrid,
   Map as MapIcon,
@@ -35,37 +36,45 @@ interface BusinessPageProps {
   searchParams: Promise<Record<string, string | undefined>>;
 }
 
-// 🚀 FUNCIÓN DE SEO DINÁMICA AVANZADA
+// 🚀 1. SEO METADATA DINÁMICO REFORZADO CONTRA CONTENIDO DUPLICADO
 export async function generateMetadata({ searchParams }: BusinessPageProps): Promise<Metadata> {
   const params = await searchParams;
   
-  // Extraemos los filtros actuales para armar frases ultra semánticas para Google
   const category = params.category ? decodeURIComponent(params.category) : "";
   const municipality = params.municipality ? decodeURIComponent(params.municipality) : "";
   const searchQuery = params.search ? decodeURIComponent(params.search) : "";
+  const page = params.page ? ` - Página ${params.page}` : "";
 
-  // 1. Construcción inteligente del título basado en lo que busca el usuario
-  let title = "Directorio de Negocios y Comercios Locales";
+  // Construcción de títulos comerciales de alto impacto local
+  let title = `Directorio de Negocios y Comercios Locales${page} | Oasis`;
   if (category && municipality) {
-    title = `${category} en ${municipality} | Directorio Comercial`;
+    title = `${category} en ${municipality} | Guía Comercial${page} | Oasis`;
   } else if (category) {
-    title = `${category} Locales | Guía Comercial`;
+    title = `${category} Locales | Guía de Comercios${page} | Oasis`;
   } else if (municipality) {
-    title = `Negocios y Comercios en ${municipality}`;
+    title = `Negocios, Tiendas y Comercios en ${municipality}${page} | Oasis`;
   } else if (searchQuery) {
-    title = `Resultados para "${searchQuery}" | Directorio de Negocios`;
+    title = `Buscar "${searchQuery}" | Directorio de Negocios | Oasis`;
   }
 
-  // 2. Construcción inteligente de la descripción para mejorar el CTR en Google
-  let description = "Explora el directorio comercial más completo. Encuentra restaurantes, servicios, hospedajes y comercios locales con opiniones y ubicaciones en tiempo real.";
+  let description = "Explora el directorio comercial y turístico más completo. Encuentra restaurantes, servicios profesionales, hospedajes y comercios locales con números de contacto y ubicación.";
   if (category || municipality) {
-    description = `¿Buscas ${category || "negocios"} en ${municipality || "tu región"}? Encuentra horarios, teléfonos, WhatsApp y ubicaciones en el mapa interactivo de Oasis.`;
+    description = `¿Buscas ${category || "establecimientos comerciales"} en ${municipality || "la región"}? Consulta los mejores lugares, horarios, teléfonos, WhatsApp y ubicaciones en el mapa interactivo de Oasis.`;
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://oasis-directorio-ccg7.vercel.app";
   
-  // 3. Crear una URL canónica limpia libre de desorden de ordenamientos secundarios
-  const canonicalUrl = `${baseUrl}/business${category ? `?category=${params.category}` : ""}${municipality ? `${category ? '&' : '?'}municipality=${params.municipality}` : ""}`;
+  // 💡 ESTRATEGIA CANÓNICA: Evitamos indexar strings basura generados por ordenamientos o filtros vacíos
+  const queryParts = [];
+  if (params.category) queryParts.push(`category=${params.category}`);
+  if (params.municipality) queryParts.push(`municipality=${params.municipality}`);
+  if (params.page && Number(params.page) > 1) queryParts.push(`page=${params.page}`);
+  
+  const canonicalUrl = `${baseUrl}/business${queryParts.length > 0 ? `?${queryParts.join('&')}` : ""}`;
+
+  // 💡 DIRECTIVA ROBOTS INTELIGENTE: Si el usuario usa filtros pesados de ordenación o búsquedas ultra específicas, 
+  // le permitimos rastrear (follow) pero no indexar (noindex) para no ensuciar el índice de Google.
+  const shouldIndex = !params.sort && !params.search && !params.minRating && !params.status;
 
   return {
     title,
@@ -73,22 +82,31 @@ export async function generateMetadata({ searchParams }: BusinessPageProps): Pro
     alternates: {
       canonical: canonicalUrl,
     },
+    robots: shouldIndex 
+      ? "index, follow" 
+      : "noindex, follow", // Evita que páginas clonadas con diferente orden nos quiten prioridad
     openGraph: {
-      title: `${title} | Oasis`,
+      title,
       description,
       url: canonicalUrl,
       type: "website",
+      siteName: "Oasis",
+      locale: "es_CO",
       images: [
         {
-          url: `${baseUrl}/og-directory.png`, // Recuerda crear esta imagen de portada general en tu carpeta public
+          url: `${baseUrl}/og-directory.png`, 
           width: 1200,
           height: 630,
-          alt: `Directorio Local Oasis - ${title}`,
+          alt: `Directorio Comercial Oasis - ${title}`,
         },
       ],
     },
-    // Evitamos que Google indexe páginas de ordenamiento duplicado o paginaciones profundas si no es necesario
-    robots: params.sort || params.page ? "index, follow" : "index, follow",
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${baseUrl}/og-directory.png`],
+    },
   };
 }
 
@@ -119,27 +137,69 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
     sanityFetch({ query: MUNICIPALITIES_LIST_QUERY }),
   ]);
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://oasis-directorio-ccg7.vercel.app";
+
+  // 🚀 2. ESQUEMAS DE DATOS ESTRUCTURADOS (JSON-LD)
+  // Esquema 1: Colección de elementos (Lista de comercios indexables)
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Listado de Comercios Registrados en Oasis",
+    "description": "Lista detallada de los mejores comercios locales indexados",
+    "url": `${baseUrl}/business`,
+    "numberOfItems": businesses.length,
+    "itemListElement": businesses.map((b, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": `${baseUrl}/business/${typeof b.slug === 'object' && b.slug?.current ? b.slug.current : b.slug || ""}`,
+      "name": b.name
+    }))
+  };
+
+  // Esquema 2: Buscador integrado directo para la caja de Google
+  const searchBoxSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": baseUrl,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `${baseUrl}/business?search={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <div className="bg-accent/20">
+      {/* Inyección de los dos Scripts JSON-LD en el HEAD semántico */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(searchBoxSchema) }}
+      />
+
       <header className="border-b border-border/50 bg-background">
         <div className="container py-10">
           <div className="mb-3 flex items-center gap-2 text-sm font-medium text-primary">
             <Store className="h-4 w-4" aria-hidden="true" />
-            Directorio
+            <span>Directorio Oficial</span>
           </div>
-          <h1 className="text-3xl font-bold font-heading md:text-4xl">
+          <h1 className="text-3xl font-bold font-heading md:text-4xl text-foreground">
             Negocios locales
           </h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            Filtra por categoria, municipio o disponibilidad y encuentra el
-            lugar que necesitas.
+            Filtra por categoría, municipio o disponibilidad en tiempo real y encuentra el
+            establecimiento o servicio que necesitas hoy mismo.
           </p>
         </div>
       </header>
 
-      <div className="container py-8">
+      <main className="container py-8">
         <div className="flex flex-col gap-8 lg:flex-row">
-          <div className="lg:w-80 lg:shrink-0">
+          {/* Barra de Filtros Lateral Semántica */}
+          <aside className="lg:w-80 lg:shrink-0" aria-label="Filtros de búsqueda">
             <div className="lg:sticky lg:top-24">
               <Suspense fallback={<Skeleton className="h-96 rounded-2xl" />}>
                 <BusinessFilters
@@ -148,9 +208,10 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
                 />
               </Suspense>
             </div>
-          </div>
+          </aside>
 
-          <section className="min-w-0 flex-1">
+          {/* Sección de resultados */}
+          <section className="min-w-0 flex-1" aria-label="Resultados del directorio">
             <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-border/50 bg-background p-4 shadow-warm md:flex-row md:items-center">
               <BusinessSearchBar />
               <div className="flex items-center gap-2 md:w-56">
@@ -170,14 +231,14 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
                     className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                   >
                     <LayoutGrid className="h-4 w-4" aria-hidden="true" />
-                    Grilla
+                    <span>Grilla</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="map"
                     className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                   >
                     <MapIcon className="h-4 w-4" aria-hidden="true" />
-                    Mapa
+                    <span>Vista en Mapa</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -206,18 +267,18 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
                   className="mx-auto mb-4 h-12 w-12 text-muted-foreground"
                   aria-hidden="true"
                 />
-                <h2 className="text-xl font-semibold font-heading">
+                <h2 className="text-xl font-semibold font-heading text-foreground">
                   No encontramos negocios
                 </h2>
                 <p className="mt-2 text-muted-foreground">
-                  Ajusta la busqueda o limpia los filtros para ver mas
-                  resultados.
+                  Ajusta la búsqueda o limpia los filtros para ver más
+                  resultados disponibles en la región.
                 </p>
               </div>
             )}
           </section>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
