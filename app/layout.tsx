@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SanityLive } from "@/lib/sanity/live";
+//@ts-ignore
 import "./globals.css";
 // import "leaflet/dist/leaflet.css"; // A
 

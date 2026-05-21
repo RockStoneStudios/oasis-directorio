@@ -8,7 +8,7 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { Heart, Home, LayoutDashboard, Menu, User, X, MapPin, Grid3x3, List, Newspaper } from "lucide-react";
+import { Heart, Home, LayoutDashboard, Menu, User, X, MapPin, Grid3x3, List, Newspaper, BadgeDollarSign, Radio, RadioIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -232,17 +232,17 @@ export function Navbar() {
                       onClick={() => setIsOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-[background-color] duration-200"
                     >
-                      <Newspaper className="h-5 w-5" aria-hidden="true" />
+                      <BadgeDollarSign className="h-6 w-5" aria-hidden="true" />
                        Donde retirar dinero?
                     </Link>
                     
                     <Link
-                      href="/clasificados"
+                      href="/estereo"
                       onClick={() => setIsOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent transition-[background-color] duration-200"
                     >
-                      <Newspaper className="h-5 w-5" aria-hidden="true" />
-                      Clasificados
+                      <RadioIcon className="h-5 w-5" aria-hidden="true" />
+                      Estereo
                     </Link>
 
                     <div className="h-px bg-border my-2" />

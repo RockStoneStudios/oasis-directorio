@@ -17,21 +17,33 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const currentPopupRef = useRef<mapboxgl.Popup | null>(null);
+
+  // Función para cerrar cualquier popup abierto
+  const closeAllPopups = () => {
+    if (currentPopupRef.current) {
+      currentPopupRef.current.remove();
+      currentPopupRef.current = null;
+    }
+  };
 
   // 1. Inicialización del Mapa con Perspectiva 3D
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    const defaultCenter: [number, number] = [-75.742410, 6.500957];
+    const defaultCenter: [number, number] = [6.500988,-75.742320 ];
+  
+
+
 
     try {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/streets-v12",
         center: defaultCenter,
-        zoom: 14.5,
-        pitch: 60,
-        bearing: -15,
+        zoom: 14,
+        pitch: 57,
+        bearing: -16,
         antialias: true
       });
 
@@ -82,6 +94,11 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
         );
       });
 
+      // Cerrar popup al hacer clic en el mapa
+      map.on('click', () => {
+        closeAllPopups();
+      });
+
     } catch (err) {
       console.error("❌ MAP ERROR - Error creando el objeto Mapbox:", err);
     }
@@ -108,6 +125,7 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
     // Limpiamos marcadores previos
     markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
+    closeAllPopups(); // Limpiar popups al cambiar filtros
 
     if (atms.length === 0) {
       console.log("⚠️ MAP LOG 4 - No llegaron cajeros a este useEffect. Arreglo vacío.");
@@ -122,7 +140,7 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
 
       try {
         const el = document.createElement("div");
-        el.className = "bg-emerald-600 text-white border-2 border-white rounded-full shadow-lg p-2 cursor-pointer flex items-center justify-center transition-transform hover:scale-110 z-50";
+        el.className = "bg-emerald-600 text-white border-2 border-white rounded-full shadow-lg p-2 cursor-pointer flex items-center justify-center";
         el.style.width = "38px";
         el.style.height = "38px";
         el.style.fontSize = "18px";
@@ -154,9 +172,9 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
               <!-- Dirección -->
               <div class="mb-2">
                 <p class="text-[12px] font-semibold text-gray-800 mb-0.5">📍 Ubicación</p>
-                <p class="text-xs text-gray-800">${atm.addressLabel || 'Dirección no especificada'}</p>
+                <p class="text-[12.5px] text-gray-800">${atm.addressLabel || 'Dirección no especificada'}</p>
                 ${atm.address?.directionDetails ? `
-                  <p class="text-[11.8px] text-gray-700 italic mt-0.5 flex items-start gap-1">
+                  <p class="text-[12.8px] text-gray-700 italic mt-0.5 flex items-start gap-1">
                     <span>📝</span>
                     <span>"${atm.address.directionDetails}"</span>
                   </p>
@@ -168,7 +186,7 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
                 <div class="mt-2 pt-2 border-t border-amber-100">
                   <div class="flex items-start gap-1.5">
                     <span class="text-amber-800 text-[12px]">💡</span>
-                    <div class="text-[12px] bg-amber-50 text-amber-900 p-2 rounded-lg border border-amber-100 italic flex-1">
+                    <div class="text-[12.4px] bg-amber-50 text-amber-900 p-2 rounded-lg border border-amber-100 italic flex-1">
                       ${atm.recommendation}
                     </div>
                   </div>
@@ -183,15 +201,29 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
           </div>
         `;
 
+        // Crear el popup
+        const popup = new mapboxgl.Popup({ 
+          offset: 25,
+          closeButton: true,
+          closeOnClick: false,
+          maxWidth: '280px',
+          className: 'custom-atm-popup'
+        }).setHTML(popupHTML);
+
+        // Evento de clic en el marcador - SIN ANIMACIONES
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          
+          // Cerrar cualquier popup abierto
+          closeAllPopups();
+          
+          // Abrir el nuevo popup
+          popup.setLngLat([lng, lat]).addTo(map);
+          currentPopupRef.current = popup;
+        });
+
         const marker = new mapboxgl.Marker(el)
           .setLngLat([lng, lat])
-          .setPopup(new mapboxgl.Popup({ 
-            offset: 25,
-            closeButton: true,
-            closeOnClick: false,
-            maxWidth: '280px',
-            className: 'custom-atm-popup'
-          }).setHTML(popupHTML))
           .addTo(map);
 
         markersRef.current.push(marker);
@@ -200,15 +232,21 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
       }
     });
 
-    // Movimiento de cámara
+    // Movimiento de cámara inicial (solo la primera vez)
     if (atms.length > 0 && atms[0].location?.lng && atms[0].location?.lat) {
       map.flyTo({
         center: [atms[0].location.lng, atms[0].location.lat],
-        zoom: 15.5,
-        pitch: 60,
+        zoom: 15.1,
+        pitch: 55,
+        duration: 2000,
         essential: true
       });
     }
+
+    // Cleanup al desmontar
+    return () => {
+      closeAllPopups();
+    };
 
   }, [atms]);
 
