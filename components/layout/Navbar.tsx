@@ -110,6 +110,7 @@ export function Navbar() {
         </div>
 
         {/* Desktop Actions */}
+        {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-2">
           {mounted && (
             <>
@@ -160,6 +161,7 @@ export function Navbar() {
                   />
                 </div>
               </SignedIn>
+
               <SignedOut>
                 <SignInButton mode="modal">
                   <Button variant="ghost" size="sm">

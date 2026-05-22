@@ -277,7 +277,7 @@ export default async function CategoriasPage() {
             <Store className="h-5 w-5" aria-hidden="true" />
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight font-heading sm:text-5xl md:text-6xl text-foreground">
-            Explora por <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Categorías</span>
+            Explora por <span className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent">Categorías</span>
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
             ¿Buscas dónde comer, un hotel con piscina o un servicio confiable en el Occidente? Selecciona un sector y descubre locales recomendados en la región.
