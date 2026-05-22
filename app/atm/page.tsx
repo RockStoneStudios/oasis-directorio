@@ -4,13 +4,28 @@
 import { useState, useEffect } from 'react';
 import { client } from "@/lib/sanity/client"; 
 import { DynamicAtmMapView } from "@/components/map/DynamicAtmMapView"; 
-import { Landmark, CreditCard, MapPin } from "lucide-react";
+import { Landmark, CreditCard, MapPin, Club, Coins } from "lucide-react";
 
 const BANK_ICONS: Record<string, any> = {
   "bancolombia": CreditCard,
   "davivienda": Landmark,
   "banco_de_bogota": Landmark,
-  "corresponsal": Landmark, 
+  "corresponsal": Landmark,
+  "gana": Club
+};
+
+// 🎨 Colores base para cada banco (SIEMPRE visibles)
+const BANK_BASE_COLORS: Record<string, string> = {
+  "bancolombia": "bg-yellow-800 text-white hover:bg-yellow-700",
+  "gana": "bg-green-600 text-white hover:bg-green-500",
+  "default": "bg-emerald-600 text-white hover:bg-emerald-500"
+};
+
+// 🎨 Colores cuando NO están seleccionados
+const BANK_UNSELECTED_COLORS: Record<string, string> = {
+  "bancolombia": "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
+  "gana": "bg-green-100 text-green-700 hover:bg-green-200",
+  "default": "bg-muted text-muted-foreground hover:bg-muted/80"
 };
 
 async function getAtms() {
@@ -60,7 +75,6 @@ export default function AtmMapaPage() {
         }));
 
         setAllAtms(adaptedAtms);
-        // 🚀 PASA DIRECTO: Ya no filtramos por distancia al arrancar, muestra todo lo que traiga Sanity
         setFilteredAtms(adaptedAtms);
       } catch (error) {
         console.error("Error cargando cajeros para el mapa:", error);
@@ -71,7 +85,6 @@ export default function AtmMapaPage() {
     fetchMapData();
   }, []);
 
-  // Función optimizada: Ahora solo filtra por banco
   const applyFilters = (bank: string | null) => {
     let result = [...allAtms];
 
@@ -81,7 +94,6 @@ export default function AtmMapaPage() {
       );
     }
 
-    // 🚀 La distancia ya no interviene para nada aquí
     setFilteredAtms(result);
   };
 
@@ -91,9 +103,21 @@ export default function AtmMapaPage() {
     applyFilters(nextBank);
   };
 
-  // Los botones de distancia ahora son puramente estéticos por el momento
   const handleRadiusSelect = (radiusKm: number | null) => {
     setSelectedRadius(radiusKm);
+  };
+
+  // Función para obtener el color del botón (seleccionado o no)
+  const getButtonColor = (bank: string, isSelected: boolean) => {
+    const bankKey = bank.toLowerCase();
+    
+    if (isSelected) {
+      // Cuando está seleccionado: colores fuertes
+      return BANK_BASE_COLORS[bankKey] || BANK_BASE_COLORS.default;
+    } else {
+      // Cuando NO está seleccionado: colores suaves pero distintivos
+      return BANK_UNSELECTED_COLORS[bankKey] || "bg-muted text-muted-foreground hover:bg-muted/80";
+    }
   };
 
   const banksAvailable = Array.from(
@@ -122,7 +146,7 @@ export default function AtmMapaPage() {
                 <button
                   onClick={() => { setSelectedBank(null); applyFilters(null); }}
                   className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                    selectedBank === null ? "bg-emerald-600 text-white shadow-sm" : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    selectedBank === null ? "bg-emerald-600 text-white shadow-sm" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}
                 >
                   Todos
@@ -130,12 +154,14 @@ export default function AtmMapaPage() {
                 {banksAvailable.map((bank) => {
                   const isSelected = selectedBank === bank;
                   const IconComponent = BANK_ICONS[bank.toLowerCase()] || Landmark;
+                  const buttonColor = getButtonColor(bank, isSelected);
                   
                   const bankLabels: Record<string, string> = {
                     bancolombia: "Bancolombia",
                     davivienda: "Davivienda",
                     banco_de_bogota: "Banco de Bogotá",
-                    corresponsal: "Efecty / Gana"
+                    corresponsal: "Efecty / Gana",
+                    gana: "Gana Colombia"
                   };
 
                   return (
@@ -143,8 +169,8 @@ export default function AtmMapaPage() {
                       key={bank}
                       onClick={() => handleBankSelect(bank)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                        isSelected ? "bg-emerald-600 text-white shadow-sm scale-105" : "bg-muted text-muted-foreground hover:bg-muted/80"
-                      }`}
+                        buttonColor
+                      } ${isSelected ? "shadow-sm scale-105 ring-2 ring-offset-1 ring-emerald-400" : ""}`}
                     >
                       <IconComponent className="h-3.5 w-3.5" />
                       {bankLabels[bank.toLowerCase()] || bank}

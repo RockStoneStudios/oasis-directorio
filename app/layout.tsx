@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { SanityLive } from "@/lib/sanity/live";
 //@ts-ignore
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 // import "leaflet/dist/leaflet.css"; // A
 
 // Body font - highly readable
@@ -43,6 +44,8 @@ export const metadata: Metadata = {
 
     keywords: [
     "directorio local",
+    "occidente",
+    "occidente antioqeño",
     "negocios",
     "municipios",
     "eventos",
@@ -107,8 +110,16 @@ export default function RootLayout({
           <a href="#main" className="skip-link">
             Saltar al contenido principal
           </a>
-          
+          <ThemeProvider
+            attribute="class"       // Usa una clase CSS para el tema
+            defaultTheme="system"  // Tema inicial: 'system', 'light' o 'dark'
+            enableSystem           // Habilita la detección del tema del sistema
+            disableTransitionOnChange // Evita transiciones al cambiar de tema
+        >
           {children}
+        </ThemeProvider>
+          
+        
           
           <Toaster />
           <SanityLive />

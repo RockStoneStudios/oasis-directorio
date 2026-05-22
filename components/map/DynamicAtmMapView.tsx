@@ -13,6 +13,77 @@ interface DynamicAtmMapViewProps {
   atms: any[];
 }
 
+// 🎨 Colores específicos para cada banco
+const BANK_COLORS: Record<string, {
+  marker: string;
+  header: string;
+  headerGradient: string;
+  accent: string;
+  border: string;
+  hintBg: string;
+  hintText: string;
+  hintBorder: string;
+}> = {
+  "bancolombia": {
+    marker: "bg-yellow-600",
+    header: "bg-yellow-700",
+    headerGradient: "from-yellow-600 to-yellow-700",
+    accent: "text-yellow-600",
+    border: "border-yellow-200",
+    hintBg: "bg-yellow-50",
+    hintText: "text-yellow-800",
+    hintBorder: "border-yellow-100"
+  },
+  "gana": {
+    marker: "bg-green-600",
+    header: "bg-green-600",
+    headerGradient: "from-green-600 to-green-700",
+    accent: "text-green-600",
+    border: "border-green-200",
+    hintBg: "bg-green-50",
+    hintText: "text-green-800",
+    hintBorder: "border-green-100"
+  },
+  "default": {
+    marker: "bg-emerald-600",
+    header: "bg-emerald-600",
+    headerGradient: "from-emerald-600 to-emerald-700",
+    accent: "text-emerald-600",
+    border: "border-emerald-200",
+    hintBg: "bg-emerald-50",
+    hintText: "text-emerald-800",
+    hintBorder: "border-emerald-100"
+  }
+};
+
+// 📝 Textos de recomendación específicos por banco
+const getBankHint = (bankName: string, defaultRecommendation?: string) => {
+  const bankKey = bankName?.toLowerCase();
+  
+  if (bankKey === "bancolombia") {
+    return "Ideal para retiros rápidos, sin necesidad de ingresar al parque principal.";
+  }
+  if (bankKey === "gana") {
+    return "Ideal para chance, apuestas, retiros y pagos de servicios, sin necesidad de ingresar al parque principal.";
+  }
+  
+  return defaultRecommendation || "Cajero disponible las 24 horas";
+};
+
+// 🏷️ Texto del subtítulo por banco
+const getBankSubtitle = (bankName: string) => {
+  const bankKey = bankName?.toLowerCase();
+  
+  if (bankKey === "bancolombia") {
+    return "Cajero Bancolombia";
+  }
+  if (bankKey === "gana") {
+    return "Gana Colombia";
+  }
+  
+  return "Cajero Automático";
+};
+
 function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -31,10 +102,7 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    const defaultCenter: [number, number] = [6.500988,-75.742320 ];
-  
-
-
+    const defaultCenter: [number, number] = [6.500988, -75.742320];
 
     try {
       const map = new mapboxgl.Map({
@@ -112,7 +180,7 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
     };
   }, []);
 
-  // 2. Renderizado de Marcadores con POPUPS MEJORADOS
+  // 2. Renderizado de Marcadores con POPUPS MEJORADOS Y COLORES POR BANCO
   useEffect(() => {
     const map = mapRef.current;
     if (!map) {
@@ -125,37 +193,44 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
     // Limpiamos marcadores previos
     markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
-    closeAllPopups(); // Limpiar popups al cambiar filtros
+    closeAllPopups();
 
     if (atms.length === 0) {
       console.log("⚠️ MAP LOG 4 - No llegaron cajeros a este useEffect. Arreglo vacío.");
       return;
     }
 
-    atms.forEach((atm, index) => {
+    atms.forEach((atm) => {
       const lng = atm.location?.lng;
       const lat = atm.location?.lat;
 
       if (!lng || !lat) return;
 
       try {
+        // 🎨 Obtener colores según el banco
+        const bankKey = atm.bankName?.toLowerCase();
+        const colors = BANK_COLORS[bankKey] || BANK_COLORS.default;
+        const bankHint = getBankHint(atm.bankName, atm.recommendation);
+        const bankSubtitle = getBankSubtitle(atm.bankName);
+
+        // 🎨 Crear elemento del marcador con color personalizado
         const el = document.createElement("div");
-        el.className = "bg-emerald-600 text-white border-2 border-white rounded-full shadow-lg p-2 cursor-pointer flex items-center justify-center";
+        el.className = `${colors.marker} text-white border-2 border-white rounded-full shadow-lg p-2 cursor-pointer flex items-center justify-center`;
         el.style.width = "38px";
         el.style.height = "38px";
         el.style.fontSize = "18px";
         el.innerHTML = "🏧";
 
-        // 🎯 POPUP CON TÍTULO MEJORADO
+        // 🎯 POPUP CON COLORES SEGÚN EL BANCO
         const popupHTML = `
-          <div class="p-0 font-sans min-w-[240px] max-w-[280px]">
-            <!-- HEADER CON TÍTULO -->
-            <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-t-lg px-3 py-2">
+          <div class="p-0 font-sans min-w-60 max-w-70">
+            <!-- HEADER CON TÍTULO (color según banco) -->
+            <div class="bg-linear-to-r ${colors.headerGradient} text-white rounded-t-lg px-3 py-2">
               <div class="flex items-center gap-2">
                 <span class="text-lg">🏧</span>
                 <div>
                   <h3 class="font-bold text-sm leading-tight">${atm.name}</h3>
-                  <p class="text-[10px] text-emerald-100 opacity-90">Cajero Automático</p>
+                  <p class="text-[10px] text-white/90 opacity-90">${bankSubtitle}</p>
                 </div>
               </div>
             </div>
@@ -181,21 +256,19 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
                 ` : ''}
               </div>
               
-              <!-- Recomendación -->
-              ${atm.recommendation ? `
-                <div class="mt-2 pt-2 border-t border-amber-100">
-                  <div class="flex items-start gap-1.5">
-                    <span class="text-amber-800 text-[12px]">💡</span>
-                    <div class="text-[12.4px] bg-amber-50 text-amber-900 p-2 rounded-lg border border-amber-100 italic flex-1">
-                      ${atm.recommendation}
-                    </div>
+              <!-- Recomendación/Hint específico del banco -->
+              <div class="mt-2 pt-2 border-t ${colors.border}">
+                <div class="flex items-start gap-1.5">
+                  <span class="${colors.accent} text-xs">💡</span>
+                  <div class="text-[12.4px] ${colors.hintBg} ${colors.hintText} p-2 rounded-lg border ${colors.hintBorder} italic flex-1">
+                    ${bankHint}
                   </div>
                 </div>
-              ` : ''}
+              </div>
               
               <!-- Footer -->
               <div class="mt-2 pt-1 text-[9px] text-gray-400 text-center border-t border-gray-100">
-                Banco ${atm.bankName || 'No especificado'}
+                ${atm.bankName || 'Banco no especificado'}
               </div>
             </div>
           </div>
@@ -210,14 +283,10 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
           className: 'custom-atm-popup'
         }).setHTML(popupHTML);
 
-        // Evento de clic en el marcador - SIN ANIMACIONES
+        // Evento de clic en el marcador
         el.addEventListener('click', (e) => {
           e.stopPropagation();
-          
-          // Cerrar cualquier popup abierto
           closeAllPopups();
-          
-          // Abrir el nuevo popup
           popup.setLngLat([lng, lat]).addTo(map);
           currentPopupRef.current = popup;
         });
@@ -232,7 +301,7 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
       }
     });
 
-    // Movimiento de cámara inicial (solo la primera vez)
+    // Movimiento de cámara inicial
     if (atms.length > 0 && atms[0].location?.lng && atms[0].location?.lat) {
       map.flyTo({
         center: [atms[0].location.lng, atms[0].location.lat],
@@ -243,7 +312,6 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
       });
     }
 
-    // Cleanup al desmontar
     return () => {
       closeAllPopups();
     };
@@ -252,7 +320,7 @@ function AtmMapViewComponent({ atms }: DynamicAtmMapViewProps) {
 
   return (
     <div className="w-full h-full relative">
-      <div ref={mapContainerRef} className="absolute inset-0 w-full h-full min-h-[400px]" />
+      <div ref={mapContainerRef} className="absolute inset-0 w-full h-full min-h-100" />
       
       {/* Estilos globales para los popups */}
       <style jsx global>{`

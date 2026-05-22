@@ -94,7 +94,7 @@ export async function generateMetadata({ searchParams }: BusinessPageProps): Pro
       locale: "es_CO",
       images: [
         {
-          url: `${baseUrl}/og-directory.png`, 
+          url: `${baseUrl}/oasis.png`, 
           width: 1200,
           height: 630,
           alt: `Directorio Comercial Oasis - ${title}`,

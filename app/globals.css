@@ -64,54 +64,40 @@
   --radius: 0.75rem;
 
   /* Earth Tone Color Palette - Light Mode */
-  /* Background: Warm Cream */
   --background: oklch(0.98 0.01 90);
-  /* Foreground: Deep Espresso */
   --foreground: oklch(0.25 0.02 50);
 
-  /* Cards: Slightly warmer white */
   --card: oklch(0.995 0.005 90);
   --card-foreground: oklch(0.25 0.02 50);
 
-  /* Popover */
   --popover: oklch(0.995 0.005 90);
   --popover-foreground: oklch(0.25 0.02 50);
 
-  /* Primary: Terracotta */
   --primary: oklch(0.55 0.12 35);
   --primary-foreground: oklch(0.98 0.01 90);
 
-  /* Secondary: Sage Green */
   --secondary: oklch(0.65 0.08 145);
   --secondary-foreground: oklch(0.25 0.02 50);
 
-  /* Muted: Soft Clay */
   --muted: oklch(0.94 0.015 80);
   --muted-foreground: oklch(0.45 0.02 50);
 
-  /* Accent: Warm highlight */
   --accent: oklch(0.92 0.02 55);
   --accent-foreground: oklch(0.25 0.02 50);
 
-  /* Destructive: Warm red */
   --destructive: oklch(0.55 0.2 25);
-
-  /* Success: Forest green */
   --success: oklch(0.45 0.1 160);
 
-  /* Borders: Stone gray */
   --border: oklch(0.88 0.015 80);
   --input: oklch(0.88 0.015 80);
   --ring: oklch(0.55 0.12 35);
 
-  /* Chart colors - earth tones */
-  --chart-1: oklch(0.55 0.12 35); /* Terracotta */
-  --chart-2: oklch(0.65 0.08 145); /* Sage */
-  --chart-3: oklch(0.45 0.1 160); /* Forest */
-  --chart-4: oklch(0.75 0.08 55); /* Clay */
-  --chart-5: oklch(0.7 0.02 80); /* Stone */
+  --chart-1: oklch(0.55 0.12 35);
+  --chart-2: oklch(0.65 0.08 145);
+  --chart-3: oklch(0.45 0.1 160);
+  --chart-4: oklch(0.75 0.08 55);
+  --chart-5: oklch(0.7 0.02 80);
 
-  /* Sidebar - Warm cream */
   --sidebar: oklch(0.96 0.01 85);
   --sidebar-foreground: oklch(0.25 0.02 50);
   --sidebar-primary: oklch(0.55 0.12 35);
@@ -122,65 +108,69 @@
   --sidebar-ring: oklch(0.55 0.12 35);
 }
 
-/* Dark Mode - Warm Charcoal */
+/* ============================================
+   DARK MODE - MÁS OSCURO (Negro puro / casi negro)
+   ============================================ */
 .dark {
   color-scheme: dark;
 
-  /* Background: Warm charcoal */
-  --background: oklch(0.18 0.015 50);
-  /* Foreground: Warm cream */
-  --foreground: oklch(0.94 0.01 85);
+  /* 🔥 CAMBIOS PRINCIPALES: Fondos mucho más oscuros */
+  
+  /* Background: Negro puro o casi negro */
+  --background: #050508;        /* Negro absoluto */
+  /* Alternativa: #0a0a0a para un negro más suave */
+  
+  /* Foreground: Blanco puro para contraste */
+  --foreground: #ffffff;
 
-  /* Cards */
-  --card: oklch(0.22 0.015 50);
-  --card-foreground: oklch(0.94 0.01 85);
+  /* Cards: Negro con leve toque de brillo */
+  --card: #0a0a0a;
+  --card-foreground: #ededed;
 
   /* Popover */
-  --popover: oklch(0.22 0.015 50);
-  --popover-foreground: oklch(0.94 0.01 85);
+  --popover: #0a0a0a;
+  --popover-foreground: #ededed;
 
-  /* Primary: Lighter terracotta for dark mode */
+  /* Primary: Terracota más vibrante para destacar */
   --primary: oklch(0.65 0.12 35);
-  --primary-foreground: oklch(0.18 0.015 50);
+  --primary-foreground: #000000;
 
-  /* Secondary: Lighter sage */
+  /* Secondary: Sage más claro */
   --secondary: oklch(0.55 0.08 145);
-  --secondary-foreground: oklch(0.94 0.01 85);
+  --secondary-foreground: #ffffff;
 
-  /* Muted */
-  --muted: oklch(0.28 0.015 50);
-  --muted-foreground: oklch(0.65 0.01 80);
+  /* Muted: Fondos secundarios */
+  --muted: #111111;
+  --muted-foreground: #a3a3a3;
 
   /* Accent */
-  --accent: oklch(0.3 0.02 55);
-  --accent-foreground: oklch(0.94 0.01 85);
+  --accent: #1a1a1a;
+  --accent-foreground: #ededed;
 
-  /* Destructive */
+  /* Destructive / Success */
   --destructive: oklch(0.65 0.18 25);
-
-  /* Success */
   --success: oklch(0.55 0.1 160);
 
-  /* Borders */
-  --border: oklch(0.32 0.015 50);
-  --input: oklch(0.32 0.015 50);
+  /* Borders: Muy sutiles */
+  --border: #1f1f1f;
+  --input: #1f1f1f;
   --ring: oklch(0.65 0.12 35);
 
-  /* Chart colors - adjusted for dark */
+  /* Chart colors */
   --chart-1: oklch(0.65 0.12 35);
   --chart-2: oklch(0.55 0.08 145);
   --chart-3: oklch(0.55 0.1 160);
   --chart-4: oklch(0.65 0.08 55);
   --chart-5: oklch(0.6 0.02 80);
 
-  /* Sidebar */
-  --sidebar: oklch(0.2 0.015 50);
-  --sidebar-foreground: oklch(0.94 0.01 85);
+  /* Sidebar - También más oscuro */
+  --sidebar: #050505;
+  --sidebar-foreground: #ededed;
   --sidebar-primary: oklch(0.65 0.12 35);
-  --sidebar-primary-foreground: oklch(0.18 0.015 50);
-  --sidebar-accent: oklch(0.28 0.02 55);
-  --sidebar-accent-foreground: oklch(0.94 0.01 85);
-  --sidebar-border: oklch(0.32 0.015 50);
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #111111;
+  --sidebar-accent-foreground: #ededed;
+  --sidebar-border: #1f1f1f;
   --sidebar-ring: oklch(0.65 0.12 35);
 }
 
@@ -204,7 +194,6 @@
       "calt" 1;
   }
 
-  /* Balanced headings - prevent widows */
   h1,
   h2,
   h3,
@@ -214,12 +203,10 @@
     text-wrap: balance;
   }
 
-  /* Tabular numbers for data */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
 
-  /* Container with proper max-width and padding */
   .container {
     width: 100%;
     margin-left: auto;
@@ -248,7 +235,6 @@
    Accessibility
    ============================================ */
 
-/* Skip link for keyboard navigation */
 .skip-link {
   @apply absolute left-4 z-[100] rounded-md px-4 py-2 font-medium;
   @apply bg-primary text-primary-foreground;
@@ -261,7 +247,6 @@
   top: 1rem;
 }
 
-/* Screen reader only */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -278,7 +263,6 @@
    Motion & Animation Preferences
    ============================================ */
 
-/* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -294,7 +278,6 @@
    Touch & Interaction
    ============================================ */
 
-/* Prevent double-tap zoom delay on mobile */
 button,
 a,
 [role="button"],
@@ -304,7 +287,6 @@ input[type="button"] {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Contain overscroll in modals/sheets */
 .overscroll-contain {
   overscroll-behavior: contain;
 }
@@ -313,13 +295,11 @@ input[type="button"] {
    Typography Utilities
    ============================================ */
 
-/* Heading font */
 .font-heading {
   font-family:
     var(--font-plus-jakarta), var(--font-inter), system-ui, sans-serif;
 }
 
-/* Body font */
 .font-body {
   font-family: var(--font-inter), system-ui, sans-serif;
 }
@@ -328,7 +308,6 @@ input[type="button"] {
    Component Utilities
    ============================================ */
 
-/* Warm shadow for cards */
 .shadow-warm {
   box-shadow:
     0 1px 3px 0 oklch(0.55 0.05 35 / 0.08),
@@ -347,7 +326,6 @@ input[type="button"] {
     0 4px 6px -4px oklch(0.55 0.05 35 / 0.08);
 }
 
-/* Hover lift effect */
 .hover-lift {
   transition:
     transform 0.2s ease-out,
@@ -358,7 +336,6 @@ input[type="button"] {
   transform: translateY(-4px);
 }
 
-/* Button press effect */
 .press-effect:active {
   transform: scale(0.98);
 }

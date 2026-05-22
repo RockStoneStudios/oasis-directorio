@@ -8,7 +8,7 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { Heart, Home, LayoutDashboard, Menu, User, X, MapPin, Grid3x3, List, Newspaper, BadgeDollarSign, Radio, RadioIcon } from "lucide-react";
+import { Heart, Home, LayoutDashboard, Menu, User, X, MapPin, Grid3x3, List, Newspaper, BadgeDollarSign, Radio, RadioIcon, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -20,26 +20,34 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
 
-  // 🚀 Forzamos a que el cliente se sincronice antes de renderizar elementos interactivos como Radix/Clerk
+  // 🚀 Forzamos a que el cliente se sincronice antes de renderizar elementos interactivos
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Disable sticky header on pricing page to prevent z-index conflicts with Clerk's PricingTable
+  // Disable sticky header on pricing page to prevent z-index conflicts
   const isPricingPage = pathname === "/pricing";
+
+  // Función para alternar el tema
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   return (
     <header
       className={
         isPricingPage
           ? "w-full border-b border-border/50 bg-background"
-          : "sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
+          : "sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80"
       }
     >
       <div className="container flex h-16 items-center justify-between">
@@ -49,15 +57,15 @@ export function Navbar() {
             href="/"
             className="flex items-center gap-2.5 transition-opacity duration-200 hover:opacity-80"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <Home
-                className="h-5 w-5 text-primary-foreground"
-                aria-hidden="true"
+            <div className="flex h-28 w-30 items-center justify-center rounded-lg overflow-hidden mt-5">
+              <Image
+                src="/oasis.png"
+                width={140}
+                height={140}
+                alt="Logo Oasis"
+                className="shadow-md object-cover"
               />
             </div>
-            <span className="text-xl font-bold font-heading tracking-tight">
-              Oasis
-            </span>
           </Link>
 
           <nav
@@ -66,7 +74,7 @@ export function Navbar() {
           >
             <Link
               href="/business"
-              className="px-4 py-2 text-sm font-medium text-muted-foreground rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
+              className="px-4 py-2 text-sm font-medium text-white rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
             >
               Negocios
             </Link>
@@ -76,7 +84,7 @@ export function Navbar() {
                 fallback={
                   <Link
                     href="/pricing"
-                    className="px-4 py-2 text-sm font-medium text-muted-foreground rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
+                    className="px-4 py-2 text-sm font-medium text-white rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
                   >
                     Registrar negocio
                   </Link>
@@ -84,7 +92,7 @@ export function Navbar() {
               >
                 <Link
                   href="/dashboard"
-                  className="px-4 py-2 text-sm font-medium text-muted-foreground rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
+                  className="px-4 py-2 text-sm font-medium text-white rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
                 >
                   Dashboard
                 </Link>
@@ -105,6 +113,19 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           {mounted && (
             <>
+              {/* 🌓 Theme Toggle - Desktop */}
+              <button
+                onClick={toggleTheme}
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
+                aria-label="Cambiar tema"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <Moon className="h-5 w-5" aria-hidden="true" />
+                )}
+              </button>
+
               <SignedIn>
                 <Link
                   href="/saved"
@@ -155,9 +176,21 @@ export function Navbar() {
 
         {/* Mobile Menu */}
         <div className="flex md:hidden items-center gap-2">
-          {/* Solo renderizamos el set interactivo móvil si el cliente ya está montado */}
           {mounted ? (
             <>
+              {/* 🌓 Theme Toggle - Mobile (icono antes del UserButton) */}
+              <button
+                onClick={toggleTheme}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
+                aria-label="Cambiar tema"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <Moon className="h-4 w-4" aria-hidden="true" />
+                )}
+              </button>
+
               <SignedIn>
                 <UserButton
                   appearance={{
@@ -187,14 +220,29 @@ export function Navbar() {
                   className="w-75 sm:w-87.5 overscroll-contain"
                 >
                   <SheetHeader>
-                    <SheetTitle className="flex items-center gap-2">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                        <Home
-                          className="h-4 w-4 text-primary-foreground"
-                          aria-hidden="true"
-                        />
+                    <SheetTitle className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                          <Home
+                            className="h-4 w-4 text-primary-foreground"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <span className="font-heading">Oasis</span>
                       </div>
-                      <span className="font-heading">Oasis</span>
+                      
+                      {/* 🌓 Theme Toggle dentro del menú móvil */}
+                      <button
+                        onClick={toggleTheme}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
+                        aria-label="Cambiar tema"
+                      >
+                        {theme === "dark" ? (
+                          <Sun className="h-4 w-4" aria-hidden="true" />
+                        ) : (
+                          <Moon className="h-4 w-4" aria-hidden="true" />
+                        )}
+                      </button>
                     </SheetTitle>
                   </SheetHeader>
                   <nav
@@ -335,7 +383,6 @@ export function Navbar() {
               </Sheet>
             </>
           ) : (
-            // Esqueleto visual idéntico para evitar saltos layout mientras hidrata el servidor
             <div className="w-8 h-8 rounded-lg bg-muted animate-pulse" />
           )}
         </div>

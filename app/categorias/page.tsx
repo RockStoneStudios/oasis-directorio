@@ -216,7 +216,7 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: "es_CO",
       images: [
         {
-          url: `${baseUrl}/og-categories.png`,
+          url: `${baseUrl}/oasis.png`,
           width: 1200,
           height: 630,
           alt: "Directorio de Negocios en el Occidente Antioqueño - Oasis",
@@ -262,7 +262,7 @@ export default async function CategoriasPage() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-accent/10 via-background to-background min-h-screen">
+    <div className="bg-linear-to-b from-accent/10 via-background to-background min-h-screen">
       {/* Inyección Semántica en el Head para los robots de Google */}
       <script
         type="application/ld+json"
