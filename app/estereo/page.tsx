@@ -1,8 +1,9 @@
-// app/radio/page.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, Volume2, VolumeX, Radio, Heart, Share2, SkipBack, SkipForward, Repeat, Music, Headphones } from 'lucide-react';
+// 👇 Importamos el hook para leer el tema activo
+import { useTheme } from 'next-themes';
 
 export default function RadioPlayerPage() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -11,6 +12,9 @@ export default function RadioPlayerPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // 👇 Obtenemos el tema del sistema/usuario
+  const { resolvedTheme } = useTheme();
 
   const streamUrl = "https://radio25.virtualtronics.com:20029/;";
 
@@ -84,25 +88,25 @@ export default function RadioPlayerPage() {
 
   if (!isMounted) {
     return (
-      <div className="min-h-screen bg-[#e0e5ec] flex items-center justify-center">
+      <div className="min-h-screen bg-[#e0e5ec] dark:bg-[#1a1f26] flex items-center justify-center">
         <div className="w-12 h-12 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#e0e5ec] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#e0e5ec] dark:bg-[#181926] flex items-center justify-center p-4 transition-colors duration-300">
       
-      {/* Contenedor principal estilo neumorfismo */}
+      {/* Contenedor principal */}
       <div className="w-full max-w-md">
         
-        {/* Tarjeta principal neumórfica */}
-        <div className="bg-[#e0e5ec] rounded-[40px] p-8 shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)]">
+        {/* Tarjeta principal neumórfica adaptada a Dark Mode */}
+        <div className="bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-[40px] p-8 shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] transition-all duration-300">
           
           {/* Header con círculo neumórfico */}
           <div className="flex justify-center mb-8">
-            <div className="w-32 h-32 rounded-full bg-[#e0e5ec] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5),inset_0px_0px_0px_rgba(163,177,198,0.2)] flex items-center justify-center">
-              <div className={`w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-orange-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.6),inset_-2px_-2px_5px_rgba(255,255,255,0.5)] flex items-center justify-center ${isPlaying ? 'animate-spin-slow' : ''}`}>
+            <div className="w-32 h-32 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] flex items-center justify-center">
+              <div className={`w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-orange-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.6),inset_-2px_-2px_5px_rgba(255,255,255,0.5)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center ${isPlaying ? 'animate-spin-slow' : ''}`}>
                 <Radio className="w-10 h-10 text-white" />
               </div>
             </div>
@@ -110,19 +114,19 @@ export default function RadioPlayerPage() {
 
           {/* Información del artista/radio */}
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-1 tracking-tight">{stationInfo.name}</h2>
-            <p className="text-sm text-gray-500">{stationInfo.frequency} • {stationInfo.location}</p>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100 mb-1 tracking-tight">{stationInfo.name}</h2>
+            <p className="text-sm text-gray-500 dark:text-slate-400">{stationInfo.frequency} • {stationInfo.location}</p>
           </div>
 
           {/* Barra de progreso neumórfica */}
           <div className="mb-6">
-            <div className="flex justify-between text-xs text-gray-500 mb-2">
+            <div className="flex justify-between text-xs text-gray-500 dark:text-slate-400 mb-2">
               <span>{isPlaying ? 'LIVE' : '0:00'}</span>
               <span className="text-orange-500 font-mono">● STREAMING</span>
               <span>3:45</span>
             </div>
             <div className="relative">
-              <div className="h-2 bg-[#e0e5ec] rounded-full shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] overflow-hidden">
+              <div className="h-2 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-full shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8),inset_-3px_-3px_6px_rgba(35,43,53,0.5)] overflow-hidden">
                 <div 
                   className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500"
                   style={{ width: isPlaying ? '70%' : '0%' }}
@@ -133,47 +137,47 @@ export default function RadioPlayerPage() {
 
           {/* Controles principales neumórficos */}
           <div className="flex items-center justify-center gap-6 mb-6">
-            <button className="w-12 h-12 rounded-full bg-[#e0e5ec] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all flex items-center justify-center">
-              <SkipBack className="w-5 h-5 text-gray-700" />
+            <button className="w-12 h-12 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-center group">
+              <SkipBack className="w-5 h-5 text-gray-700 dark:text-slate-300 group-hover:scale-105 transition-transform" />
             </button>
             
             <button
               onClick={togglePlay}
-              className="w-20 h-20 rounded-full bg-[#e0e5ec] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5),inset_0px_0px_0px_rgba(163,177,198,0.2)] hover:shadow-[inset_5px_5px_10px_rgba(163,177,198,0.6),inset_-5px_-5px_10px_rgba(255,255,255,0.5)] transition-all flex items-center justify-center"
+              className="w-20 h-20 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] hover:shadow-[inset_5px_5px_10px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_5px_5px_10px_rgba(15,18,22,0.8)] transition-all flex items-center justify-center"
             >
               {isPlaying ? (
-                <Pause className="w-8 h-8 text-gray-700" />
+                <Pause className="w-8 h-8 text-gray-700 dark:text-slate-200" />
               ) : (
-                <Play className="w-8 h-8 ml-1 text-gray-700" />
+                <Play className="w-8 h-8 ml-1 text-gray-700 dark:text-slate-200" />
               )}
             </button>
             
-            <button className="w-12 h-12 rounded-full bg-[#e0e5ec] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all flex items-center justify-center">
-              <SkipForward className="w-5 h-5 text-gray-700" />
+            <button className="w-12 h-12 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-center group">
+              <SkipForward className="w-5 h-5 text-gray-700 dark:text-slate-300 group-hover:scale-105 transition-transform" />
             </button>
           </div>
 
           {/* Botones de acción secundarios */}
           <div className="flex items-center justify-center gap-4 mb-6">
-            <button className="w-10 h-10 rounded-full bg-[#e0e5ec] shadow-[3px_3px_6px_rgba(163,177,198,0.6),-3px_-3px_6px_rgba(255,255,255,0.5)] hover:shadow-[inset_2px_2px_4px_rgba(163,177,198,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.5)] transition-all flex items-center justify-center">
-              <Repeat className="w-4 h-4 text-gray-600" />
+            <button className="w-10 h-10 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[3px_3px_6px_rgba(163,177,198,0.6),-3px_-3px_6px_rgba(255,255,255,0.5)] dark:shadow-[3px_3px_6px_rgba(15,18,22,0.7),-3px_-3px_6px_rgba(35,43,53,0.4)] transition-all flex items-center justify-center">
+              <Repeat className="w-4 h-4 text-gray-600 dark:text-slate-400" />
             </button>
             <button 
               onClick={() => setIsLiked(!isLiked)}
-              className="w-10 h-10 rounded-full bg-[#e0e5ec] shadow-[3px_3px_6px_rgba(163,177,198,0.6),-3px_-3px_6px_rgba(255,255,255,0.5)] hover:shadow-[inset_2px_2px_4px_rgba(163,177,198,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.5)] transition-all flex items-center justify-center"
+              className="w-10 h-10 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[3px_3px_6px_rgba(163,177,198,0.6),-3px_-3px_6px_rgba(255,255,255,0.5)] dark:shadow-[3px_3px_6px_rgba(15,18,22,0.7),-3px_-3px_6px_rgba(35,43,53,0.4)] transition-all flex items-center justify-center"
             >
-              <Heart className={`w-4 h-4 ${isLiked ? 'fill-orange-500 text-orange-500' : 'text-gray-600'}`} />
+              <Heart className={`w-4 h-4 ${isLiked ? 'fill-orange-500 text-orange-500' : 'text-gray-600 dark:text-slate-400'}`} />
             </button>
-            <button className="w-10 h-10 rounded-full bg-[#e0e5ec] shadow-[3px_3px_6px_rgba(163,177,198,0.6),-3px_-3px_6px_rgba(255,255,255,0.5)] hover:shadow-[inset_2px_2px_4px_rgba(163,177,198,0.6),inset_-2px_-2px_4px_rgba(255,255,255,0.5)] transition-all flex items-center justify-center">
-              <Music className="w-4 h-4 text-gray-600" />
+            <button className="w-10 h-10 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[3px_3px_6px_rgba(163,177,198,0.6),-3px_-3px_6px_rgba(255,255,255,0.5)] dark:shadow-[3px_3px_6px_rgba(15,18,22,0.7),-3px_-3px_6px_rgba(35,43,53,0.4)] transition-all flex items-center justify-center">
+              <Music className="w-4 h-4 text-gray-600 dark:text-slate-400" />
             </button>
           </div>
 
           {/* Control de volumen neumórfico */}
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#e0e5ec] shadow-[inset_3px_3px_8px_rgba(163,177,198,0.6),inset_-3px_-3px_8px_rgba(255,255,255,0.5)]">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[inset_3px_3px_8px_rgba(163,177,198,0.6),inset_-3px_-3px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_3px_3px_8px_rgba(15,18,22,0.8),inset_-3px_-3px_8px_rgba(35,43,53,0.5)]">
             <button onClick={toggleMute}>
               {isMuted ? (
-                <VolumeX className="w-4 h-4 text-gray-500" />
+                <VolumeX className="w-4 h-4 text-gray-500 dark:text-slate-400" />
               ) : (
                 <Volume2 className="w-4 h-4 text-orange-500" />
               )}
@@ -187,29 +191,29 @@ export default function RadioPlayerPage() {
               onChange={handleVolumeChange}
               className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, #f97316 ${volume * 100}%, #cbd5e1 ${volume * 100}%)`
+                background: `linear-gradient(to right, #f97316 ${volume * 100}%, ${resolvedTheme === 'dark' ? '#2e3742' : '#cbd5e1'} ${volume * 100}%)`
               }}
             />
-            <span className="text-xs text-gray-500 font-mono w-8">
+            <span className="text-xs text-gray-500 dark:text-slate-400 font-mono w-8">
               {Math.round(volume * 100)}%
             </span>
           </div>
 
           {/* Indicador de canción actual */}
-          <div className="mt-6 p-3 rounded-2xl bg-[#e0e5ec] shadow-[inset_3px_3px_8px_rgba(163,177,198,0.6),inset_-3px_-3px_8px_rgba(255,255,255,0.5)]">
+          <div className="mt-6 p-3 rounded-2xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[inset_3px_3px_8px_rgba(163,177,198,0.6),inset_-3px_-3px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_3px_3px_8px_rgba(15,18,22,0.8),inset_-3px_-3px_8px_rgba(35,43,53,0.5)]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Headphones className="w-3 h-3 text-green-500" />
-                <span className="text-xs text-gray-600 font-medium">Escuchando ahora:</span>
+                <span className="text-xs text-gray-600 dark:text-slate-300 font-medium">Escuchando ahora:</span>
               </div>
-              <span className="text-xs text-gray-500">{stationInfo.currentSong}</span>
+              <span className="text-xs text-gray-500 dark:text-slate-400 font-semibold">{stationInfo.currentSong}</span>
             </div>
           </div>
 
           {/* Botón de compartir */}
           <button
             onClick={handleShare}
-            className="w-full mt-6 py-3 rounded-2xl bg-[#e0e5ec] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] transition-all text-gray-700 text-sm font-semibold flex items-center justify-center gap-2"
+            className="w-full mt-6 py-3 rounded-2xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all text-gray-700 dark:text-slate-200 text-sm font-semibold flex items-center justify-center gap-2"
           >
             <Share2 className="w-4 h-4" />
             Compartir emisora
@@ -217,7 +221,7 @@ export default function RadioPlayerPage() {
 
           {/* Footer */}
           <div className="text-center mt-6">
-            <p className="text-[10px] text-gray-400 tracking-wide">
+            <p className="text-[10px] text-gray-400 dark:text-slate-500 tracking-wide">
               {stationInfo.listeners} oyentes conectados
             </p>
           </div>
@@ -252,7 +256,8 @@ export default function RadioPlayerPage() {
           border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-          border: 2px solid #e0e5ec;
+          border: 2px solid ${resolvedTheme === 'dark' ? '#1a1f26' : '#e0e5ec'};
+          transition: transform 0.1s ease;
         }
         input[type="range"]::-webkit-slider-thumb:hover {
           transform: scale(1.15);

@@ -3,10 +3,10 @@
 import { MapPin, Store } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-// 1. Importamos usePathname de Next.js
 import { usePathname } from "next/navigation"; 
 import Map, { Marker, NavigationControl, Popup, Layer } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { useTheme } from "next-themes"; 
 import { RatingStars } from "@/components/RatingStars";
 import { formatAddress, getBusinessHref } from "@/lib/formatBusinessData";
 import { normalizeColombiaMapPoint, type LatLng } from "@/lib/mapCoordinates";
@@ -22,12 +22,14 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessWithPoint | null>(null);
   const mapRef = useRef<any>(null);
   
-  // 2. Obtenemos la ruta actual del navegador
   const pathname = usePathname();
+  const { resolvedTheme } = useTheme();
 
-  // 3. Determinamos dinámicamente el modo de visualización.
-  // Si la ruta es exactamente "/maps", activa "distance". Si no, usa "name".
   const displayMode = pathname === "/mapa" ? "distance" : "name";
+
+  const currentMapStyle = resolvedTheme === "dark" 
+    ? "mapbox://styles/mapbox/dark-v11" 
+    : "mapbox://styles/mapbox/light-v11";
 
   const businessesWithPoints = useMemo(() => 
     businesses
@@ -53,6 +55,21 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
     mapRef.current.fitBounds(bounds, { padding: 60, duration: 2000 });
   }, [businessesWithPoints]);
 
+  // 🌟 Inyectamos estilos directamente sobre las capas nativas de Mapbox cuando cargue el tema oscuro
+  const onMapLoad = (e: any) => {
+    const mapInstance = e.target;
+    if (resolvedTheme === "dark") {
+      // Forzar el fondo base de la tierra a un color asfalto profundo libre de tonos rojizos
+      if (mapInstance.getLayer("background")) {
+        mapInstance.setPaintProperty("background", "background-color", "#0a0a0a");
+      }
+      // Oscurecer el agua
+      if (mapInstance.getLayer("water")) {
+        mapInstance.setPaintProperty("water", "fill-color", "#0a1428");
+      }
+    }
+  };
+
   return (
     <div className={className ?? "h-150 w-full overflow-hidden rounded-2xl border border-border"}>
       <Map
@@ -66,10 +83,23 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
           pitch: 48,
         }}
         style={{ width: "100%", height: "100%" }}
-        mapStyle="mapbox://styles/mapbox/light-v11"
+        mapStyle={currentMapStyle}
         terrain={{ source: 'mapbox-dem', exaggeration: 1.5 }}
+        onLoad={onMapLoad}
       >
         <NavigationControl position="top-right" />
+
+        {/* 🌑 CAPA OVERLAY OSCURA - Esto oscurece todo el mapa */}
+        {resolvedTheme === "dark" && (
+          <Layer
+            id="dark-overlay"
+            type="background"
+            paint={{
+              'background-color': '#000000',
+              'background-opacity': 0.35  // Ajusta este valor: 0 = transparente, 1 = completamente negro
+            }}
+          />
+        )}
 
         <Layer
           id="3d-buildings"
@@ -78,10 +108,10 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
           filter={['==', 'extrude', 'true']}
           type="fill-extrusion"
           paint={{
-            'fill-extrusion-color': '#aaa',
+            'fill-extrusion-color': resolvedTheme === "dark" ? "#ffffff" : "#aaa",
             'fill-extrusion-height': ['get', 'height'],
             'fill-extrusion-base': ['get', 'min_height'],
-            'fill-extrusion-opacity': 0.6
+            'fill-extrusion-opacity': resolvedTheme === "dark" ? 0.79 : 0.6
           }}
         />
 
@@ -96,7 +126,6 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
               setSelectedBusiness(item);
             }}
           >
-            {/* 🌟 AQUÍ CORRE LA MAGIA AUTOMÁTICA SEGÚN LA RUTA */}
             <button className="flex items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-xs font-semibold text-white shadow-xl hover:scale-110 transition-all whitespace-nowrap border border-background">
               {displayMode === "distance" ? (
                 <>
@@ -130,7 +159,7 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
             offset={20}
           >
             <Link href={getBusinessHref(selectedBusiness.business)} className="block p-1">
-              <h3 className="text-sm font-bold text-gray-900">{selectedBusiness.business.name}</h3>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{selectedBusiness.business.name}</h3>
               <RatingStars rating={selectedBusiness.business.rating} />
               
               {selectedBusiness.business.distance !== undefined && (
@@ -139,7 +168,7 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
                 </p>
               )}
 
-              <p className="mt-0.5 text-[10px] text-gray-500">
+              <p className="mt-0.5 text-[10px] text-slate-500 dark:text-slate-400">
                 {formatAddress(selectedBusiness.business.address)}
               </p>
             </Link>
