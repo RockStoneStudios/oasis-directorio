@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, Volume2, VolumeX, Radio, Heart, Share2, SkipBack, SkipForward, Repeat, Music, Headphones, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
+// 👇 Importamos las estaciones desde el archivo externo
+import { RADIO_STATIONS, STATION_IDS } from '@/components/stations/radioStations'; // Ajusta la ruta según donde guardes el archivo
 
 export default function RadioPlayerPage() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -17,27 +19,9 @@ export default function RadioPlayerPage() {
 
   const { resolvedTheme } = useTheme();
 
-  // Configuración de las emisoras
-  const stations = {
-    sopetran: {
-      name: "SOPETRAN STEREO",
-      frequency: "105.4 FM",
-      location: "Sopetrán, Antioquia",
-      url: "https://radio25.virtualtronics.com:20029/;",
-      currentSong: "Música popular colombiana",
-      listeners: "127"
-    },
-    ondas: {
-      name: "ONDAS DEL TONUSCO",
-      frequency: "104.4 FM",
-      location: "Santa Fe de Antioquia",
-      url: "https://server2.ejeserver.com:8444/stream",
-      currentSong: "Música y cultura antioqueña",
-      listeners: "489"
-    }
-  };
-
-  const currentStation = stations[selectedStation as keyof typeof stations];
+  // Obtenemos la estación actual
+  const currentStation = RADIO_STATIONS[selectedStation];
+  const currentColors = currentStation.color;
 
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
@@ -146,77 +130,61 @@ export default function RadioPlayerPage() {
       {/* Contenedor principal */}
       <div className="w-full max-w-md">
         
-        {/* Tarjeta principal neumórfica adaptada a Dark Mode */}
+        {/* Tarjeta principal neumórfica */}
         <div className="bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-[40px] p-9 shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] transition-all duration-300">
           
-          {/* Selector de emisora neumórfico */}
-         {/* Selector de emisora neumórfico - Versión compacta */}
-<div className="mb-4 relative" ref={dropdownRef}>
-  <button
-    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-    className="w-full px-3 py-2 rounded-xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-between group"
-  >
-    <div className="flex items-center gap-2">
-      <span className="text-sm text-gray-500 dark:text-slate-400">📻</span>
-      <div className="flex flex-col items-start">
-        <span className="text-xs font-semibold text-gray-800 dark:text-slate-100">
-          {currentStation.name}
-        </span>
-        <span className="text-[10.5px] text-gray-500 dark:text-slate-500">
-          {currentStation.frequency}
-        </span>
-      </div>
-    </div>
-    <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-  </button>
+          {/* Selector de emisora - Versión compacta */}
+          <div className="mb-4 relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full px-3 py-2 rounded-xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500 dark:text-slate-400">📻</span>
+                <div className="flex flex-col items-start">
+                  <span className="text-xs font-semibold text-gray-800 dark:text-slate-100">
+                    {currentStation.name}
+                  </span>
+                  <span className="text-[10.5px] text-gray-500 dark:text-slate-500">
+                    {currentStation.frequency} • {currentStation.location.split(",")[0]}
+                  </span>
+                </div>
+              </div>
+              <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
 
-  {/* Dropdown neumórfico compacto */}
-  {isDropdownOpen && (
-    <div className="absolute top-full left-0 right-0 mt-2 z-10 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-xl shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] overflow-hidden animate-in slide-in-from-top-2 duration-200">
-      <button
-        onClick={() => handleStationSelect('sopetran')}
-        className={`w-full px-3 py-2 text-left transition-all flex items-center gap-2 ${
-          selectedStation === 'sopetran'
-            ? 'bg-orange-500/10 dark:bg-orange-500/20 shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
-            : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
-        }`}
-      >
-        <div className="w-6 h-6 rounded-full bg-linear-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white text-[10px] font-bold">
-          105
-        </div>
-        <div className="flex-1">
-          <div className="text-[12.5px] font-semibold text-gray-800 dark:text-slate-100">SOPETRAN STEREO</div>
-          <div className="text-[11px] text-gray-500 dark:text-slate-400">105.4 FM • Sopetrán</div>
-        </div>
-        {selectedStation === 'sopetran' && (
-          <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
-        )}
-      </button>
-
-      <div className="h-px bg-gray-300 dark:bg-gray-700 mx-2"></div>
-
-      <button
-        onClick={() => handleStationSelect('ondas')}
-        className={`w-full px-3 py-2 text-left transition-all flex items-center gap-2 ${
-          selectedStation === 'ondas'
-            ? 'bg-orange-500/10 dark:bg-orange-500/20 shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
-            : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
-        }`}
-      >
-        <div className="w-6 h-6 rounded-full bg-linear-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-[10px] font-bold">
-          104
-        </div>
-        <div className="flex-1">
-          <div className="text-[12.5px] font-semibold text-gray-800 dark:text-slate-100">ONDAS DEL TONUSCO</div>
-          <div className="text-[11px] text-gray-500 dark:text-slate-400">104.4 FM • Santa Fe de Antioquia</div>
-        </div>
-        {selectedStation === 'ondas' && (
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-        )}
-      </button>
-    </div>
-  )}
-</div>
+            {/* Dropdown dinámico */}
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-2 z-10 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-xl shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                {STATION_IDS.map((stationId, index) => (
+                  <div key={stationId}>
+                    <button
+                      onClick={() => handleStationSelect(stationId)}
+                      className={`w-full px-3 py-2 text-left transition-all flex items-center gap-2 ${
+                        selectedStation === stationId
+                          ? `bg-${RADIO_STATIONS[stationId].color.main}/10 dark:bg-${RADIO_STATIONS[stationId].color.main}/20 shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]`
+                          : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
+                      }`}
+                    >
+                      <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${RADIO_STATIONS[stationId].color.gradient} flex items-center justify-center text-white text-[10px] font-bold`}>
+                        {RADIO_STATIONS[stationId].frequency.split(' ')[0]}
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-[12.5px] font-semibold text-gray-800 dark:text-slate-100">{RADIO_STATIONS[stationId].name}</div>
+                        <div className="text-[11px] text-gray-500 dark:text-slate-400">{RADIO_STATIONS[stationId].frequency} • {RADIO_STATIONS[stationId].location.split(',')[0]}</div>
+                      </div>
+                      {selectedStation === stationId && (
+                        <div className={`w-1.5 h-1.5 rounded-full bg-${RADIO_STATIONS[stationId].color.main}`}></div>
+                      )}
+                    </button>
+                    {index < STATION_IDS.length - 1 && (
+                      <div className="h-px bg-gray-300 dark:bg-gray-700 mx-2"></div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Header con círculo neumórfico */}
           <div className="flex justify-center mb-8">
@@ -225,7 +193,7 @@ export default function RadioPlayerPage() {
                 <Radio 
                   className={`w-10 h-10 transition-all duration-500 ease-in-out
                     ${isPlaying 
-                      ? 'text-orange-500 dark:text-white drop-shadow-[0_0_10px_rgba(249,115,22,0.85)] dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]' 
+                      ? `text-${currentColors.main} dark:text-white drop-shadow-[0_0_10px_${currentColors.glow}] dark:drop-shadow-[0_0_10px_${currentColors.darkGlow}]` 
                       : 'text-gray-400 dark:text-gray-600 drop-shadow-none'
                     }`} 
                 />
@@ -233,30 +201,30 @@ export default function RadioPlayerPage() {
             </div>
           </div>
 
-          {/* Información del artista/radio */}
+          {/* Información de la emisora */}
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-100 mb-1 tracking-tight">{currentStation.name}</h2>
             <p className="text-sm text-gray-500 dark:text-slate-400">{currentStation.frequency} • {currentStation.location}</p>
           </div>
 
-          {/* Barra de progreso neumórfica */}
+          {/* Barra de progreso */}
           <div className="mb-6">
             <div className="flex justify-between text-xs text-gray-500 dark:text-slate-400 mb-2">
               <span>{isPlaying ? 'LIVE' : '0:00'}</span>
-              <span className="text-orange-500 font-mono">● STREAMING</span>
+              <span className={`text-${currentColors.main} font-mono`}>● STREAMING</span>
               <span>3:45</span>
             </div>
             <div className="relative">
               <div className="h-2 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-full shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8),inset_-3px_-3px_6px_rgba(35,43,53,0.5)] overflow-hidden">
                 <div 
-                  className="h-full bg-linear-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500"
+                  className={`h-full bg-gradient-to-r ${currentColors.gradient} rounded-full transition-all duration-500`}
                   style={{ width: isPlaying ? '10%' : '0%' }}
                 />
               </div>
             </div>
           </div>
 
-          {/* Controles principales neumórficos */}
+          {/* Controles principales */}
           <div className="flex items-center justify-center gap-6 mb-6">
             <button className="w-12 h-12 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-center group">
               <SkipBack className="w-5 h-5 text-gray-700 dark:text-slate-300 group-hover:scale-105 transition-transform" />
@@ -267,9 +235,9 @@ export default function RadioPlayerPage() {
               className="w-20 h-20 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] hover:shadow-[inset_5px_5px_10px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_5px_5px_10px_rgba(15,18,22,0.8)] transition-all flex items-center justify-center"
             >
               {isPlaying ? (
-                <Pause className={`w-8 h-8 transition-all duration-500 ease-in-out text-orange-500 dark:text-white drop-shadow-[0_0_10px_rgba(249,115,22,0.85)] dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]`} />
+                <Pause className={`w-8 h-8 transition-all duration-500 ease-in-out text-${currentColors.main} dark:text-white drop-shadow-[0_0_10px_${currentColors.glow}] dark:drop-shadow-[0_0_10px_${currentColors.darkGlow}]`} />
               ) : (
-                <Play className={`w-8 h-8 ml-1 transition-all duration-500 ease-in-out text-gray-400 dark:text-gray-600 drop-shadow-none`} />
+                <Play className="w-8 h-8 ml-1 transition-all duration-500 ease-in-out text-gray-400 dark:text-gray-600 drop-shadow-none" />
               )}
             </button>
             <button className="w-12 h-12 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-center group">
@@ -286,20 +254,20 @@ export default function RadioPlayerPage() {
               onClick={() => setIsLiked(!isLiked)}
               className="w-10 h-10 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[3px_3px_6px_rgba(163,177,198,0.6),-3px_-3px_6px_rgba(255,255,255,0.5)] dark:shadow-[3px_3px_6px_rgba(15,18,22,0.7),-3px_-3px_6px_rgba(35,43,53,0.4)] transition-all flex items-center justify-center"
             >
-              <Heart className={`w-4 h-4 ${isLiked ? 'fill-orange-500 text-orange-500' : 'text-gray-600 dark:text-slate-400'}`} />
+              <Heart className={`w-4 h-4 ${isLiked ? `fill-${currentColors.main} text-${currentColors.main}` : 'text-gray-600 dark:text-slate-400'}`} />
             </button>
             <button className="w-10 h-10 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[3px_3px_6px_rgba(163,177,198,0.6),-3px_-3px_6px_rgba(255,255,255,0.5)] dark:shadow-[3px_3px_6px_rgba(15,18,22,0.7),-3px_-3px_6px_rgba(35,43,53,0.4)] transition-all flex items-center justify-center">
               <Music className="w-4 h-4 text-gray-600 dark:text-slate-400" />
             </button>
           </div>
 
-          {/* Control de volumen neumórfico */}
+          {/* Control de volumen */}
           <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[inset_3px_3px_8px_rgba(163,177,198,0.6),inset_-3px_-3px_8px_rgba(255,255,255,0.5)] dark:shadow-[inset_3px_3px_8px_rgba(15,18,22,0.8),inset_-3px_-3px_8px_rgba(35,43,53,0.5)]">
             <button onClick={toggleMute}>
               {isMuted ? (
                 <VolumeX className="w-4 h-4 text-gray-500 dark:text-slate-400" />
               ) : (
-                <Volume2 className="w-4 h-4 text-orange-500" />
+                <Volume2 className={`w-4 h-4 text-${currentColors.main}`} />
               )}
             </button>
             <input
@@ -311,7 +279,7 @@ export default function RadioPlayerPage() {
               onChange={handleVolumeChange}
               className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, #f97316 ${volume * 100}%, ${resolvedTheme === 'dark' ? '#2e3742' : '#cbd5e1'} ${volume * 100}%)`
+                background: `linear-gradient(to right, ${currentColors.main === 'orange-500' ? '#f97316' : currentColors.main === 'emerald-500' ? '#10b981' : '#0ea5e9'} ${volume * 100}%, ${resolvedTheme === 'dark' ? '#2e3742' : '#cbd5e1'} ${volume * 100}%)`
               }}
             />
             <span className="text-xs text-gray-500 dark:text-slate-400 font-mono w-8">
@@ -388,7 +356,7 @@ export default function RadioPlayerPage() {
           -webkit-appearance: none;
           width: 14px;
           height: 14px;
-          background: #f97316;
+          background: ${currentColors.main === 'orange-500' ? '#f97316' : currentColors.main === 'emerald-500' ? '#10b981' : '#0ea5e9'};
           border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 2px 6px rgba(0,0,0,0.2);
