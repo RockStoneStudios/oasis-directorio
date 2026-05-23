@@ -33,7 +33,7 @@ export default function RadioPlayerPage() {
       location: "Santa Fe de Antioquia",
       url: "https://server2.ejeserver.com:8444/stream",
       currentSong: "Música y cultura antioqueña",
-      listeners: "89"
+      listeners: "489"
     }
   };
 
