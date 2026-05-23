@@ -7,7 +7,7 @@ import { useTheme } from 'next-themes';
 
 export default function RadioPlayerPage() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.7);
+  const [volume, setVolume] = useState(0.85);
   const [isMuted, setIsMuted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -16,7 +16,8 @@ export default function RadioPlayerPage() {
   // 👇 Obtenemos el tema del sistema/usuario
   const { resolvedTheme } = useTheme();
 
-  const streamUrl = "https://radio25.virtualtronics.com:20029/;";
+  const streamUrl = "https://server2.ejeserver.com:8444/stream";
+  
 
   const stationInfo = {
     name: "SOPETRAN STEREO",
@@ -105,12 +106,22 @@ export default function RadioPlayerPage() {
           
           {/* Header con círculo neumórfico */}
           <div className="flex justify-center mb-8">
-            <div className="w-32 h-32 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] flex items-center justify-center">
-              <div className={`w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-orange-800 shadow-[inset_2px_2px_5px_rgba(163,177,198,0.6),inset_-2px_-2px_5px_rgba(255,255,255,0.5)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center ${isPlaying ? 'animate-spin-slow' : ''}`}>
-                <Radio className="w-10 h-10 text-white" />
-              </div>
-            </div>
-          </div>
+  <div className="w-32 h-32 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] flex items-center justify-center">
+    
+    {/* 👇 Quitamos el fondo naranja. Ahora es un contenedor oscuro/claro sutil donde resalta el neón */}
+    <div className={`w-24 h-24 rounded-full bg-[#e6ebf4] dark:bg-[#151a20] shadow-[inset_2px_2px_5px_rgba(163,177,198,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.4)] flex items-center justify-center ${isPlaying ? 'animate-spin-slow' : ''}`}>
+      
+      <Radio 
+        className={`w-10 h-10 transition-all duration-500 ease-in-out
+          ${isPlaying 
+            ? 'text-orange-500 dark:text-white drop-shadow-[0_0_10px_rgba(249,115,22,0.85)] dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]' 
+            : 'text-gray-400 dark:text-gray-600 drop-shadow-none'
+          }`} 
+      />
+
+    </div>
+  </div>
+</div>
 
           {/* Información del artista/radio */}
           <div className="text-center mb-6">
@@ -128,8 +139,8 @@ export default function RadioPlayerPage() {
             <div className="relative">
               <div className="h-2 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-full shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8),inset_-3px_-3px_6px_rgba(35,43,53,0.5)] overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500"
-                  style={{ width: isPlaying ? '70%' : '0%' }}
+                  className="h-full bg-linear-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500"
+                  style={{ width: isPlaying ? '10%' : '0%' }}
                 />
               </div>
             </div>
@@ -146,12 +157,11 @@ export default function RadioPlayerPage() {
               className="w-20 h-20 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] hover:shadow-[inset_5px_5px_10px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_5px_5px_10px_rgba(15,18,22,0.8)] transition-all flex items-center justify-center"
             >
               {isPlaying ? (
-                <Pause className="w-8 h-8 text-gray-700 dark:text-slate-200" />
+                <Pause className={`w-8 h-8 transition-all duration-500 ease-in-out text-orange-500 dark:text-white drop-shadow-[0_0_10px_rgba(249,115,22,0.85)] dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]`} />
               ) : (
-                <Play className="w-8 h-8 ml-1 text-gray-700 dark:text-slate-200" />
+                <Play className={`w-8 h-8 ml-1 transition-all duration-500 ease-in-out text-gray-400 dark:text-gray-600 drop-shadow-none`} />
               )}
             </button>
-            
             <button className="w-12 h-12 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-center group">
               <SkipForward className="w-5 h-5 text-gray-700 dark:text-slate-300 group-hover:scale-105 transition-transform" />
             </button>
