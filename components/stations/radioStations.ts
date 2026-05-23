@@ -48,7 +48,7 @@ export const RADIO_STATIONS: Record<string, RadioStation> = {
     name: "GLOBAL FM",
     frequency: "89.4 FM",
     location: "San Jerónimo, Antioquia",
-    url: "https://radio25.virtualtronics.com:20029/;", // ⚠️ Reemplazar con URL real
+    url: "https://live.asoredes.com:8230/GlobalFm.mp3;", 
     currentSong: "Éxitos internacionales",
     listeners: "234",
     color: {

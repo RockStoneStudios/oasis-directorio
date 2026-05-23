@@ -149,7 +149,7 @@ export default function MapaPage() {
                   selectedRadius === 0.5 ? "bg-secondary text-secondary-foreground font-bold" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <MapPin className="h-3 w-3" /> a menos de 500m
+              <MapPin className="h-3 w-3" /> a menos de 500m
               </button>
               <button
                 onClick={() => handleRadiusSelect(1.0)}

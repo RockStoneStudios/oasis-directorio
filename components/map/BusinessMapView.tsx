@@ -126,26 +126,26 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
               setSelectedBusiness(item);
             }}
           >
-            <button className="flex items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-xs font-semibold text-white shadow-xl hover:scale-110 transition-all whitespace-nowrap border border-background">
-              {displayMode === "distance" ? (
-                <>
-                  <MapPin className="h-3 w-3 fill-white/20" />
-                  <span className="font-black block text-center">
-                    {item.business.distance !== undefined ? (
-                      <>
-                        <div>{item.business.name}</div>
-                        <div className="text-xs opacity-90">{formatDistance(item.business.distance)} del parque</div>
-                      </>
-                    ) : "0 m"}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <Store className="h-3.5 w-3.5" />
-                  <span className="max-w-32 truncate">{item.business.name}</span>
-                </>
-              )}
-            </button>
+           <button className="flex items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-xs font-semibold text-black dark:text-white shadow-xl hover:scale-110 transition-all whitespace-nowrap border border-border">
+  {displayMode === "distance" ? (
+    <>
+      <MapPin className="h-3 w-3 fill-black/20 dark:fill-white/20" />
+      <span className="font-black block text-center">
+        {item.business.distance !== undefined ? (
+          <>
+            <div>{item.business.name}</div>
+            <div className="text-xs opacity-90">{formatDistance(item.business.distance)} del parque</div>
+          </>
+        ) : "0 m"}
+      </span>
+    </>
+  ) : (
+    <>
+      <Store className="h-3.5 w-3.5" />
+      <span className="max-w-32 truncate">{item.business.name}</span>
+    </>
+  )}
+</button>
           </Marker>
         ))}
 
@@ -159,7 +159,7 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
             offset={20}
           >
             <Link href={getBusinessHref(selectedBusiness.business)} className="block p-1">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{selectedBusiness.business.name}</h3>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-800">{selectedBusiness.business.name}</h3>
               <RatingStars rating={selectedBusiness.business.rating} />
               
               {selectedBusiness.business.distance !== undefined && (
