@@ -147,73 +147,76 @@ export default function RadioPlayerPage() {
       <div className="w-full max-w-md">
         
         {/* Tarjeta principal neumórfica adaptada a Dark Mode */}
-        <div className="bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-[40px] p-8 shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] transition-all duration-300">
+        <div className="bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-[40px] p-9 shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] transition-all duration-300">
           
           {/* Selector de emisora neumórfico */}
-          <div className="mb-6 relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-full px-4 py-3 rounded-2xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-between group"
-            >
-              <div className="flex flex-col items-start">
-                <span className="text-sm text-gray-500 dark:text-slate-400">📻 Emisora</span>
-                <span className="text-base font-semibold text-gray-800 dark:text-slate-100">
-                  {currentStation.name}
-                </span>
-                <span className="text-xs text-gray-400 dark:text-slate-500">
-                  {currentStation.frequency}
-                </span>
-              </div>
-              <ChevronDown className={`w-5 h-5 text-gray-600 dark:text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-            </button>
+         {/* Selector de emisora neumórfico - Versión compacta */}
+<div className="mb-4 relative" ref={dropdownRef}>
+  <button
+    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+    className="w-full px-3 py-2 rounded-xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-between group"
+  >
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-gray-500 dark:text-slate-400">📻</span>
+      <div className="flex flex-col items-start">
+        <span className="text-xs font-semibold text-gray-800 dark:text-slate-100">
+          {currentStation.name}
+        </span>
+        <span className="text-[10.5px] text-gray-500 dark:text-slate-500">
+          {currentStation.frequency}
+        </span>
+      </div>
+    </div>
+    <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+  </button>
 
-            {/* Dropdown neumórfico */}
-            {isDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-3 z-10 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-2xl shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] overflow-hidden animate-in slide-in-from-top-2 duration-200">
-                <button
-                  onClick={() => handleStationSelect('sopetran')}
-                  className={`w-full px-4 py-3 text-left transition-all flex items-center gap-3 ${
-                    selectedStation === 'sopetran'
-                      ? 'bg-orange-500/10 dark:bg-orange-500/20 shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
-                      : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
-                  }`}
-                >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white text-xs font-bold">
-                    105
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-gray-800 dark:text-slate-100">SOPETRAN STEREO</div>
-                    <div className="text-xs text-gray-500 dark:text-slate-400">105.4 FM • Sopetrán</div>
-                  </div>
-                  {selectedStation === 'sopetran' && (
-                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-                  )}
-                </button>
+  {/* Dropdown neumórfico compacto */}
+  {isDropdownOpen && (
+    <div className="absolute top-full left-0 right-0 mt-2 z-10 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-xl shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] overflow-hidden animate-in slide-in-from-top-2 duration-200">
+      <button
+        onClick={() => handleStationSelect('sopetran')}
+        className={`w-full px-3 py-2 text-left transition-all flex items-center gap-2 ${
+          selectedStation === 'sopetran'
+            ? 'bg-orange-500/10 dark:bg-orange-500/20 shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
+            : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
+        }`}
+      >
+        <div className="w-6 h-6 rounded-full bg-linear-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white text-[10px] font-bold">
+          105
+        </div>
+        <div className="flex-1">
+          <div className="text-[12.5px] font-semibold text-gray-800 dark:text-slate-100">SOPETRAN STEREO</div>
+          <div className="text-[11px] text-gray-500 dark:text-slate-400">105.4 FM • Sopetrán</div>
+        </div>
+        {selectedStation === 'sopetran' && (
+          <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+        )}
+      </button>
 
-                <div className="h-px bg-gray-300 dark:bg-gray-700 mx-3"></div>
+      <div className="h-px bg-gray-300 dark:bg-gray-700 mx-2"></div>
 
-                <button
-                  onClick={() => handleStationSelect('ondas')}
-                  className={`w-full px-4 py-3 text-left transition-all flex items-center gap-3 ${
-                    selectedStation === 'ondas'
-                      ? 'bg-orange-500/10 dark:bg-orange-500/20 shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
-                      : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
-                  }`}
-                >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-xs font-bold">
-                    104
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-gray-800 dark:text-slate-100">ONDAS DEL TONUSCO</div>
-                    <div className="text-xs text-gray-500 dark:text-slate-400">104.4 FM • Santa Fe de Antioquia</div>
-                  </div>
-                  {selectedStation === 'ondas' && (
-                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
+      <button
+        onClick={() => handleStationSelect('ondas')}
+        className={`w-full px-3 py-2 text-left transition-all flex items-center gap-2 ${
+          selectedStation === 'ondas'
+            ? 'bg-orange-500/10 dark:bg-orange-500/20 shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
+            : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
+        }`}
+      >
+        <div className="w-6 h-6 rounded-full bg-linear-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-[10px] font-bold">
+          104
+        </div>
+        <div className="flex-1">
+          <div className="text-[12.5px] font-semibold text-gray-800 dark:text-slate-100">ONDAS DEL TONUSCO</div>
+          <div className="text-[11px] text-gray-500 dark:text-slate-400">104.4 FM • Santa Fe de Antioquia</div>
+        </div>
+        {selectedStation === 'ondas' && (
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+        )}
+      </button>
+    </div>
+  )}
+</div>
 
           {/* Header con círculo neumórfico */}
           <div className="flex justify-center mb-8">
