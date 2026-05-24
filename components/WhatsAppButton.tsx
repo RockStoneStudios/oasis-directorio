@@ -13,8 +13,27 @@ export function WhatsAppButton({
   businessName = "este negocio",
   floating = false,
 }: WhatsAppButtonProps) {
+  
+  // 🛠️ Formateamos el número para asegurar el prefijo +57 de Colombia
+  const formatColombiaPhone = (rawPhone: string | null | undefined) => {
+    if (!rawPhone) return null;
+    
+    // Dejamos solo los números (limpia espacios, guiones, paréntesis y el "+")
+    const cleaned = rawPhone.replace(/\D/g, "");
+    
+    // Si el usuario metió un celular normal de 10 dígitos (ej: 3101234567), le pegamos el 57
+    if (cleaned.length === 10) {
+      return `57${cleaned}`;
+    }
+    
+    // Si ya tiene 12 dígitos (asumiendo que ya traía el 57 al inicio) lo dejamos tal cual
+    return cleaned;
+  };
+
+  const formattedPhone = formatColombiaPhone(phone);
+
   const href = generateWhatsAppUrl(
-    phone,
+    formattedPhone, // 👈 Pasamos el número ya formateado con el 57
     `Hola, vi ${businessName} en Oasis y quiero más información.`,
   );
 
@@ -27,8 +46,8 @@ export function WhatsAppButton({
       size={floating ? "icon-lg" : "lg"}
       className={
         floating
-          ? "fixed bottom-6 right-6 z-40 rounded-full shadow-warm-lg h-14 w-14" // Ajustado tamaño para el flotante
-          : "w-full sm:w-fit gap-2" // Añadido gap para separar icono de texto
+          ? "fixed bottom-6 right-6 z-40 rounded-full shadow-warm-lg h-14 w-14"
+          : "w-full sm:w-fit gap-2"
       }
     >
       <a href={href} target="_blank" rel="noreferrer">
