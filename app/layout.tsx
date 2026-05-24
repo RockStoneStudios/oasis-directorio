@@ -3,10 +3,9 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SanityLive } from "@/lib/sanity/live";
+import { ThemeProvider } from "@/components/theme-provider";
 //@ts-ignore
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-// import "leaflet/dist/leaflet.css"; // A
 
 // Body font - highly readable
 const inter = Inter({
@@ -32,24 +31,29 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Oasis | Directorio de negocios locales",
+    default: "Oasis | Directorio de Negocios del Occidente Antioqueño 🌴",
     template: "%s | Oasis",
   },
   description:
-    "Descubre negocios, eventos y noticias locales por categoria y municipio.",
+    "🌴 El directorio comercial del Occidente Antioqueño. 🚀 Encuentra negocios, turismo, hoteles y eventos en Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina.",
   
-    verification : {
-       google : "OBYw5lH6K7WSL2FDIJyNnq9oKEsYHJndvLUQmPjZWrc"
-    },
+  verification: {
+    google: "OBYw5lH6K7WSL2FDIJyNnq9oKEsYHJndvLUQmPjZWrc"
+  },
 
-    keywords: [
-    "directorio local",
-    "occidente",
-    "occidente antioqeño",
-    "negocios",
-    "municipios",
-    "eventos",
-    "noticias",
+  keywords: [
+    "directorio comercial occidente antioqueño",
+    "negocios en sopetran",
+    "turismo santa fe de antioquia",
+    "hoteles en san jeronimo",
+    "comercio liborina",
+    "directorio local antioquia",
+    "occidente antioqueño municipios",
+    "restaurantes occidente antioqueño",
+    "oasis directorio",
+    "directorio de negocios locales",
+    "que hacer en sopetran",
+    "guias comerciales antioquia"
   ],
   authors: [{ name: "Oasis" }],
   creator: "Oasis",
@@ -60,15 +64,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_CO",
     siteName: "Oasis",
-    title: "Oasis | Directorio de negocios locales",
+    title: "Oasis | Directorio de Negocios del Occidente Antioqueño 🌴",
     description:
-      "Descubre negocios, eventos y noticias locales por categoria y municipio.",
+      "🌴 El directorio comercial del Occidente Antioqueño. 🚀 Encuentra los mejores negocios, turismo y eventos en Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Oasis | Directorio de negocios locales",
+    title: "Oasis | Directorio de Negocios del Occidente Antioqueño 🌴",
     description:
-      "Descubre negocios, eventos y noticias locales por categoria y municipio.",
+      "🌴 El directorio comercial del Occidente Antioqueño. 🚀 Encuentra los mejores negocios, turismo y eventos en Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina.",
   },
   robots: {
     index: true,
@@ -91,7 +95,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Movimos el html al nivel más externo
     <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://cdn.sanity.io" />
@@ -105,21 +108,18 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} font-body antialiased`}
       >
-        {/* Colocamos ClerkProvider dentro del body envolviendo todo */}
         <ClerkProvider>
           <a href="#main" className="skip-link">
             Saltar al contenido principal
           </a>
           <ThemeProvider
-            attribute="class"       // Usa una clase CSS para el tema
-            defaultTheme="system"  // Tema inicial: 'system', 'light' o 'dark'
-            enableSystem           // Habilita la detección del tema del sistema
-            disableTransitionOnChange // Evita transiciones al cambiar de tema
-        >
-          {children}
-        </ThemeProvider>
-          
-        
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
           
           <Toaster />
           <SanityLive />
@@ -128,21 +128,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-// app/layout.tsx
-// @ts-ignore
-// import "./globals.css";
-
-// export default function RootLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <html lang="es" suppressHydrationWarning>
-//       <body>
-//         {children}
-//       </body>
-//     </html>
-//   );
-// }

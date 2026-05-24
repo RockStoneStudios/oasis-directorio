@@ -74,7 +74,7 @@ export function Navbar() {
           >
             <Link
               href="/business"
-              className="px-4 py-2 text-sm font-medium text-white rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
+              className="px-4 py-2 text-sm font-medium text-slate-900 dark:text-gray-200 rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
             >
               Negocios
             </Link>
@@ -83,27 +83,27 @@ export function Navbar() {
                 plan="agent"
                 fallback={
                   <Link
-                    href="/pricing"
+                    href="/sobre-nosotros"
                     className="px-4 py-2 text-sm font-medium text-white rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
                   >
-                    Registrar negocio
+                    Conocenos
                   </Link>
                 }
               >
-                <Link
+                {/* <Link
                   href="/dashboard"
                   className="px-4 py-2 text-sm font-medium text-white rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
                 >
                   Dashboard
-                </Link>
+                </Link> */}
               </Protect>
             </SignedIn>
             <SignedOut>
               <Link
-                href="/pricing"
+                href="/sobre-nosotros"
                 className="px-4 py-2 text-sm font-medium text-muted-foreground rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
               >
-                Registrar negocio
+                Conocenos
               </Link>
             </SignedOut>
           </nav>

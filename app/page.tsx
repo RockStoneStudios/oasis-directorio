@@ -213,7 +213,7 @@ export default async function HomePage() {
 
 function Thumb({ image, title }: { image?: any; title: string }) {
   return (
-    <div className="relative h-20 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
+    <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-xl bg-muted">
       {image?.asset ? (
         <Image
           src={urlFor(image).width(160).height(120).url()}

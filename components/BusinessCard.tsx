@@ -13,21 +13,21 @@ import type { BusinessCardData } from "@/types/business";
 
 interface BusinessCardProps {
   business: BusinessCardData;
-}export function BusinessCard({ business }: BusinessCardProps) {
+}
+
+export function BusinessCard({ business }: BusinessCardProps) {
   const href = getBusinessHref(business);
   const categorySlug = getSlugValue(business.category?.slug);
   const municipalitySlug = getSlugValue(business.municipality?.slug);
 
   return (
     <Link href={href} className="group block">
-      {/* Reducido border-radius y padding general */}
-      <article className="h-full overflow-hidden rounded-lg border border-border/50 bg-card text-card-foreground shadow-warm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-warm-lg">
+      <article className="h-full overflow-hidden rounded-lg border border-border/60 dark:border-white/10 bg-card text-card-foreground shadow-[0_8px_20px_-4px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.02)] dark:shadow-[0_8px_20px_-4px_rgba(0,0,0,0.4),0_2px_4px_-2px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.15),0_8px_10px_-6px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.6),0_8px_10px_-6px_rgba(0,0,0,0.3)]">
         
-        {/* LOGO: Reducción del aspect ratio y dimensiones de Sanity */}
-        <div className="relative aspect-video bg-muted"> {/* Cambiado de 4/3 a video para ser más compacto */}
+        {/* LOGO */}
+        <div className="relative aspect-video bg-muted">
           {business.logo?.asset ? (
             <Image
-              // Reducción del 20% en la resolución solicitada (500x375 -> 400x300)
               src={urlFor(business.logo).width(400).height(300).url()}
               alt={business.logo.alt || business.name}
               fill
@@ -36,12 +36,11 @@ interface BusinessCardProps {
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              {/* Icono de reemplazo más pequeño (h-9 -> h-7) */}
               <Store className="h-7 w-7 text-muted-foreground" aria-hidden="true" />
             </div>
           )}
 
-          {/* Badges superiores más compactos */}
+          {/* Badges superiores */}
           <div className="absolute left-1.5 top-1.5 flex flex-wrap gap-1">
             {business.isFeatured && <Badge className="text-[10px] py-0 px-1.5">Destacado</Badge>}
             {(business.isVerified || business.status === "open") && (
@@ -53,15 +52,13 @@ interface BusinessCardProps {
           </div>
         </div>
 
-        {/* CONTENIDO: Reducción de padding (p-4 -> p-3) y espaciado (space-y-2.5 -> space-y-2) */}
+        {/* CONTENIDO */}
         <div className="space-y-2 p-3">
           <div className="space-y-1">
             <div className="flex items-start justify-between gap-2">
-              {/* Título más pequeño (text-base -> text-sm) */}
               <h3 className="line-clamp-2 text-sm font-bold font-heading">
                 {business.name}
               </h3>
-              {/* Ajuste de escala para las estrellas */}
               <div className="scale-90 origin-right">
                 <RatingStars rating={business.rating} showValue={false} />
               </div>
