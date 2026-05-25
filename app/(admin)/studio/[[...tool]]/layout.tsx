@@ -18,7 +18,7 @@
 
 export const metadata = {
   title: "Sanity Studio",
-  description: "Content management for Real Estate Platform",
+  description: "Directorio Oasis",
 };
 
 export default function StudioLayout({
