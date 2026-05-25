@@ -7,14 +7,12 @@ import { ThemeProvider } from "@/components/theme-provider";
 //@ts-ignore
 import "./globals.css";
 
-// Body font - highly readable
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-// Heading font - modern, friendly geometric
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
@@ -22,38 +20,63 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["500", "600", "700", "800"],
 });
 
-// Mono font for code
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
 });
 
+// 🔥 CONFIGURACIÓN SEO MAESTRA (Nivel Avanzado)
 export const metadata: Metadata = {
   title: {
-    default: "Oasis | Directorio de Negocios del Occidente Antioqueño 🌴",
-    template: "%s | Oasis",
+    default: "Oasis 🌴 Directorio Comercial del Occidente Antioqueño",
+    template: "%s | Oasis 🌴",
   },
   description:
-    "🌴 El directorio comercial del Occidente Antioqueño. 🚀 Encuentra negocios, turismo, hoteles y eventos en Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina.",
-  
+    "🌴 Encuentra negocios cerca de ti en el Occidente Antioqueño. 🚀 El directorio local definitivo: comercio, turismo y servicios en Sopetrán. ¡Próximamente expandiéndonos a Santa Fe de Antioquia, San Jerónimo y Liborina! 🗺️✨",
+  icons: {
+    icon: "/oasis.png", 
+    apple: [{ url: "/oasis.png" }],
+  },
   verification: {
     google: "OBYw5lH6K7WSL2FDIJyNnq9oKEsYHJndvLUQmPjZWrc"
   },
 
+  // 📈 Keywords genéricas, regionales y semánticas para dominar el buscador sin penalizaciones
   keywords: [
-    "directorio comercial occidente antioqueño",
-    "negocios en sopetran",
-    "turismo santa fe de antioquia",
-    "hoteles en san jeronimo",
-    "comercio liborina",
-    "directorio local antioquia",
-    "occidente antioqueño municipios",
-    "restaurantes occidente antioqueño",
+    // --- 1. Autoridad de la Marca ---
+    "oasis",
     "oasis directorio",
+    "directorio oasis",
+    "oasis occidente antioqueño",
+    
+    // --- 2. Intención de Búsqueda General (Alta conversión) ---
+    "directorio comercial",
     "directorio de negocios locales",
+    "buscar negocios cerca de mi",
+    "guia comercial y de servicios",
+    "empresas y comercios locales",
+    "paginas amarillas antioquia",
+    
+    // --- 3. Enfoque Geográfico Regional (Para captar todo el tráfico de la zona) ---
+    "occidente antioqueño",
+    "comercio occidente antioqueño",
+    "turismo occidente antioqueño",
+    "municipios del occidente antioqueño",
+    "guia turistica antioquia",
+    
+    // --- 4. Enfoque Local Activo (Donde ya eres fuerte) ---
+    "negocios en sopetran",
+    "comercio sopetran antioquia",
     "que hacer en sopetran",
-    "guias comerciales antioquia"
+    "directorio local sopetran",
+    "restaurantes en sopetran",
+    
+    // --- 5. Palabras Semánticas de Expansión Futura (Ganando terreno desde ya) ---
+    "comercio santa fe de antioquia",
+    "directorio san jeronimo",
+    "negocios en liborina",
+    "hoteles y turismo antioquia"
   ],
   authors: [{ name: "Oasis" }],
   creator: "Oasis",
@@ -64,19 +87,36 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_CO",
     siteName: "Oasis",
-    title: "Oasis | Directorio de Negocios del Occidente Antioqueño 🌴",
+    title: "Oasis 🌴 Directorio Comercial del Occidente Antioqueño",
     description:
-      "🌴 El directorio comercial del Occidente Antioqueño. 🚀 Encuentra los mejores negocios, turismo y eventos en Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina.",
+      "🌴 Encuentra negocios cerca de ti en el Occidente Antioqueño. 🚀 El directorio local definitivo: comercio, turismo y servicios en Sopetrán. ¡Próximamente expandiéndonos a Santa Fe de Antioquia, San Jerónimo y Liborina! 🗺️✨",
+    images: [
+      {
+        url: "/oasis.png",
+        width: 1200,
+        height: 630,
+        alt: "Oasis - Directorio de Negocios",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Oasis | Directorio de Negocios del Occidente Antioqueño 🌴",
+    title: "Oasis 🌴 Directorio Comercial del Occidente Antioqueño",
     description:
-      "🌴 El directorio comercial del Occidente Antioqueño. 🚀 Encuentra los mejores negocios, turismo y eventos en Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina.",
+      "🌴 Encuentra negocios cerca de ti en el Occidente Antioqueño. 🚀 El directorio local definitivo: comercio, turismo y servicios en Sopetrán. ¡Próximamente expandiéndonos a Santa Fe de Antioquia, San Jerónimo y Liborina! 🗺️✨",
+    images: ["/oasis.png"],
   },
   robots: {
     index: true,
     follow: true,
+    // Le indica a los buscadores que hagan un snippet completo y visualmente grande
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
