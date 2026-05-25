@@ -24,19 +24,22 @@ export function BusinessCard({ business }: BusinessCardProps) {
     <Link href={href} className="group block">
       <article className="h-full overflow-hidden rounded-lg border border-border/60 dark:border-white/10 bg-card text-card-foreground shadow-[0_8px_20px_-4px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.02)] dark:shadow-[0_8px_20px_-4px_rgba(0,0,0,0.4),0_2px_4px_-2px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.15),0_8px_10px_-6px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.6),0_8px_10px_-6px_rgba(0,0,0,0.3)]">
         
-        {/* LOGO */}
-        <div className="relative aspect-video bg-muted">
+        {/* LOGO - Versión mejorada sin distorsión */}
+        <div className="relative aspect-video bg-muted/30 flex items-center justify-center">
           {business.logo?.asset ? (
-            <Image
-              src={urlFor(business.logo).width(400).height(300).url()}
-              alt={business.logo.alt || business.name}
-              fill
-              sizes="(max-width: 640px) 80vw, (max-width: 1024px) 40vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+            <div className="relative w-full h-full p-4">
+              <Image
+                src={urlFor(business.logo).width(400).height(300).url()}
+                alt={business.logo.alt || business.name}
+                fill
+                sizes="(max-width: 640px) 80vw, (max-width: 1024px) 40vw, 25vw"
+                className="object-contain transition-transform duration-500 group-hover:scale-105"
+                style={{ objectFit: 'contain', padding: '1rem' }}
+              />
+            </div>
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <Store className="h-7 w-7 text-muted-foreground" aria-hidden="true" />
+              <Store className="h-10 w-10 text-muted-foreground/50" aria-hidden="true" />
             </div>
           )}
 
