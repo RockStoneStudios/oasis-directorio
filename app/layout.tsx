@@ -92,10 +92,11 @@ export const metadata: Metadata = {
       "🌴 Encuentra negocios cerca de ti en el Occidente Antioqueño. 🚀 El directorio local definitivo: comercio, turismo y servicios en Sopetrán. ¡Próximamente expandiéndonos a Santa Fe de Antioquia, San Jerónimo y Liborina! 🗺️✨",
     images: [
       {
-        url: "/oasis.png",
-        width: 1200,
-        height: 630,
-        alt: "Oasis - Directorio de Negocios",
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/oasis.png`, // ✅ URL absoluta
+      width: 1200,
+      height: 630,
+      alt: "Oasis - Directorio de Negocios",
+
       },
     ],
   },
@@ -104,7 +105,7 @@ export const metadata: Metadata = {
     title: "Oasis 🌴 Directorio Comercial del Occidente Antioqueño",
     description:
       "🌴 Encuentra negocios cerca de ti en el Occidente Antioqueño. 🚀 El directorio local definitivo: comercio, turismo y servicios en Sopetrán. ¡Próximamente expandiéndonos a Santa Fe de Antioquia, San Jerónimo y Liborina! 🗺️✨",
-    images: ["/oasis.png"],
+    images: [`${process.env.NEXT_PUBLIC_APP_URL}/oasis.png`]
   },
   robots: {
     index: true,
