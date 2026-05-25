@@ -8,7 +8,7 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { Heart, Home, LayoutDashboard, Menu, User, X, MapPin, Grid3x3, List, Newspaper, BadgeDollarSign, Radio, RadioIcon, Moon, Sun } from "lucide-react";
+import { Heart, Home, LayoutDashboard, Menu, User, X, MapPin, Grid3x3, List, BadgeDollarSign, RadioIcon, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -78,38 +78,29 @@ export function Navbar() {
             >
               Negocios
             </Link>
+
+            {/* 👀 Liberado: Ahora "Conócenos" es inmune a Clerk y se ve siempre con los colores correctos */}
+            <Link
+              href="/sobre-nosotros"
+              className="px-4 py-2 text-sm font-medium text-slate-900 dark:text-gray-200 rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
+            >
+              Conocenos
+            </Link>
+
+            {/* Aquí adentro solo manejas lógica exclusiva de autenticación */}
             <SignedIn>
-              <Protect
-                plan="agent"
-                fallback={
-                  <Link
-                    href="/sobre-nosotros"
-                    className="px-4 py-2 text-sm font-medium text-white rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
-                  >
-                    Conocenos
-                  </Link>
-                }
-              >
-                {/* <Link
+              <Protect plan="agent">
+                <Link
                   href="/dashboard"
-                  className="px-4 py-2 text-sm font-medium text-white rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
+                  className="px-4 py-2 text-sm font-medium text-slate-900 dark:text-gray-200 rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
                 >
                   Dashboard
-                </Link> */}
+                </Link>
               </Protect>
             </SignedIn>
-            <SignedOut>
-              <Link
-                href="/sobre-nosotros"
-                className="px-4 py-2 text-sm font-medium text-muted-foreground rounded-lg hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
-              >
-                Conocenos
-              </Link>
-            </SignedOut>
           </nav>
         </div>
 
-        {/* Desktop Actions */}
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-2">
           {mounted && (
@@ -180,7 +171,7 @@ export function Navbar() {
         <div className="flex md:hidden items-center gap-2">
           {mounted ? (
             <>
-              {/* 🌓 Theme Toggle - Mobile (icono antes del UserButton) */}
+              {/* 🌓 Theme Toggle - Mobile */}
               <button
                 onClick={toggleTheme}
                 className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
@@ -233,7 +224,6 @@ export function Navbar() {
                         <span className="font-heading">Oasis</span>
                       </div>
                       
-                      {/* 🌓 Theme Toggle dentro del menú móvil */}
                       <button
                         onClick={toggleTheme}
                         className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
