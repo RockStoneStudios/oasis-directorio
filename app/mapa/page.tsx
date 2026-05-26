@@ -1,4 +1,4 @@
-// @/app/mapa/page.tsx (Tu archivo actual modificado en applyFilters)
+// @/app/mapa/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,6 +6,7 @@ import { getBusinesses } from "@/actions/getBusinesses";
 import { DynamicBusinessMapView } from "@/components/map/DynamicBusinessMapView";
 import { filterVenuesByDistance } from "@/lib/utils-geo/distance"; 
 import { Store, Utensils, Syringe, Bed, Car, ShoppingBag, MapPin } from "lucide-react";
+import { ClientBackButton } from "@/components/ui/ClientBackButton";
 
 const CATEGORY_ICONS: Record<string, any> = {
   "restaurantes": Utensils,
@@ -90,15 +91,32 @@ export default function MapaPage() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background">
+      {/* 👑 Encabezado Unificado: Grid de 3 columnas para evitar desbordamientos */}
       <header className="border-b border-border/50 bg-background px-4 py-3 shrink-0 z-20">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 text-primary">
-            <Store className="h-5 w-5" />
-            <h1 className="text-base font-bold font-heading text-foreground">Oasis | Mapa Local</h1>
+        <div className="container mx-auto grid grid-cols-3 items-center w-full">
+          
+          {/* Columna Izquierda: Botón de atrás en su espacio exacto */}
+          <div className="flex items-center justify-start">
+            <div className="w-10 h-10 shrink-0">
+              <ClientBackButton />
+            </div>
           </div>
-          <span className="text-xs bg-primary/10 text-primary font-medium px-2.5 py-1 rounded-full transition-all">
-            {filteredBusinesses.length} marcados
-          </span>
+
+          {/* Columna Central: Marca/Título perfectamente centrados */}
+          <div className="flex items-center justify-center gap-2 text-primary">
+            <Store className="h-5 w-5 shrink-0" />
+            <h1 className="text-sm md:text-base font-bold font-heading text-foreground whitespace-nowrap">
+              Mapa Local
+            </h1>
+          </div>
+
+          {/* Columna Derecha: Contador de marcados alineado al final */}
+          <div className="flex items-center justify-end">
+            <span className="text-xs bg-primary/10 text-primary font-medium px-3.5 py-1 rounded-full transition-all whitespace-nowrap">
+              {filteredBusinesses.length} marcados
+            </span>
+          </div>
+
         </div>
       </header>
 
@@ -149,7 +167,7 @@ export default function MapaPage() {
                   selectedRadius === 0.5 ? "bg-secondary text-secondary-foreground font-bold" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-              <MapPin className="h-3 w-3" /> a menos de 500m
+                <MapPin className="h-3 w-3" /> a menos de 500m
               </button>
               <button
                 onClick={() => handleRadiusSelect(1.0)}

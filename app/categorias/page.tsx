@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { client } from "@/lib/sanity/client";
 import { CATEGORIES_WITH_COUNTS_QUERY, CATEGORIES_LIST_QUERY } from "@/lib/sanity/queries";
-import { Store, ArrowLeft } from "lucide-react";
+import { Store } from "lucide-react";
 import { CategoryGrid } from "@/components/category/CategoryGrid";
 
 // Revalida los datos de Sanity automáticamente cada 60 segundos
@@ -85,22 +85,42 @@ export default async function CategoriasPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ⬅️ BOTÓN FLOTANTE CON TU DISEÑO NEÓN ADAPTABLE */}
-      <ClientBackButton />
-
       {/* Hero Header Atractivo y Regional */}
       <header className="relative overflow-hidden border-b border-border/40 bg-background/60 backdrop-blur-md py-12 md:py-16">
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]" />
-        <div className="container mx-auto px-4 text-center">
-          <div className="mx-auto mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary shadow-sm">
-            <Store className="h-5 w-5" aria-hidden="true" />
+        
+        <div className="container mx-auto px-4">
+          
+          {/* 👑 Top Bar del Header: Distribución limpia de 3 columnas para el botón y el icono */}
+          <div className="grid grid-cols-3 items-center mb-6 w-full max-w-2xl mx-auto">
+            {/* Columna Izquierda: Espacio exacto controlado para el botón de regreso */}
+            <div className="flex items-center justify-start">
+              <div className="w-10 h-10 shrink-0">
+                <ClientBackButton />
+              </div>
+            </div>
+
+            {/* Columna Central: Icono de la Tienda perfectamente alineado */}
+            <div className="flex items-center justify-center">
+              <div className="h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary shadow-sm flex">
+                <Store className="h-5 w-5" aria-hidden="true" />
+              </div>
+            </div>
+
+            {/* Columna Derecha: Bloque espaciador para equilibrar el centrado exacto */}
+            <div className="w-10 h-10 pointer-events-none invisible justify-self-end" />
           </div>
-          <h1 className="text-4xl font-extrabold tracking-tight font-heading sm:text-5xl md:text-6xl text-foreground">
-            Explora por <span className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent">Categorías</span>
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-            ¿Buscas dónde comer, un hotel con piscina o un servicio confiable en el Occidente? Selecciona un sector y descubre locales recomendados en la región.
-          </p>
+
+          {/* Textos del Hero */}
+          <div className="text-center">
+            <h1 className="text-4xl font-extrabold tracking-tight font-heading sm:text-5xl md:text-6xl text-foreground">
+              Explora por <span className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent">Categorías</span>
+            </h1>
+            <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
+              ¿Buscas dónde comer, un hotel con piscina o un servicio confiable en el Occidente? Selecciona un sector y descubre locales recomendados en la región.
+            </p>
+          </div>
+
         </div>
       </header>
 

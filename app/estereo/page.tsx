@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Volume2, VolumeX, Radio, Heart, Share2, SkipBack, SkipForward, Repeat, Music, Headphones, ChevronDown } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Play, Pause, Volume2, VolumeX, Radio, Heart, Share2, SkipBack, SkipForward, Repeat, Music, Headphones, ChevronDown, ArrowLeft } from 'lucide-react';
 import { useTheme } from 'next-themes';
 // 👇 Importamos las estaciones desde el archivo externo
-import { RADIO_STATIONS, STATION_IDS } from '@/components/stations/radioStations'; // Ajusta la ruta según donde guardes el archivo
+import { RADIO_STATIONS, STATION_IDS } from '@/components/stations/radioStations'; 
 
 export default function RadioPlayerPage() {
+  const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.85);
   const [isMuted, setIsMuted] = useState(false);
@@ -19,11 +21,9 @@ export default function RadioPlayerPage() {
 
   const { resolvedTheme } = useTheme();
 
-  // Obtenemos la estación actual
   const currentStation = RADIO_STATIONS[selectedStation];
   const currentColors = currentStation.color;
 
-  // Cerrar dropdown al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -38,7 +38,6 @@ export default function RadioPlayerPage() {
     setIsMounted(true);
   }, []);
 
-  // Cambiar URL cuando se selecciona otra emisora
   useEffect(() => {
     if (audioRef.current) {
       const wasPlaying = isPlaying;
@@ -125,7 +124,7 @@ export default function RadioPlayerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#e0e5ec] dark:bg-[#181926] flex items-center justify-center p-4 transition-colors duration-300">
+    <div className="min-h-screen bg-[#e0e5ec] dark:bg-[#181926] flex flex-col items-center justify-center p-4 transition-colors duration-300">
       
       {/* Contenedor principal */}
       <div className="w-full max-w-md">
@@ -133,57 +132,70 @@ export default function RadioPlayerPage() {
         {/* Tarjeta principal neumórfica */}
         <div className="bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-[40px] p-9 shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] transition-all duration-300">
           
-          {/* Selector de emisora - Versión compacta */}
-          <div className="mb-4 relative" ref={dropdownRef}>
+          {/* ⚡ Contenedor en Línea: Botón Atrás + Selector de Emisora */}
+          <div className="flex items-center gap-4 mb-6 relative" ref={dropdownRef}>
+            
+            {/* Botón Atrás */}
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-full px-3 py-2 rounded-xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[5px_5px_10px_rgba(163,177,198,0.6),-5px_-5px_10px_rgba(255,255,255,0.5)] dark:shadow-[5px_5px_10px_rgba(15,18,22,0.7),-5px_-5px_10px_rgba(35,43,53,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)] transition-all flex items-center justify-between group"
+              onClick={() => router.back()}
+              className="w-11 h-11 shrink-0 rounded-full bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[4px_4px_8px_rgba(163,177,198,0.6),-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[4px_4px_8px_rgba(15,18,22,0.7),-4px_-4px_8px_rgba(35,43,53,0.4)] hover:shadow-[inset_2px_2px_5px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_2px_2px_5px_rgba(15,18,22,0.8)] transition-all flex items-center justify-center group"
+              title="Volver"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500 dark:text-slate-400">📻</span>
-                <div className="flex flex-col items-start">
-                  <span className="text-xs font-semibold text-gray-800 dark:text-slate-100">
-                    {currentStation.name}
-                  </span>
-                  <span className="text-[10.5px] text-gray-500 dark:text-slate-500">
-                    {currentStation.frequency} • {currentStation.location.split(",")[0]}
-                  </span>
-                </div>
-              </div>
-              <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-slate-300 group-hover:-translate-x-0.5 transition-transform" />
             </button>
 
-            {/* Dropdown dinámico */}
-            {isDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-2 z-10 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-xl shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] overflow-hidden animate-in slide-in-from-top-2 duration-200">
-                {STATION_IDS.map((stationId, index) => (
-                  <div key={stationId}>
-                    <button
-                      onClick={() => handleStationSelect(stationId)}
-                      className={`w-full px-3 py-2 text-left transition-all flex items-center gap-2 ${
-                        selectedStation === stationId
-                          ? `bg-${RADIO_STATIONS[stationId].color.main}/10 dark:bg-${RADIO_STATIONS[stationId].color.main}/20 shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]`
-                          : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
-                      }`}
-                    >
-                      <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${RADIO_STATIONS[stationId].color.gradient} flex items-center justify-center text-white text-[10px] font-bold`}>
-                        {RADIO_STATIONS[stationId].frequency.split(' ')[0]}
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-[12.5px] font-semibold text-gray-800 dark:text-slate-100">{RADIO_STATIONS[stationId].name}</div>
-                        <div className="text-[11px] text-gray-500 dark:text-slate-400">{RADIO_STATIONS[stationId].frequency} • {RADIO_STATIONS[stationId].location.split(',')[0]}</div>
-                      </div>
-                      {selectedStation === stationId && (
-                        <div className={`w-1.5 h-1.5 rounded-full bg-${RADIO_STATIONS[stationId].color.main}`}></div>
-                      )}
-                    </button>
-                    {index < STATION_IDS.length - 1 && (
-                      <div className="h-px bg-gray-300 dark:bg-gray-700 mx-2"></div>
-                    )}
+            {/* Selector Desplegable */}
+            <div className="flex-1 relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full px-2 py-2 rounded-xl bg-[#e0e5ec] dark:bg-[#1a1f26] shadow-[4px_4px_8px_rgba(163,177,198,0.6),-4px_-4px_8px_rgba(255,255,255,0.5)] dark:shadow-[4px_4px_8px_rgba(15,18,22,0.7),-4px_-4px_8px_rgba(35,43,53,0.4)] hover:shadow-[inset_2px_2px_5px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_2px_2px_5px_rgba(15,18,22,0.8)] transition-all flex items-center justify-between group"
+              >
+                <div className="flex items-center gap-2 overflow-hidden">
+                 
+                  <div className="flex flex-col items-start truncate">
+                    <span className="text-[13.5px] font-semibold text-gray-800 dark:text-slate-100 truncate w-full text-left">
+                      {currentStation.name}
+                    </span>
+                    <span className="text-[12.3px] text-gray-500 dark:text-slate-500 truncate w-full text-left">
+                      {currentStation.frequency} • {currentStation.location.split(",")[0]}
+                    </span>
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
+                <ChevronDown className={`w-4 h-4 shrink-0 text-gray-600 dark:text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown dinámico posicionado correctamente abajo del input */}
+              {isDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 z-10 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-xl shadow-[9px_9px_16px_rgba(163,177,198,0.6),-9px_-9px_16px_rgba(255,255,255,0.5)] dark:shadow-[9px_9px_16px_rgba(15,18,22,0.7),-9px_-9px_16px_rgba(35,43,53,0.4)] overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                  {STATION_IDS.map((stationId, index) => (
+                    <div key={stationId}>
+                      <button
+                        onClick={() => handleStationSelect(stationId)}
+                        className={`w-full px-3 py-2 text-left transition-all flex items-center gap-2 ${
+                          selectedStation === stationId
+                            ? `bg-${RADIO_STATIONS[stationId].color.main}/10 dark:bg-${RADIO_STATIONS[stationId].color.main}/20 shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]`
+                            : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
+                        }`}
+                      >
+                        <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${RADIO_STATIONS[stationId].color.gradient} flex items-center justify-center text-white text-[10px] font-bold`}>
+                          {RADIO_STATIONS[stationId].frequency.split(' ')[0]}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[12.5px] font-semibold text-gray-800 dark:text-slate-100 truncate">{RADIO_STATIONS[stationId].name}</div>
+                          <div className="text-[11px] text-gray-500 dark:text-slate-400 truncate">{RADIO_STATIONS[stationId].frequency} • {RADIO_STATIONS[stationId].location.split(',')[0]}</div>
+                        </div>
+                        {selectedStation === stationId && (
+                          <div className={`w-1.5 h-1.5 rounded-full bg-${RADIO_STATIONS[stationId].color.main}`}></div>
+                        )}
+                      </button>
+                      {index < STATION_IDS.length - 1 && (
+                        <div className="h-px bg-gray-300 dark:bg-gray-700 mx-2"></div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Header con círculo neumórfico */}

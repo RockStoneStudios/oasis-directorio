@@ -35,11 +35,10 @@ export default function ClassicDirectoryPage() {
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen text-foreground transition-colors duration-300 max-w-7xl">
       
-      {/* 👑 Encabezado Unificado: Botón y Título alineados horizontalmente en la misma línea */}
-      {/* 👑 Encabezado: Botón izquierda - Título centrado */}
-<div className="relative flex items-center justify-center border-b border-zinc-800/50 pb-5 mb-8">
-  {/* Botón izquierda - posición absoluta */}
-   <div className="absolute left-0">
+      {/* 👑 Encabezado Modificado: Alineación Flex limpia y nativa */}
+    <div className="flex items-center gap-4 border-b border-zinc-800/50 pb-5 mb-8">
+  {/* 📦 Contenedor con tamaño fijo bloqueado para que el botón no se monte sobre el texto */}
+  <div className="w-10 h-10 shrink-0 flex items-center justify-center relative">
     {mounted ? (
       <ClientBackButton />
     ) : (
@@ -47,12 +46,11 @@ export default function ClassicDirectoryPage() {
     )}
   </div>
   
-  {/* Título centrado */}
-  <h1 className="text-xl md:text-2xl font-extrabold tracking-tight font-heading text-foreground">
+  {/* Título con un margen izquierdo extra por si las moscas (pl-1) */}
+  <h1 className="text-xl md:text-2xl font-extrabold tracking-tight font-heading text-foreground pl-1">
     Directorio Clásico
   </h1>
 </div>
-
       {/* ⌨️ Grid de letras responsivo: Controla el ancho máximo en pantallas grandes */}
       <div className="max-w-4xl mx-auto mt-10 mb-10">
         <div className="grid grid-cols-7 sm:grid-cols-9 md:grid-cols-14 gap-2 justify-items-center">

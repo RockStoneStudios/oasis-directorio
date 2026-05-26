@@ -10,7 +10,7 @@ export function ClientBackButton() {
   return (
     <button
       onClick={() => router.back()}
-      className="absolute top-6 left-4 md:left-8 z-30 flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 cursor-pointer active:scale-95
+      className="w-full h-full flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 cursor-pointer active:scale-95
         /* ☀️ Modo Claro: Neón naranja suave */
         bg-white/80 border border-orange-100 text-zinc-800 shadow-[0_0_10px_rgba(251,146,60,0.1)] 
         hover:bg-white hover:text-orange-600 hover:border-orange-400 hover:shadow-[0_0_15px_rgba(251,146,60,0.4)]

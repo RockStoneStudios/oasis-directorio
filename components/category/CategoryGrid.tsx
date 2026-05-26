@@ -33,7 +33,6 @@ interface CategoryGridProps {
   categoriesWithSubs: CategoryWithSubs[];
 }
 
-// 🚀 Ganchos ultra específicos para las categorías principales
 const CATEGORY_HOOKS: Record<string, string> = {
   "donde-comer": "Los mejores restaurantes, estaderos, cafés y delicias típicas en la ruta del sol.",
   "hospedaje": "Hoteles con piscina, glampings idílicos y fincas de recreo en San Jerónimo, Sopetrán y Santa Fe.",
@@ -43,7 +42,6 @@ const CATEGORY_HOOKS: Record<string, string> = {
   "turismo": "Guías locales, centros recreativos, caminatas y planes imperdibles cerca del Río Cauca."
 };
 
-// 🚀 Variantes dinámicas de seguridad
 const FALLBACK_HOOKS = [
   (name: string) => `Descubre los sitios más recomendados y populares del sector ${name} en la subregión.`,
   (name: string) => `Encuentra contactos, horarios y ubicaciones de comercios dedicados a: ${name}.`,
@@ -54,7 +52,6 @@ const FALLBACK_HOOKS = [
   (name: string) => `Tu guía definitiva para contactar empresas y locales enfocados en ${name}.`
 ];
 
-// 🚀 Función a prueba de fallos con validación de nulidad
 function getDeterministicHook(id: string, name: string): string {
   if (!id) return `Explora las mejores opciones de ${name || 'comercio'} en toda la región.`;
   const cleanName = name || "comercio";
@@ -96,7 +93,7 @@ export function CategoryGrid({ initialCategories = [], categoriesWithSubs = [] }
   }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-start">
       {validCategories.map((category) => {
         if (!category || !category._id) return null;
 
@@ -107,14 +104,14 @@ export function CategoryGrid({ initialCategories = [], categoriesWithSubs = [] }
         const categoryName = category.name || "Categoría sin nombre";
         
         const categoryHook = CATEGORY_HOOKS[slugStr] || getDeterministicHook(category._id, categoryName);
-
         const hasValidImage = !!(category.image?.asset?._ref || category.image?.asset?.url);
 
         return (
-          <div key={category._id} className="flex flex-col h-full group">
+          <div key={category._id} className="flex flex-col group">
+            {/* 💳 TARJETA PRINCIPAL: Ahora tiene un tamaño independiente que no se deforma jamás */}
             <div
               onClick={() => handleCategoryClick(category, hasSubcategories)}
-              className={`relative overflow-hidden rounded-2xl border bg-card p-4 md:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer h-full select-none flex flex-col ${
+              className={`relative overflow-hidden rounded-2xl border bg-card p-4 md:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer select-none flex flex-col justify-between aspect-square md:aspect-auto md:min-h-[220px] ${
                 isExpanded 
                   ? 'border-primary/50 shadow-lg ring-1 ring-primary/10 bg-accent/5' 
                   : 'border-border/60 hover:border-primary/30 shadow-sm'
@@ -122,9 +119,8 @@ export function CategoryGrid({ initialCategories = [], categoriesWithSubs = [] }
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-primary/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-70 group-hover:opacity-100 transition-opacity" />
               
-              {/* 🎨 ESTRUCTURA INTERNA: SIEMPRE EN COLUMNA (icono arriba, texto centrado) */}
-              <div className="relative flex flex-col items-center text-center gap-3 md:gap-4">
-                {/* Imagen - Siempre centrada */}
+              {/* Contenido Superior */}
+              <div className="relative flex flex-col items-center text-center gap-3 md:gap-4 w-full h-full justify-center">
                 <div className="relative h-14 w-14 md:h-16 md:w-16 shrink-0 overflow-hidden rounded-xl border border-border/50 bg-muted shadow-inner group-hover:scale-105 transition-transform duration-300">
                   {hasValidImage ? (
                     <Image
@@ -142,21 +138,18 @@ export function CategoryGrid({ initialCategories = [], categoriesWithSubs = [] }
                   )}
                 </div>
                 
-                <div className="flex-1 min-w-0 w-full">
-                  {/* Nombre - Siempre centrado */}
+                <div className="min-w-0 w-full">
                   <h2 className="text-sm md:text-lg font-bold text-foreground font-heading group-hover:text-primary transition-colors line-clamp-1">
                     {categoryName}
                   </h2>
                   
-                  {/* Descripción - Siempre centrada, más compacta en mobile */}
                   <p className="text-[11px] md:text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
                     {categoryHook}
                   </p>
 
-                  {/* Contador - Siempre centrado */}
                   <div className="flex items-center gap-1.5 mt-2 md:mt-3 justify-center">
                     <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-[10px] md:text-xs font-semibold text-primary">
-                      {category.count || 0} {(category.count === 1) ? 'negocio' : 'negocios'}
+                      {category.count || 0} {category.count === 1 ? 'negocio' : 'negocios'}
                     </span>
                   </div>
                 </div>
@@ -175,6 +168,7 @@ export function CategoryGrid({ initialCategories = [], categoriesWithSubs = [] }
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
 
+            {/* 🔓 ACORDEÓN: Totalmente exterior al recuadro gris. Crece hacia abajo limpiamente sin alterar a los vecinos */}
             {isExpanded && hasSubcategories && (
               <div className="mt-2 md:mt-3 mx-1 p-2 md:p-3 rounded-2xl bg-muted/30 border border-border/50 space-y-1.5 animate-in fade-in slide-in-from-top-3 duration-300">
                 <p className="text-[9px] md:text-[10px] uppercase tracking-wider font-extrabold text-muted-foreground/80 px-2 mb-2">
