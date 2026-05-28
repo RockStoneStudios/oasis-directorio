@@ -171,7 +171,8 @@ export const MUNICIPALITIES_LIST_QUERY = defineQuery(/* groq */ `
   *[_type == "municipality"] | order(name asc) {
     _id,
     name,
-    "slug": slug
+    "slug": slug,
+    flag
   }
 `);
 
