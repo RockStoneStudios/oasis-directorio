@@ -8,7 +8,22 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { Heart, Home, LayoutDashboard, Menu, User, X, MapPin, Grid3x3, List, BadgeDollarSign, RadioIcon, Moon, Sun, ChevronDown } from "lucide-react";
+import {
+  Heart,
+  Home,
+  LayoutDashboard,
+  Menu,
+  User,
+  X,
+  MapPin,
+  Grid3x3,
+  List,
+  BadgeDollarSign,
+  RadioIcon,
+  Moon,
+  Sun,
+  ChevronDown,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
@@ -37,32 +52,42 @@ interface NavbarProps {
 
 export function Navbar({ municipalities = [] }: NavbarProps) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false); // Control del menú móvil (Sheet)
-  const [isMuniOpen, setIsMuniOpen] = useState(false); // Control del Dropdown nativo
-  const [mounted, setMounted] = useState(false);
-  const [currentMuni, setCurrentMuni] = useState<Municipality | null>(null);
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
-  
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Cerrar el dropdown si se hace clic afuera
+  const [isOpen, setIsOpen] = useState(false); // Menú móvil (Sheet)
+  const [isMuniOpen, setIsMuniOpen] = useState(false); // Dropdown municipios (Escritorio)
+  const [isMobileMuniOpen, setIsMobileMuniOpen] = useState(false); // Dropdown municipios (Móvil independiente)
+  const [mounted, setMounted] = useState(false);
+  const [currentMuni, setCurrentMuni] = useState<Municipality | null>(null);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Cerrar dropdowns al hacer clic fuera (soporta clicks y touch)
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsMuniOpen(false);
       }
+      if (mobileDropdownRef.current && !mobileDropdownRef.current.contains(event.target as Node)) {
+        setIsMobileMuniOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, []);
 
   const updateSelectedMunicipality = () => {
     const savedSlug = localStorage.getItem("oasis_municipality");
-    
+
     if (savedSlug && municipalities.length > 0) {
-      const found = municipalities.find(m => {
-        const mSlug = typeof m.slug === 'string' ? m.slug : m.slug?.current || "";
+      const found = municipalities.find((m) => {
+        const mSlug = typeof m.slug === "string" ? m.slug : m.slug?.current || "";
         return mSlug === savedSlug;
       });
 
@@ -91,7 +116,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
     };
   }, [municipalities]);
 
-  const handleSelectMunicipality = (slug: string | null) => {
+  const handleSelectMunicipality = (slug: string | null, isMobile = false) => {
     const params = new URLSearchParams(window.location.search);
 
     if (slug) {
@@ -101,12 +126,16 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
       localStorage.removeItem("oasis_municipality");
       params.delete("municipality");
     }
-    
-    setIsMuniOpen(false);
+
+    if (isMobile) {
+      setIsMobileMuniOpen(false);
+    } else {
+      setIsMuniOpen(false);
+    }
+
     window.dispatchEvent(new Event("oasis_muni_changed"));
     updateSelectedMunicipality();
 
-    // Redirige al Home actualizando la URL para que el Servidor filtre los negocios destacados
     router.push(`/?${params.toString()}`, { scroll: false });
   };
 
@@ -125,7 +154,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
       }
     >
       <div className="container flex h-16 items-center justify-between">
-        {/* Logo and Navigation */}
+        {/* Logo e Historial de Navegación */}
         <div className="flex items-center gap-8">
           <Link
             href="/"
@@ -138,6 +167,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                 height={140}
                 alt="Logo Oasis"
                 className="shadow-md object-cover"
+                priority
               />
             </div>
           </Link>
@@ -170,11 +200,11 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
           </nav>
         </div>
 
-        {/* Desktop Actions */}
+        {/* Acciones de Escritorio */}
         <div className="hidden md:flex items-center gap-3">
           {mounted && (
             <>
-              {/* 🗺️ Selector de Municipio Nativo e Interactivo */}
+              {/* Selector de Municipio Escritorio */}
               <div className="relative" ref={dropdownRef}>
                 <button
                   type="button"
@@ -199,15 +229,18 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                       <span>Todo el Occidente</span>
                     </>
                   )}
-                  <ChevronDown className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${isMuniOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${
+                      isMuniOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
 
-                {/* Menú Desplegable con estilos nativos para Light/Dark */}
                 {isMuniOpen && (
                   <div className="absolute top-full right-0 mt-2 w-56 z-50 bg-popover text-popover-foreground border border-border rounded-xl shadow-xl backdrop-blur-lg overflow-hidden py-1 animate-in fade-in slide-in-from-top-1 duration-150 max-h-72 overflow-y-auto">
                     <button
                       type="button"
-                      onClick={() => handleSelectMunicipality(null)}
+                      onClick={() => handleSelectMunicipality(null, false)}
                       className={`w-full text-left px-4 py-2.5 text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground flex items-center gap-2 ${
                         !currentMuni ? "text-primary font-bold bg-primary/10" : "text-foreground/90"
                       }`}
@@ -215,15 +248,15 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                       <MapPin className="h-3.5 w-3.5 text-primary" />
                       Todo el Occidente
                     </button>
-                    
+
                     {municipalities.map((muni) => {
-                      const mSlug = typeof muni.slug === 'string' ? muni.slug : muni.slug?.current || "";
+                      const mSlug = typeof muni.slug === "string" ? muni.slug : muni.slug?.current || "";
                       const isSelected = currentMuni?._id === muni._id;
                       return (
                         <button
                           key={muni._id}
                           type="button"
-                          onClick={() => handleSelectMunicipality(mSlug)}
+                          onClick={() => handleSelectMunicipality(mSlug, false)}
                           className={`w-full text-left px-4 py-2.5 text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground flex items-center gap-2 ${
                             isSelected ? "text-primary font-bold bg-primary/10" : "text-foreground/90"
                           }`}
@@ -243,7 +276,6 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                 )}
               </div>
 
-              {/* 🌓 Theme Toggle */}
               <button
                 onClick={toggleTheme}
                 className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
@@ -252,7 +284,6 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                 {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </button>
 
-              {/* Autenticado */}
               <SignedIn>
                 <Link
                   href="/saved"
@@ -279,7 +310,6 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                 </div>
               </SignedIn>
 
-              {/* Invitado */}
               <SignedOut>
                 <SignInButton mode="modal">
                   <Button variant="ghost" size="sm" className="text-slate-900 dark:text-gray-200">
@@ -294,51 +324,59 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
           )}
         </div>
 
-        {/* Mobile Menu */}
+        {/* Menú y Acciones para Móviles */}
         <div className="flex md:hidden items-center gap-2">
           {mounted ? (
             <>
-              {/* Dropdown Nativo para Móviles */}
-              <div className="relative">
-                <button
-                  onClick={() => setIsMuniOpen(!isMuniOpen)}
-                  className="flex items-center justify-center h-8 px-2.5 rounded-lg text-xs font-semibold bg-accent/40 border border-border/40 text-slate-900 dark:text-gray-200 gap-1 cursor-pointer"
+              {/* Selector de Municipios Móvil Corregido */}
+              <div className="relative" ref={mobileDropdownRef}>
+                <div
+                  onClick={() => setIsMobileMuniOpen(!isMobileMuniOpen)}
+                  className="flex items-center justify-center h-8 px-2.5 rounded-lg text-xs font-semibold bg-accent/40 border border-border/40 text-slate-900 dark:text-gray-200 gap-1 cursor-pointer select-none active:bg-accent/70"
                 >
                   {currentMuni && currentMuni.flag ? (
-                    <div className="relative h-3.5 w-5 rounded-sm overflow-hidden border border-black/10 shrink-0">
-                      <Image src={urlFor(currentMuni.flag).url()} alt="" fill className="object-cover" />
+                    <div className="relative h-3.5 w-5 rounded-sm overflow-hidden border border-black/10 shrink-0 pointer-events-none">
+                      <Image
+                        src={urlFor(currentMuni.flag).url()}
+                        alt=""
+                        fill
+                        className="object-cover"
+                      />
                     </div>
                   ) : (
-                    <MapPin className="h-3.5 w-3.5 text-primary" />
+                    <MapPin className="h-3.5 w-3.5 text-primary pointer-events-none" />
                   )}
-                  <span className="max-w-[65px] truncate">{currentMuni ? currentMuni.name : "Occidente"}</span>
-                  <ChevronDown className="h-2.5 w-2.5 opacity-50" />
-                </button>
+                  <span className="max-w-[65px] truncate pointer-events-none">
+                    {currentMuni ? currentMuni.name : "Occidente"}
+                  </span>
+                  <ChevronDown className="h-2.5 w-2.5 opacity-50 pointer-events-none" />
+                </div>
 
-                {isMuniOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-48 z-50 bg-popover text-popover-foreground border border-border rounded-xl shadow-xl overflow-hidden py-1 max-h-60 overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-150">
-                    <button
-                      onClick={() => handleSelectMunicipality(null)}
-                      className="w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-accent text-foreground/90 block"
+                {isMobileMuniOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-48 z-[60] bg-popover text-popover-foreground border border-border rounded-xl shadow-xl overflow-hidden py-1 max-h-60 overflow-y-auto animate-in fade-in slide-in-from-top-1 duration-150">
+                    <div
+                      onClick={() => handleSelectMunicipality(null, true)}
+                      className="w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-accent text-foreground/90 block cursor-pointer active:bg-accent/80"
                     >
                       Todo el Occidente
-                    </button>
+                    </div>
                     {municipalities.map((muni) => {
-                      const mSlug = typeof muni.slug === 'string' ? muni.slug : muni.slug?.current || "";
+                      const mSlug = typeof muni.slug === "string" ? muni.slug : muni.slug?.current || "";
                       return (
-                        <button
+                        <div
                           key={muni._id}
-                          onClick={() => handleSelectMunicipality(mSlug)}
-                          className="w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-accent text-foreground/90 block truncate"
+                          onClick={() => handleSelectMunicipality(mSlug, true)}
+                          className="w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-accent text-foreground/90 block truncate cursor-pointer active:bg-accent/80"
                         >
                           {muni.name}
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
                 )}
               </div>
 
+              {/* Botón Tema en Móvil */}
               <button
                 onClick={toggleTheme}
                 className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-[color,background-color] duration-200"
@@ -350,6 +388,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                 <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }} />
               </SignedIn>
 
+              {/* Desplegable Lateral de Navegación (Mobile Sheet) */}
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon">
@@ -376,7 +415,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                       <List className="h-5 w-5" />
                       Directorio clásico
                     </Link>
-                    
+
                     <Link
                       href="/categorias"
                       onClick={() => setIsOpen(false)}
@@ -385,7 +424,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                       <Grid3x3 className="h-5 w-5" />
                       Directorio por categorías
                     </Link>
-                    
+
                     <Link
                       href="/mapa"
                       onClick={() => setIsOpen(false)}
@@ -403,7 +442,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                       <BadgeDollarSign className="h-5 w-5" />
                       ¿Dónde retirar dinero?
                     </Link>
-                    
+
                     <Link
                       href="/estereo"
                       onClick={() => setIsOpen(false)}
@@ -422,7 +461,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     >
                       Negocios
                     </Link>
-                    
+
                     <SignedIn>
                       <Protect
                         plan="agent"
@@ -446,7 +485,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                         </Link>
                       </Protect>
                     </SignedIn>
-                    
+
                     <SignedOut>
                       <Link
                         href="/pricing"
@@ -456,7 +495,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                         Registrar negocio
                       </Link>
                     </SignedOut>
-                    
+
                     <SignedIn>
                       <div className="h-px bg-border my-2" />
                       <Link
@@ -476,12 +515,16 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                         Mi perfil
                       </Link>
                     </SignedIn>
-                    
+
                     <SignedOut>
                       <div className="h-px bg-border my-2" />
                       <div className="flex flex-col gap-2 px-4 mt-2">
                         <SignInButton mode="modal">
-                          <Button variant="outline" className="w-full" onClick={() => setIsOpen(false)}>
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => setIsOpen(false)}
+                          >
                             Iniciar sesión
                           </Button>
                         </SignInButton>
