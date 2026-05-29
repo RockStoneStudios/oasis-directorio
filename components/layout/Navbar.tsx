@@ -23,6 +23,7 @@ import {
   Moon,
   Sun,
   ChevronDown,
+  Vote, // Importamos el ícono de votaciones
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -155,6 +156,10 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
             </Link>
             <Link href="/sobre-nosotros" className="px-4 py-2 text-sm font-medium text-slate-900 dark:text-gray-200 rounded-lg hover:text-foreground hover:bg-accent transition-all">
               Conócenos
+            </Link>
+            {/* ENLACE DE ELECCIONES - ESCRITORIO */}
+            <Link href="/elecciones" className={`px-4 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-1.5 ${pathname === '/elecciones' ? 'text-orange-500 bg-orange-500/10' : 'text-orange-600 dark:text-orange-400 hover:bg-orange-500/10'}`}>
+              <Vote className="w-4 h-4" /> Elecciones
             </Link>
             {mounted && user && isAgent && (
               <Link href="/dashboard" className="px-4 py-2 text-sm font-medium text-slate-900 dark:text-gray-200 rounded-lg hover:text-foreground hover:bg-accent transition-all">
@@ -311,6 +316,11 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     <Link href="/mapa" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><MapPin className="h-5 w-5" /> Mapa de negocios</Link>
                     <Link href="/atm" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><BadgeDollarSign className="h-5 w-5" /> ¿Dónde retirar dinero?</Link>
                     <Link href="/estereo" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><RadioIcon className="h-5 w-5" /> Estéreo</Link>
+                    
+                    {/* ENLACE DE ELECCIONES - DISPOSITIVOS MÓVILES */}
+                    <Link href="/elecciones" onClick={() => setIsOpen(false)} className={`flex items-center gap-3 px-4 py-3 text-base font-bold rounded-lg transition-all ${pathname === '/elecciones' ? 'text-orange-500 bg-orange-500/10' : 'text-orange-600 dark:text-orange-400 hover:bg-accent'}`}>
+                      <Vote className="h-5 w-5" /> Elecciones 2026
+                    </Link>
 
                     <div className="h-px bg-border my-2" />
                     <Link href="/business" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent">Negocios</Link>
