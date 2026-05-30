@@ -1,12 +1,18 @@
-// @/app/business/[slug]/page.tsx
 import {
+  AirVent,
+  Briefcase,
+  Car,
+  CheckCircle2,
   ExternalLink,
   Globe,
   MapPin,
   Phone,
+  Plug,
   Store,
+  Waves,
+  Wifi,
 } from "lucide-react";
-import { SiFacebook, SiInstagram } from "react-icons/si";
+import { SiFacebook, SiInstagram, SiTiktok } from "react-icons/si";
 
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -33,7 +39,50 @@ interface BusinessDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// 🚀 1. OPTIMIZACIÓN DE METADATOS LOCALES Y OPEN GRAPH
+// Configuración de los íconos y textos amigables según el valor del Array de Sanity
+const AMENITY_MAP: Record<string, { label: string; icon: React.ReactNode; className: string }> = {
+  pet_friendly: {
+    label: "🐾 Pet Friendly",
+    icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+    className: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20"
+  },
+  air_conditioning: {
+    label: "Aire Acondicionado / Ventilador",
+    icon: <AirVent className="h-4 w-4 text-sky-500" />,
+    className: "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/20"
+  },
+  free_wifi: {
+    label: "Wi-Fi Gratis",
+    icon: <Wifi className="h-4 w-4 text-indigo-500" />,
+    className: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20"
+  },
+  coworking: {
+    label: "Espacio de Trabajo (Coworking)",
+    icon: <Briefcase className="h-4 w-4 text-amber-500" />,
+    className: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20"
+  },
+  power_outlets: {
+    label: "Tomacorrientes Accesibles",
+    icon: <Plug className="h-4 w-4 text-purple-500" />,
+    className: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20"
+  },
+  private_parking: {
+    label: "Parqueadero Privado",
+    icon: <Car className="h-4 w-4 text-blue-500" />,
+    className: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20"
+  },
+  pool_access: {
+    label: "Acceso a Piscina / Pasadía",
+    icon: <Waves className="h-4 w-4 text-teal-500" />,
+    className: "bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/20"
+  },
+  water_tank: {
+    label: "Tanque de Reserva de Agua",
+    icon: <Waves className="h-4 w-4 text-cyan-500" />, // Reutiliza icono de agua fluyendo
+    className: "bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/20"
+  },
+};
+
 export async function generateMetadata({
   params,
 }: BusinessDetailPageProps): Promise<Metadata> {
@@ -50,7 +99,6 @@ export async function generateMetadata({
   const category = business.category?.name || "Comercio";
   const municipality = business.municipality?.name || "Antioquia";
   
-  // Título e intenciones de búsqueda ultra optimizados para SEO Local (ej: "Restaurante El Sabor en Sopetrán | Teléfono, Horarios y Opiniones")
   const seoTitle = `${businessName} en ${municipality} | ${category} | Oasis`;
   const seoDescription = business.description 
     ? `${business.description.slice(0, 150)}... Encuentra opiniones, ubicación, horarios y contacto directo vía WhatsApp en Oasis.`
@@ -62,7 +110,7 @@ export async function generateMetadata({
     title: seoTitle,
     description: seoDescription,
     alternates: {
-      canonical: `https://oasis-directorio-ccg7.vercel.app/business/${slug}`, // 💡 Evita penalizaciones por contenido duplicado
+      canonical: `https://oasis-directorio-ccg7.vercel.app/business/${slug}`,
     },
     robots: {
       index: true,
@@ -81,7 +129,7 @@ export async function generateMetadata({
       url: `https://oasis-directorio-ccg7.vercel.app/business/${slug}`,
       siteName: "Oasis Directorio Local",
       locale: "es_CO",
-      type: "video.other", // Trata la ficha comercial como entidad enriquecida
+      type: "video.other",
       images: [
         {
           url: imageUrl,
@@ -122,8 +170,6 @@ export default async function BusinessDetailPage({
     .filter((item) => item._id !== business._id)
     .slice(0, 4);
 
-  // 🚀 2. CREACIÓN DE DATOS ESTRUCTURADOS (JSON-LD LOCALBUSINESS)
-  // Esto le dice a Google con exactitud matemática qué hace el negocio, dónde está y su reputación
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -137,7 +183,7 @@ export default async function BusinessDetailPage({
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": business.rating,
-        "reviewCount": "1", // Next step: hacerlo dinámico con los reviews reales
+        "reviewCount": "1",
         "bestRating": "5",
         "worstRating": "1"
       }
@@ -159,7 +205,6 @@ export default async function BusinessDetailPage({
 
   return (
     <div>
-      {/* 🚀 Inyección del Script JSON-LD en el Head invisible de la página */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -199,7 +244,6 @@ export default async function BusinessDetailPage({
                 {business.isFeatured && <Badge>Destacado</Badge>}
               </div>
               
-              {/* h1 limpio y prioritario para los rastreadores semánticos */}
               <h1 className="text-2xl font-bold font-heading sm:text-3xl md:text-5xl leading-tight text-foreground">
                 {business.name}
               </h1>
@@ -242,7 +286,6 @@ export default async function BusinessDetailPage({
               title={business.name}
             />
 
-            {/* Semantic <section> tags enhance text relevance architecture */}
             <section aria-labelledby="about-heading" className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
               <h2 id="about-heading" className="text-xl sm:text-2xl font-bold font-heading">
                 Sobre {business.name}
@@ -251,6 +294,34 @@ export default async function BusinessDetailPage({
                 {business.description || `Encuentra los mejores productos y servicios de ${business.name} en nuestro directorio local actualizado.`}
               </p>
             </section>
+
+            {/* 👇 NUEVA SECCIÓN DE AMENITIES EN EL FRONTEND 👇 */}
+           {/* SECCIÓN DE AMENITIES CORREGIDA Y 100% RESPONSIVA */}
+{business.amenities && business.amenities.length > 0 && (
+  <section aria-labelledby="amenities-heading" className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
+    <h2 id="amenities-heading" className="text-xl sm:text-2xl font-bold font-heading mb-4">
+      Servicios y Comodidades
+    </h2>
+    
+    {/* Usamos flex flex-wrap con un gap controlado para que se adapte dinámicamente a cualquier pantalla */}
+    <div className="flex flex-wrap gap-2.5">
+      {business.amenities.map((slug) => {
+        const amenity = AMENITY_MAP[slug];
+        if (!amenity) return null;
+
+        return (
+          <div
+            key={slug}
+            className={`flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-medium transition-colors ${amenity.className}`}
+          >
+            <div className="shrink-0 scale-95 sm:scale-100">{amenity.icon}</div>
+            <span className="whitespace-nowrap">{amenity.label}</span>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+)}
 
             <section aria-label="Ubicación en el mapa" className="h-80 w-full overflow-hidden rounded-2xl">
               <Map
@@ -292,6 +363,15 @@ export default async function BusinessDetailPage({
                     external
                   >
                     Perfil de Instagram
+                  </ContactLink>
+                )}
+                {business.tiktok && (
+                  <ContactLink
+                    href={business.tiktok}
+                    icon={<SiTiktok className="h-4 w-4 text-foreground text-[#000000] dark:text-[#FFFFFF]" />} // Icono corregido y colores adaptables
+                    external
+                  >
+                    Perfil de TikTok
                   </ContactLink>
                 )}
               </div>
@@ -362,7 +442,7 @@ function ContactLink({
       <a
         href={href}
         target={external ? "_blank" : undefined}
-        rel={external ? "noopener noreferrer" : undefined} // 💡 Seguridad y mejora de rendimiento SEO
+        rel={external ? "noopener noreferrer" : undefined}
       >
         {icon}
         <span className="truncate flex-1 text-left">{children}</span>

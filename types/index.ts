@@ -97,6 +97,7 @@ export interface Business {
   phone: string;
   facebook?: string;
   instagram?: string;
+  tiktok?: string;
   website?: string;
   municipality: Municipality;
   address: Address;

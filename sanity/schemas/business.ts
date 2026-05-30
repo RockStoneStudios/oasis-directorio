@@ -1,7 +1,6 @@
 // schemas/business.ts
 
 import { title } from "process";
-
 export const business = {
   name: 'business',
   title: 'Business',
@@ -21,7 +20,7 @@ export const business = {
           { title: 'Open', value: 'open' },
           { title: 'Closed', value: 'closed' },
           { title: 'Temporarily Closed', value: 'temporarily_closed' },
-           {title : 'always open', value : "alwaysopen"}
+          { title: 'Always Open', value: 'alwaysopen' }
         ],
       },
     },
@@ -32,6 +31,7 @@ export const business = {
     { name: 'phone', type: 'string', title: 'Phone Number' },
     { name: 'facebook', type: 'url', title: 'Facebook URL' },
     { name: 'instagram', type: 'url', title: 'Instagram URL' },
+    { name: 'tiktok', type: 'url', title: 'TikTok URL' },
     { name: 'website', type: 'url', title: 'Website URL' },
 
     // Location
@@ -46,6 +46,28 @@ export const business = {
       type: 'array', 
       title: 'Subcategories', 
       of: [{ type: 'reference', to: [{ type: 'subcategory' }] }] 
+    },
+
+    // 👇 SECCIÓN DE AMENITIES PARA EL TURISTA 👇
+    {
+      name: 'amenities',
+      title: 'Comodidades para el Turista',
+      description: 'Selecciona las características y servicios clave que ofrece este negocio al visitante.',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        layout: 'grid',
+        list: [
+          { title: '🐾 Pet Friendly', value: 'pet_friendly' },
+          { title: '❄️ Aire Acondicionado / Ventilador', value: 'air_conditioning' },
+          { title: '📶 Wi-Fi Gratis', value: 'free_wifi' },
+          { title: '💻 Espacio de Trabajo (Coworking)', value: 'coworking' },
+          { title: '🔌 Tomacorrientes Accesibles', value: 'power_outlets' },
+          { title: '🚗 Parqueadero Privado / Propio', value: 'private_parking' },
+          { title: '🏊‍♂️ Acceso a Piscina / Pasadía', value: 'pool_access' },
+          { title: '💧 Tanque / Reserva', value: 'water_backup' },
+        ],
+      },
     },
 
     // Metadata

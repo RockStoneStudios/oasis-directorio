@@ -35,6 +35,7 @@ export const FEATURED_BUSINESSES_QUERY = defineQuery(/* groq */ `
     status,
     rating,
     address { ${addressFragment} },
+    amenities,
     municipality->{ _id, name, "slug": slug },
     category->{ _id, name, "slug": slug, icon },
     isFeatured,
@@ -70,10 +71,12 @@ export const BUSINESS_SEARCH_QUERY = defineQuery(/* groq */ `
     description,
     status,
     whatsapp,
+    tiktok,
     phone,
     rating,
     address { ${addressFragment} },
     location,
+    amenities,
     municipality->{ _id, name, "slug": slug },
     category->{ _id, name, "slug": slug, icon },
     subcategories[]->{ _id, name, "slug": slug },
@@ -94,12 +97,14 @@ export const BUSINESS_DETAIL_QUERY = defineQuery(/* groq */ `
     status,
     hours,
     whatsapp,
+    tiktok,
     phone,
     facebook,
     instagram,
     website,
     address { ${addressFragment} },
     location,
+    amenities,
     municipality->{ _id, name, "slug": slug },
     category->{ _id, name, "slug": slug, icon },
     subcategories[]->{ _id, name, "slug": slug },
@@ -150,19 +155,18 @@ export const BUSINESS_BY_SUBCATEGORY_QUERY = `
       name
     },
     address,
+    amenities,
     whatsapp,
     isFeatured
   }
 `;
-
-// sanity/queries.ts - Agrega esto
 
 export const CATEGORIES_WITH_COUNTS_QUERY = defineQuery(/* groq */ `
   *[_type == "category"] | order(name asc) {
     _id,
     name,
     "slug": slug,
-    "image": image { ${imageFragment} },  // ← Cambiado de "icon" a "image"
+    "image": image { ${imageFragment} },
     "count": count(*[_type == "business" && references(^._id)])
   }
 `);
@@ -203,16 +207,9 @@ export const RECENT_NEWS_QUERY = defineQuery(/* groq */ `
   }
 `);
 
-// Agrega esto a tu archivo de queries
-
 // ============================================
 // BÚSQUEDA ALFABÉTICA (A-Z)
 // ============================================
-
-// sanity/queries.ts - Agrega esto
-
-// sanity/queries.ts
-// sanity/queries.ts - Agrega esta query usando tu imageFragment
 
 export const CLASSIC_DIRECTORY_BY_LETTER_QUERY = defineQuery(/* groq */ `
   *[_type == "business" && name match $letter + "*"] | order(name asc) {
@@ -225,13 +222,14 @@ export const CLASSIC_DIRECTORY_BY_LETTER_QUERY = defineQuery(/* groq */ `
     status,
     rating,
     address { ${addressFragment} },
+    amenities,
     municipality->{ _id, name, "slug": slug },
     category->{ _id, name, "slug": slug, icon },
     isFeatured,
     createdAt
   }
 `);
-// Para contar cuántos negocios hay por letra (útil para UI)
+
 export const BUSINESS_COUNT_BY_LETTER_QUERY = defineQuery(/* groq */ `
   {
     "letters": *[_type == "business" && status == "active"] {

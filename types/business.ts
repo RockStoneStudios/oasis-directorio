@@ -18,7 +18,20 @@ export type BusinessSort =
   | "name_asc"
   | "name_desc";
 
-export interface Business extends SanityBusiness {}
+// Tipado estricto para los valores válidos de las comodidades
+export type TouristAmenity =
+  | "pet_friendly"
+  | "air_conditioning"
+  | "free_wifi"
+  | "coworking"
+  | "power_outlets"
+  | "private_parking"
+  | "pool_access"
+  | "water_backup";
+
+export interface Business extends SanityBusiness {
+  amenities?: TouristAmenity[];
+}
 
 export interface BusinessCardData {
   _id: string;
@@ -28,6 +41,7 @@ export interface BusinessCardData {
   description?: string | null;
   status?: BusinessStatus | string | null;
   whatsapp?: string | null;
+  tiktok?: string | null;
   phone?: string | null;
   rating?: number | null;
   address?: Partial<Address> | null;
@@ -35,6 +49,7 @@ export interface BusinessCardData {
   municipality?: Partial<Municipality> | null;
   category?: Partial<Category> | null;
   subcategories?: Partial<Subcategory>[] | null;
+  amenities?: TouristAmenity[] | string[] | null; // 👇 NUEVA PROPIEDAD AGREGADA
   isFeatured?: boolean | null;
   isVerified?: boolean | null;
   createdAt?: string | null;
@@ -60,6 +75,7 @@ export interface BusinessFilters {
   sort?: BusinessSort;
   hasWhatsapp?: boolean;
   hasAddress?: boolean;
+  amenities?: string[]; // 💡 Agregado opcional por si decides filtrar por múltiples comodidades en el sidebar
 }
 
 export interface BusinessPagination {
