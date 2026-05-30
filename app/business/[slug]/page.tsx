@@ -153,7 +153,7 @@ export default async function BusinessDetailPage({
 }: BusinessDetailPageProps) {
   const { slug } = await params;
   const business = await getBusinessBySlug(slug);
-
+  console.log("************************",business);
   if (!business) notFound();
 
   const normalized = normalizeBusinessData(business);

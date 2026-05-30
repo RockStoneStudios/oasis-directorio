@@ -196,6 +196,24 @@ export const UPCOMING_EVENTS_QUERY = defineQuery(/* groq */ `
   }
 `);
 
+export const DESVARE_DIRECTORY_QUERY = defineQuery(/* groq */ `
+  *[_type == "business" && (status == "active" || status == "alwaysopen")] | order(name asc) {
+    _id,
+    _type,
+    name,
+    "slug": slug,
+    "logo": logo { ${imageFragment} },
+    description,
+    whatsapp,
+    phone,
+    hours,
+    status, 
+    address { ${addressFragment} },
+    category->{ _id, name, "slug": slug, icon },
+    municipality->{ _id, name, "slug": slug }
+  }
+`);
+
 export const RECENT_NEWS_QUERY = defineQuery(/* groq */ `
   *[_type == "news"] | order(publishedAt desc)[0...4] {
     _id,
