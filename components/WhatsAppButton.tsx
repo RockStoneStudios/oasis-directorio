@@ -33,27 +33,29 @@ export function WhatsAppButton({
   const formattedPhone = formatColombiaPhone(phone);
 
   const href = generateWhatsAppUrl(
-    formattedPhone, // 👈 Pasamos el número ya formateado con el 57
+    formattedPhone,
     `Hola, vi ${businessName} en Oasis y quiero más información.`,
   );
 
   if (!href) return null;
 
+  // Clases base para el efecto neon y pulso
+  const neonPulseClass = "animate-pulse shadow-[0_0_10px_rgba(37,211,102,0.5),0_0_20px_rgba(37,211,102,0.3)] hover:shadow-[0_0_15px_rgba(37,211,102,0.7),0_0_25px_rgba(37,211,102,0.5)] transition-shadow duration-300";
+
   return (
     <Button
       asChild
       variant="success"
-      size={floating ? "icon-lg" : "lg"}
+      size={floating ? "icon-lg" : "icon"}
       className={
         floating
-          ? "fixed bottom-6 right-6 z-40 rounded-full shadow-warm-lg h-14 w-14"
-          : "w-full sm:w-fit gap-2"
+          ? `fixed bottom-6 right-6 z-40 rounded-full shadow-warm-lg h-14 w-14 ${neonPulseClass}`
+          : `rounded-full h-10 w-10 p-0 ${neonPulseClass}`
       }
     >
       <a href={href} target="_blank" rel="noreferrer">
         <SiWhatsapp className={floating ? "h-7 w-7" : "h-5 w-5"} aria-hidden="true" />
-        {!floating && <span>WhatsApp</span>}
-        {floating && <span className="sr-only">Contactar por WhatsApp</span>}
+        <span className="sr-only">Contactar por WhatsApp</span>
       </a>
     </Button>
   );
