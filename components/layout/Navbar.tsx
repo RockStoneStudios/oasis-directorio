@@ -311,11 +311,11 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     </SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col gap-2 mt-8">
-                    <Link href="/clasico" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><List className="h-5 w-5" /> Directorio clásico</Link>
-                    <Link href="/categorias" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><Grid3x3 className="h-5 w-5" /> Directorio por categorías</Link>
-                    <Link href="/mapa" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><MapPin className="h-5 w-5" /> Mapa de negocios</Link>
+                    <Link href="/clasico" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><List className="h-5 w-5" />De la A a la Z</Link>
+                    <Link href="/categorias" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><Grid3x3 className="h-5 w-5" />Buscar por Categoría</Link>
+                    <Link href="/mapa" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><MapPin className="h-5 w-5" />Cerca de mí</Link>
                     <Link href="/atm" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><BadgeDollarSign className="h-5 w-5" /> ¿Dónde retirar dinero?</Link>
-                    <Link href="/estereo" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><RadioIcon className="h-5 w-5" /> Estéreo</Link>
+                    <Link href="/estereo" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><RadioIcon className="h-5 w-5" /> Emisoras del occidente antioqueño</Link>
                     
                     {/* ENLACE DE ELECCIONES - DISPOSITIVOS MÓVILES */}
                     <Link href="/elecciones" onClick={() => setIsOpen(false)} className={`flex items-center gap-3 px-4 py-3 text-base font-bold rounded-lg transition-all ${pathname === '/elecciones' ? 'text-orange-500 bg-orange-500/10' : 'text-orange-600 dark:text-orange-400 hover:bg-accent'}`}>
