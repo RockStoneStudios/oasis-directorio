@@ -48,7 +48,7 @@ export default function ClassicDirectoryPage() {
   
   {/* Título con un margen izquierdo extra por si las moscas (pl-1) */}
   <h1 className="text-xl md:text-2xl font-extrabold tracking-tight font-heading text-foreground pl-1">
-    Directorio Clásico
+    Directorio de la A la Z
   </h1>
 </div>
       {/* ⌨️ Grid de letras responsivo: Controla el ancho máximo en pantallas grandes */}
