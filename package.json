@@ -14,18 +14,22 @@
     "seed:clean": "npx tsx scripts/seed/seed.ts --clean"
   },
   "browserslist": {
-    "production": [
-      "last 3 years",
-      "> 0.5%",
-      "not dead",
-      "not IE 11",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+   "production": [
+    "last 2 years",
+    "> 1%",
+    "not dead",
+    "not IE 11",
+    "not op_mini all",
+    "not chrome < 80",
+    "not firefox < 75",
+    "not safari < 13",
+    "not edge < 80"
+  ],
+  "development": [
+    "last 1 chrome version",
+    "last 1 firefox version",
+    "last 1 safari version"
+  ]
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.10",
