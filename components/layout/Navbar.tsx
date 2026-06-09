@@ -6,7 +6,7 @@ import {
   SignInButton,
   SignUpButton,
   UserButton,
-  useUser, // Usamos esto en lugar de <Protect> para evitar romper el DOM en producción
+  useUser,
 } from "@clerk/nextjs";
 import {
   Heart,
@@ -23,7 +23,7 @@ import {
   Moon,
   Sun,
   ChevronDown,
-  Vote, // Importamos el ícono de votaciones
+  Vote,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -55,18 +55,17 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
-  const { user } = useUser(); // Obtenemos el usuario de Clerk de forma segura
+  const { user } = useUser();
 
-  const [isOpen, setIsOpen] = useState(false); 
-  const [isMuniOpen, setIsMuniOpen] = useState(false); 
-  const [isMobileMuniOpen, setIsMobileMuniOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMuniOpen, setIsMuniOpen] = useState(false);
+  const [isMobileMuniOpen, setIsMobileMuniOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [currentMuni, setCurrentMuni] = useState<Municipality | null>(null);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Verificar si el usuario tiene el plan/rol de "agent" mediante metadata de Clerk
   const isAgent = user?.publicMetadata?.plan === "agent" || user?.organizationMemberships?.some(m => m.role === "agent");
 
   useEffect(() => {
@@ -146,7 +145,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2.5 transition-opacity duration-200 hover:opacity-80">
             <div className="flex h-28 w-30 items-center justify-center rounded-lg overflow-hidden mt-5">
-              <Image src="/oasis.png" width={140} height={140} alt="Logo Oasis" className="shadow-md object-cover" priority />
+              <Image src="/ooasys.webp" width={140} height={140} alt="Logo Oasis" className="shadow-md object-cover" priority />
             </div>
           </Link>
 
@@ -157,7 +156,6 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
             <Link href="/sobre-nosotros" className="px-4 py-2 text-sm font-medium text-slate-900 dark:text-gray-200 rounded-lg hover:text-foreground hover:bg-accent transition-all">
               Conócenos
             </Link>
-            {/* ENLACE DE ELECCIONES - ESCRITORIO */}
             <Link href="/elecciones" className={`px-4 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-1.5 ${pathname === '/elecciones' ? 'text-orange-500 bg-orange-500/10' : 'text-orange-600 dark:text-orange-400 hover:bg-orange-500/10'}`}>
               <Vote className="w-4 h-4" /> Elecciones
             </Link>
@@ -175,10 +173,12 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
             <>
               {/* Selector Escritorio */}
               <div className="relative" ref={dropdownRef}>
+                {/* ✅ ACCESIBLE: Botón selector de municipio desktop con aria-label */}
                 <button
                   type="button"
                   onClick={() => setIsMuniOpen(!isMuniOpen)}
                   className="flex items-center gap-2 px-3 py-1.5 h-9 rounded-full bg-accent/40 border border-border/40 text-xs font-semibold text-slate-900 dark:text-gray-200 hover:bg-accent/80 transition-all cursor-pointer"
+                  aria-label={currentMuni ? `Municipio seleccionado: ${currentMuni.name}. Tocar para cambiar municipio` : "Seleccionar municipio para filtrar negocios"}
                 >
                   {currentMuni && currentMuni.flag ? (
                     <>
@@ -227,8 +227,12 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                 )}
               </div>
 
-              {/* Tema */}
-              <button onClick={toggleTheme} className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent" aria-label="Cambiar tema">
+              {/* ✅ ACCESIBLE: Botón tema claro/oscuro con aria-label dinámico */}
+              <button 
+                onClick={toggleTheme} 
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent" 
+                aria-label={theme === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+              >
                 {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </button>
 
@@ -251,26 +255,36 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
         <div className="flex md:hidden items-center gap-2">
           {mounted ? (
             <>
-              {/* Selector Móvil Corregido sin interferencias */}
+              {/* Selector Móvil */}
               <div className="relative" ref={mobileDropdownRef}>
+                {/* ✅ ACCESIBLE: Botón selector de municipio móvil con aria-label, role, tabIndex y teclado */}
                 <div
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsMobileMuniOpen(!isMobileMuniOpen);
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setIsMobileMuniOpen(!isMobileMuniOpen);
+                    }
+                  }}
                   className="flex items-center justify-center h-8 px-2.5 rounded-lg text-xs font-semibold bg-accent/40 border border-border/40 text-slate-900 dark:text-gray-200 gap-1 cursor-pointer select-none"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={currentMuni ? `Municipio seleccionado: ${currentMuni.name}. Tocar para cambiar` : "Seleccionar municipio para filtrar negocios"}
                 >
                   {currentMuni && currentMuni.flag ? (
                     <div className="relative h-3.5 w-5 rounded-sm overflow-hidden border border-black/10 shrink-0 pointer-events-none">
                       <Image src={urlFor(currentMuni.flag).url()} alt="" fill className="object-cover" />
                     </div>
                   ) : <MapPin className="h-3.5 w-3.5 text-primary pointer-events-none" />}
-                  <span className="max-w-[65px] truncate pointer-events-none">{currentMuni ? currentMuni.name : "Occidente"}</span>
+                  <span className="max-w-16.25 truncate pointer-events-none">{currentMuni ? currentMuni.name : "Occidente"}</span>
                   <ChevronDown className="h-2.5 w-2.5 opacity-50 pointer-events-none" />
                 </div>
 
                 {isMobileMuniOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-48 z-[60] bg-popover text-popover-foreground border border-border rounded-xl shadow-xl overflow-hidden py-1 max-h-60 overflow-y-auto">
+                  <div className="absolute top-full right-0 mt-2 w-48 z-60 bg-popover text-popover-foreground border border-border rounded-xl shadow-xl overflow-hidden py-1 max-h-60 overflow-y-auto">
                     <div onClick={() => handleSelectMunicipality(null, true)} className="w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-accent block cursor-pointer">
                       Todo el Occidente
                     </div>
@@ -286,7 +300,12 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                 )}
               </div>
 
-              <button onClick={toggleTheme} className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground">
+              {/* ✅ ACCESIBLE: Botón tema versión móvil */}
+              <button 
+                onClick={toggleTheme} 
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground"
+                aria-label={theme === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+              >
                 {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </button>
 
@@ -296,8 +315,9 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
 
               {/* Sheet de Navegación Lateral Móvil */}
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                {/* ✅ ACCESIBLE: Botón de menú hamburguesa con aria-label */}
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" aria-label="Abrir menú de navegación">
                     {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                   </Button>
                 </SheetTrigger>
@@ -317,7 +337,6 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     <Link href="/atm" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><BadgeDollarSign className="h-5 w-5" /> ¿Dónde retirar dinero?</Link>
                     <Link href="/estereo" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent"><RadioIcon className="h-5 w-5" /> Emisoras del occidente antioqueño</Link>
                     
-                    {/* ENLACE DE ELECCIONES - DISPOSITIVOS MÓVILES */}
                     <Link href="/elecciones" onClick={() => setIsOpen(false)} className={`flex items-center gap-3 px-4 py-3 text-base font-bold rounded-lg transition-all ${pathname === '/elecciones' ? 'text-orange-500 bg-orange-500/10' : 'text-orange-600 dark:text-orange-400 hover:bg-accent'}`}>
                       <Vote className="h-5 w-5" /> Elecciones 2026
                     </Link>
@@ -325,7 +344,6 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     <div className="h-px bg-border my-2" />
                     <Link href="/business" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent">Negocios</Link>
 
-                    {/* Lógica condicional limpia que reemplaza a <Protect> de Clerk */}
                     {user ? (
                       isAgent ? (
                         <Link href="/dashboard" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg hover:bg-accent">

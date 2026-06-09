@@ -10,15 +10,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // 👇 ESTO ES LO QUE FALTA PARA ARREGLAR CLERK Y EL CORS
-  async rewrites() {
-    return [
-      {
-        source: "/__clerk/(.*)",
-        destination: "https://clerk.oasis-directorio-ccg7.vercel.app/__clerk/$1",
-      },
-    ];
-  },
+  // Los rewrites para Clerk ya no son necesarios 
+  // porque el dominio está verificado nativamente.
 };
 
 export default nextConfig;

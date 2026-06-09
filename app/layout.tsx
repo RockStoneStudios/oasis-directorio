@@ -265,7 +265,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Toaster />
             <SanityLive />
           </ThemeProvider>
-        </ClerkProvider>
+       // </ClerkProvider>
       </body>
     </html>
   );
