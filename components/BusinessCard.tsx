@@ -22,7 +22,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
 
   return (
     <Link href={href} className="group block">
-      <article className="h-full overflow-hidden rounded-lg border border-border/60 dark:border-white/10 bg-card text-card-foreground shadow-[0_8px_20px_-4px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.02)] dark:shadow-[0_8px_20px_-4px_rgba(0,0,0,0.4),0_2px_4px_-2px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.15),0_8px_10px_-6px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.6),0_8px_10px_-6px_rgba(0,0,0,0.3)]">
+      <article className="h-full overflow-hidden rounded-lg border-1 border-black/40 dark:border-white/40 bg-card text-card-foreground shadow-[0_8px_20px_-4px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.02)] dark:shadow-[0_8px_20px_-4px_rgba(0,0,0,0.4),0_2px_4px_-2px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-2 hover:border-black/60 dark:hover:border-white/60 hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.15),0_8px_10px_-6px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.6),0_8px_10px_-6px_rgba(0,0,0,0.3)]">
         
         {/* LOGO - Versión mejorada sin distorsión */}
         <div className="relative aspect-video bg-muted/30 flex items-center justify-center">
@@ -67,7 +67,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
               </div>
             </div>
             {business.description && (
-              <p className="line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
+              <p className="line-clamp-2 text-[11px] leading-relaxed text-gray-700 dark:text-gray-300">
                 {business.description}
               </p>
             )}
@@ -87,7 +87,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
           </div>
 
           {(formatAddress(business.address) || categorySlug || municipalitySlug) && (
-            <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+            <div className="flex items-center gap-1 text-[11px] text-gray-600 dark:text-gray-400">
               <MapPin className="h-2.5 w-2.5 flex-shrink-0" aria-hidden="true" />
               <span className="line-clamp-1">
                 {formatAddress(business.address) ||
