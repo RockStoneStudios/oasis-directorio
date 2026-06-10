@@ -124,20 +124,20 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               </div>
 
               {/* Stats Ooasys */}
-              <div className="mt-12 flex flex-wrap justify-center gap-8 text-center">
-                <div className="group cursor-default">
-                  <p className="text-2xl font-bold text-[#14B8A6] transition-all group-hover:scale-105">+500</p>
-                  <p className="text-xs text-[#78716C] dark:text-[#A8A29E]">Negocios Registrados</p>
-                </div>
-                <div className="group cursor-default">
-                  <p className="text-2xl font-bold text-[#F59E0B] transition-all group-hover:scale-105">+15</p>
-                  <p className="text-xs text-[#78716C] dark:text-[#A8A29E]">Municipios</p>
-                </div>
-                <div className="group cursor-default">
-                  <p className="text-2xl font-bold text-[#10B981] transition-all group-hover:scale-105">+10k</p>
-                  <p className="text-xs text-[#78716C] dark:text-[#A8A29E]">Usuarios Mensuales</p>
-                </div>
-              </div>
+              <div className="mt-12 flex flex-nowrap justify-center gap-8 lg:gap-16 text-center">
+  <div className="group cursor-default">
+    <p className="text-2xl lg:text-4xl font-bold text-[#14B8A6] transition-all group-hover:scale-105">+110</p>
+    <p className="text-[10px] sm:text-xs text-[#78716C] dark:text-[#A8A29E]">Negocios</p>
+  </div>
+  <div className="group cursor-default">
+    <p className="text-2xl lg:text-4xl font-bold text-[#F59E0B] transition-all group-hover:scale-105">+4</p>
+    <p className="text-[10px] sm:text-xs text-[#78716C] dark:text-[#A8A29E]">Municipios</p>
+  </div>
+  <div className="group cursor-default">
+    <p className="text-2xl lg:text-4xl font-bold text-[#10B981] transition-all group-hover:scale-105">+8k</p>
+    <p className="text-[10px] sm:text-xs text-[#78716C] dark:text-[#A8A29E]">Usuarios</p>
+  </div>
+</div>
             </div>
           </div>
         </section>
