@@ -57,6 +57,21 @@ export const RADIO_STATIONS: Record<string, RadioStation> = {
       glow: "rgba(14,165,233,0.85)",
       darkGlow: "rgba(255,255,255,0.9)"
     }
+  },
+  // 🆕 NUEVA ESTACIÓN: PLAZAS FM
+  plazas: {
+    name: "PLAZAS FM",
+    frequency: "88.9 FM",
+    location: "Liborina, Antioquia",
+    url: "https://stream.zeno.fm/wnt7nx3saxquv",
+    currentSong: "Música variada y compañía",
+    listeners: "87",
+    color: {
+      main: "yellow-500",
+      gradient: "from-yellow-500 to-amber-600",
+      glow: "rgba(234,179,8,0.85)",
+      darkGlow: "rgba(255,255,255,0.9)"
+    }
   }
 };
 

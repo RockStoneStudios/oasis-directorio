@@ -89,17 +89,17 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FAFAF9] to-[#F5F0E8] dark:from-[#1C1917] dark:to-[#292524]">
+    <div className="min-h-screen bg-linear-to-b from-[#FAFAF9] to-[#F5F0E8] dark:from-[#1C1917] dark:to-[#292524]">
       <Navbar municipalities={municipalitiesList} />
       <main id="main">
-        {/* Hero Section - Ooasys Style */}
-        <section className="relative overflow-hidden py-20 md:py-32">
-          {/* Elementos decorativos con colores Ooasys */}
-          <div className="absolute top-0 left-0 w-72 h-72 bg-[#14B8A6]/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#F59E0B]/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[#10B981]/5 rounded-full blur-3xl" />
+        {/* Hero Section - Optimizado para pantallas grandes */}
+        <section className="relative overflow-hidden py-16 md:py-24 lg:py-32">
+          {/* Elementos decorativos con mejor control de posición */}
+          <div className="absolute top-0 left-0 w-72 h-72 bg-[#14B8A6]/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 hidden lg:block" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#F59E0B]/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 hidden lg:block" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-[#10B981]/5 rounded-full blur-3xl" />
           
-          <div className="container relative z-10">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-4xl text-center">
               {/* Badge Ooasys */}
               <div className="mb-6 inline-flex animate-fade-in items-center gap-2 rounded-full bg-[#14B8A6]/10 dark:bg-[#14B8A6]/20 px-4 py-2 text-sm font-semibold text-[#0F766E] dark:text-[#14B8A6] shadow-sm backdrop-blur-sm">
@@ -107,47 +107,49 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 Bienvenido a Ooasys — Tu Oasis Digital
               </div>
               
-              {/* Título principal */}
-              <h1 className="text-4xl font-bold font-heading tracking-tight text-[#1C1917] dark:text-white md:text-7xl">
+              {/* Título principal - Mejor jerarquía en desktop */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold font-heading tracking-tight text-[#1C1917] dark:text-white">
                 Encuentra negocios
                 <br />
-                <span className="bg-gradient-to-r from-[#14B8A6] to-[#0F766E] bg-clip-text text-transparent">cerca de ti</span>
+                <span className="bg-linear-to-r from-[#14B8A6] to-[#0F766E] bg-clip-text text-transparent">cerca de ti</span>
               </h1>
               
               {/* Descripción */}
-              <p className="mx-auto mt-6 max-w-2xl text-lg text-[#44403C] dark:text-[#D6D3D1] md:text-xl">
+              <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg md:text-xl text-[#44403C] dark:text-[#D6D3D1]">
                 Explora servicios, comercios, restaurantes y experiencias. La guía más completa del Occidente Antioqueño.
               </p>
 
-              <div className="mt-10">
+              <div className="mt-8 md:mt-10 max-w-3xl mx-auto">
                 <HomeSearch municipalities={municipalitiesList} />
               </div>
 
-              {/* Stats Ooasys */}
-              <div className="mt-12 flex flex-nowrap justify-center gap-8 lg:gap-16 text-center">
-  <div className="group cursor-default">
-    <p className="text-2xl lg:text-4xl font-bold text-[#14B8A6] transition-all group-hover:scale-105">+110</p>
-    <p className="text-[10px] sm:text-xs text-[#78716C] dark:text-[#A8A29E]">Negocios</p>
-  </div>
-  <div className="group cursor-default">
-    <p className="text-2xl lg:text-4xl font-bold text-[#F59E0B] transition-all group-hover:scale-105">+4</p>
-    <p className="text-[10px] sm:text-xs text-[#78716C] dark:text-[#A8A29E]">Municipios</p>
-  </div>
-  <div className="group cursor-default">
-    <p className="text-2xl lg:text-4xl font-bold text-[#10B981] transition-all group-hover:scale-105">+8k</p>
-    <p className="text-[10px] sm:text-xs text-[#78716C] dark:text-[#A8A29E]">Usuarios</p>
-  </div>
-</div>
+              {/* Stats Ooasys - Mejor espaciado en desktop */}
+              <div className="mt-12 md:mt-16 flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-16 text-center">
+                <div className="group cursor-default min-w-25">
+                  <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#14B8A6] transition-all group-hover:scale-105">+110</p>
+                  <p className="text-xs sm:text-sm text-[#78716C] dark:text-[#A8A29E]">Negocios</p>
+                </div>
+                <div className="group cursor-default min-w-25">
+                  <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#F59E0B] transition-all group-hover:scale-105">+4</p>
+                  <p className="text-xs sm:text-sm text-[#78716C] dark:text-[#A8A29E]">Municipios</p>
+                </div>
+                <div className="group cursor-default min-w-25">
+                  <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#10B981] transition-all group-hover:scale-105">+8k</p>
+                  <p className="text-xs sm:text-sm text-[#78716C] dark:text-[#A8A29E]">Usuarios</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Features Section - Ooasys Style */}
-        <section className="py-16 bg-white/50 dark:bg-[#1C1917]/50">
-          <div className="container">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl font-bold font-heading text-[#1C1917] dark:text-white md:text-3xl">¿Por qué usar Ooasys?</h2>
-              <p className="mt-3 text-[#78716C] dark:text-[#A8A29E]">La plataforma que conecta tu negocio con la comunidad</p>
+        {/* Features Section - Grid mejorado para desktop */}
+        <section className="py-12 md:py-16 lg:py-20 bg-white/50 dark:bg-[#1C1917]/50">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-10 md:mb-12 lg:mb-16">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-heading text-[#1C1917] dark:text-white">¿Por qué usar Ooasys?</h2>
+              <p className="mt-3 text-base text-[#78716C] dark:text-[#A8A29E] max-w-2xl mx-auto">
+                La plataforma que conecta tu negocio con la comunidad
+              </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {features.map((feature, idx) => (
@@ -155,7 +157,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#14B8A6]/10 text-[#14B8A6] transition-all duration-300 group-hover:bg-[#14B8A6] group-hover:text-white">
                     {feature.icon}
                   </div>
-                  <h3 className="font-semibold font-heading text-[#1C1917] dark:text-white">{feature.title}</h3>
+                  <h3 className="font-semibold font-heading text-[#1C1917] dark:text-white text-lg">{feature.title}</h3>
                   <p className="mt-2 text-sm text-[#78716C] dark:text-[#A8A29E]">{feature.description}</p>
                 </div>
               ))}
@@ -163,28 +165,28 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
         </section>
 
-        {/* Sección de Negocios Destacados */}
-        <section className="py-16 bg-gradient-to-br from-[#F5F0E8] to-white dark:from-[#292524] dark:to-[#1C1917]">
-          <div className="container">
-            <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        {/* Sección de Negocios Destacados - Grid responsivo */}
+        <section className="py-12 md:py-16 lg:py-20 bg-linear-to-br from-[#F5F0E8] to-white dark:from-[#292524] dark:to-[#1C1917]">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-8 md:mb-10 lg:mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full bg-[#F59E0B]/10 dark:bg-[#F59E0B]/20 px-3 py-1 text-xs font-medium text-[#D97706] dark:text-[#FBBF24] mb-4">
                   <Award className="h-3 w-3" /> Lo mejor de la región
                 </div>
-                <h2 className="text-2xl font-bold font-heading text-[#1C1917] dark:text-white md:text-3xl">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-heading text-[#1C1917] dark:text-white">
                   {selectedMuniSlug 
                     ? `Destacados en ${currentMuniName || 'la zona'}`
                     : "Negocios Destacados"
                   }
                 </h2>
-                <p className="mt-2 text-[#78716C] dark:text-[#A8A29E]">
+                <p className="mt-2 text-sm md:text-base text-[#78716C] dark:text-[#A8A29E] max-w-2xl">
                   {selectedMuniSlug 
                     ? `Los lugares más recomendados en ${currentMuniName}`
                     : "Los lugares más recomendados por la comunidad local"
                   }
                 </p>
               </div>
-              <Button variant="outline" asChild className="group border-[#14B8A6]/30 text-[#14B8A6] hover:bg-[#14B8A6]/10 hover:border-[#14B8A6]">
+              <Button variant="outline" asChild className="group border-[#14B8A6]/30 text-[#14B8A6] hover:bg-[#14B8A6]/10 hover:border-[#14B8A6] w-fit">
                 <Link href={selectedMuniSlug ? `/business?municipality=${selectedMuniSlug}` : "/business"}>
                   Ver todos
                   <ArrowRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" aria-hidden="true" />
@@ -193,7 +195,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             </div>
 
             {featuredBusinesses.length > 0 ? (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
                 {featuredBusinesses.map((business: any) => (
                   <BusinessCard key={business._id} business={business} />
                 ))}
@@ -211,26 +213,26 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
         </section>
 
-        {/* CTA Section - Ooasys Style */}
-        <section className="py-20">
-          <div className="container">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#14B8A6] via-[#0F766E] to-[#0D5A54] p-10 md:p-16">
+        {/* CTA Section - Mejor ancho en desktop */}
+        <section className="py-16 md:py-20 lg:py-24">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-linear-to-br from-[#14B8A6] via-[#0F766E] to-[#0D5A54] p-8 md:p-12 lg:p-16">
               {/* Elementos decorativos */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#F59E0B]/20 rounded-full blur-3xl" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#10B981]/20 rounded-full blur-3xl" />
+              <div className="absolute top-0 right-0 w-48 md:w-64 h-48 md:h-64 bg-[#F59E0B]/20 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-48 md:w-64 h-48 md:h-64 bg-[#10B981]/20 rounded-full blur-3xl" />
               
-              <div className="relative z-10 max-w-3xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-[#F59E0B]/20 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-[#FDE68A] mb-6">
-                  <Zap className="h-4 w-4" /> ¡Es tu momento!
+              <div className="relative z-10 max-w-2xl lg:max-w-3xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#F59E0B]/20 backdrop-blur-sm px-3 md:px-4 py-1.5 text-xs md:text-sm font-medium text-[#FDE68A] mb-4 md:mb-6">
+                  <Zap className="h-3 w-3 md:h-4 md:w-4" /> ¡Es tu momento!
                 </div>
-                <h2 className="text-3xl font-bold font-heading text-white md:text-4xl">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold font-heading text-white">
                   ¿Tienes un negocio?
                 </h2>
-                <p className="mt-4 text-lg text-[#CCFBF1]">
+                <p className="mt-3 md:mt-4 text-base md:text-lg text-[#CCFBF1]">
                   Haz que más personas descubran tus productos, servicios, horarios y canales de contacto. 
                   Llega a miles de usuarios activos en el Occidente Antioqueño.
                 </p>
-                <Button size="lg" className="mt-8 shadow-lg bg-[#F59E0B] hover:bg-[#D97706] text-white" asChild>
+                <Button size="lg" className="mt-6 md:mt-8 shadow-lg bg-[#F59E0B] hover:bg-[#D97706] text-white" asChild>
                   <Link href="/dashboard">
                     Registrar negocio gratis
                     <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />
@@ -248,12 +250,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
 function EmptyBlock({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
-    <div className="rounded-2xl border border-[#E7E5E4] dark:border-[#44403C] bg-white dark:bg-[#292524] p-12 text-center shadow-sm">
+    <div className="rounded-2xl border border-[#E7E5E4] dark:border-[#44403C] bg-white dark:bg-[#292524] p-8 md:p-12 text-center shadow-sm">
       <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F5F0E8] dark:bg-[#44403C] text-[#14B8A6]">
         {icon}
       </div>
-      <h3 className="text-lg font-semibold font-heading text-[#1C1917] dark:text-white">{title}</h3>
-      <p className="mt-2 text-sm text-[#78716C] dark:text-[#A8A29E]">{description}</p>
+      <h3 className="text-lg md:text-xl font-semibold font-heading text-[#1C1917] dark:text-white">{title}</h3>
+      <p className="mt-2 text-sm text-[#78716C] dark:text-[#A8A29E] max-w-md mx-auto">{description}</p>
     </div>
   );
 }

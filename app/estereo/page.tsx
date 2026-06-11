@@ -177,7 +177,7 @@ export default function RadioPlayerPage() {
                             : 'hover:shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6)] dark:hover:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8)]'
                         }`}
                       >
-                        <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${RADIO_STATIONS[stationId].color.gradient} flex items-center justify-center text-white text-[10px] font-bold`}>
+                        <div className={`w-6 h-6 rounded-full bg-linear-to-br ${RADIO_STATIONS[stationId].color.gradient} flex items-center justify-center text-white text-[10px] font-bold`}>
                           {RADIO_STATIONS[stationId].frequency.split(' ')[0]}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -229,7 +229,7 @@ export default function RadioPlayerPage() {
             <div className="relative">
               <div className="h-2 bg-[#e0e5ec] dark:bg-[#1a1f26] rounded-full shadow-[inset_3px_3px_6px_rgba(163,177,198,0.6),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] dark:shadow-[inset_3px_3px_6px_rgba(15,18,22,0.8),inset_-3px_-3px_6px_rgba(35,43,53,0.5)] overflow-hidden">
                 <div 
-                  className={`h-full bg-gradient-to-r ${currentColors.gradient} rounded-full transition-all duration-500`}
+                  className={`h-full bg-linear-to-r ${currentColors.gradient} rounded-full transition-all duration-500`}
                   style={{ width: isPlaying ? '10%' : '0%' }}
                 />
               </div>
@@ -368,7 +368,7 @@ export default function RadioPlayerPage() {
           -webkit-appearance: none;
           width: 14px;
           height: 14px;
-          background: ${currentColors.main === 'orange-500' ? '#f97316' : currentColors.main === 'emerald-500' ? '#10b981' : '#0ea5e9'};
+          background: ${currentColors.main === 'emerald-500' ? '#f97316' : currentColors.main === 'emerald-500' ? '#10b981' : '#0ea5e9'};
           border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 2px 6px rgba(0,0,0,0.2);
