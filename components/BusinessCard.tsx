@@ -32,6 +32,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
                 src={urlFor(business.logo).width(400).height(300).url()}
                 alt={business.logo.alt || business.name}
                 fill
+                unoptimized
                 sizes="(max-width: 640px) 80vw, (max-width: 1024px) 40vw, 25vw"
                 className="object-contain transition-transform duration-500 group-hover:scale-105"
                 style={{ objectFit: 'contain', padding: '1rem' }}

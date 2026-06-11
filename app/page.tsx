@@ -23,6 +23,11 @@ interface HomePageProps {
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
+
+  // En cualquier componente de página
+console.log('🔍 DEBUG - Producción:');
+console.log('SANITY_PROJECT_ID:', process.env.NEXT_PUBLIC_SANITY_PROJECT_ID);
+console.log('SANITY_DATASET:', process.env.NEXT_PUBLIC_SANITY_DATASET);
   const params = await searchParams;
   const selectedMuniSlug = params.municipality || "";
 

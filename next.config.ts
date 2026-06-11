@@ -3,27 +3,18 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // 🔥 React Compiler (opcional, solo si usas React 19+)
   reactCompiler: false, // Cambia a false si no usas React 19
-  
   images: {
-    // 📍 Dominios remotos permitidos
+    unoptimized: true, // ← Esto hace que TODAS las imágenes sean unoptimized globalmente
     remotePatterns: [
       {
         protocol: "https",
         hostname: "cdn.sanity.io",
-        pathname: "/images/**", // Más específico
       },
       {
         protocol: "https",
-        hostname: "*.sanity.io", // Patrón comodín para cualquier subdominio
+        hostname: "**.sanity.io",
       },
     ],
-    // 🖼️ Formatos de imagen modernos
-    formats: ["image/avif", "image/webp"],
-    // ⚡ Device sizes para responsive
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // 🚀 Mínimo quality por defecto
-    minimumCacheTTL: 60, // 60 segundos
   },
   
   // 🔧 Compresión y optimización
