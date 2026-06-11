@@ -145,7 +145,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2.5 transition-opacity duration-200 hover:opacity-80">
             <div className="flex h-28 w-30 items-center justify-center rounded-lg overflow-hidden mt-5">
-              <Image src="/ooasys.webp" width={140} height={140} alt="Logo Ooasys" className="shadow-md object-cover" priority />
+              <Image src="/ooasys.webp" width={140} height={140} alt="Logo Ooasys"  unoptimized className="shadow-md object-cover" priority />
             </div>
           </Link>
 
