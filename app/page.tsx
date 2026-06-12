@@ -9,6 +9,7 @@ import { client } from "@/lib/sanity/client";
 import { sanityFetch } from "@/lib/sanity/live";
 import { MUNICIPALITIES_LIST_QUERY } from "@/lib/sanity/queries";
 import { HomeSearch } from "@/components/HomeSearch";
+import { Pagination } from "@/components/Pagination";
 
 export const metadata: Metadata = {
   title: "Ooasys | Directorio de negocios locales en el Occidente Antioqueño",
@@ -19,15 +20,15 @@ interface HomePageProps {
   searchParams: Promise<{
     search?: string;
     municipality?: string;
+    page?: string;
   }>;
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-
-  // En cualquier componente de página
-
   const params = await searchParams;
   const selectedMuniSlug = params.municipality || "";
+  const currentPage = Math.max(Number(params.page) || 1, 1);
+  const PAGE_SIZE = 9; // 3 columnas x 3 filas
 
   const municipalitiesResult = await sanityFetch({ query: MUNICIPALITIES_LIST_QUERY });
   const municipalitiesList = Array.isArray(municipalitiesResult?.data) 
@@ -41,10 +42,16 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const currentMuniName = currentMunicipality?.name || "";
 
   let featuredBusinesses = [];
+  let hasMore = false;
+  
   try {
+    // Consulta con paginación
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    
     if (selectedMuniSlug) {
-      featuredBusinesses = await client.fetch(
-        `*[_type == "business" && isFeatured == true && municipality->slug.current == $muniSlug] | order(createdAt desc)[0...6] {
+      const allBusinesses = await client.fetch(
+        `*[_type == "business" && isFeatured == true && municipality->slug.current == $muniSlug] | order(createdAt desc) {
           _id,
           _type,
           name,
@@ -61,9 +68,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         }`,
         { muniSlug: selectedMuniSlug }
       );
+      featuredBusinesses = allBusinesses.slice(start, end);
+      hasMore = end < allBusinesses.length;
     } else {
-      featuredBusinesses = await client.fetch(
-        `*[_type == "business" && isFeatured == true] | order(createdAt desc)[0...6] {
+      const allBusinesses = await client.fetch(
+        `*[_type == "business" && isFeatured == true] | order(createdAt desc) {
           _id,
           _type,
           name,
@@ -79,6 +88,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           createdAt
         }`
       );
+      featuredBusinesses = allBusinesses.slice(start, end);
+      hasMore = end < allBusinesses.length;
     }
   } catch (error) {
     console.error("Error al consultar negocios en Sanity:", error);
@@ -91,33 +102,33 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     { icon: <Users className="h-5 w-5" />, title: "Comunidad Activa", description: "Miles de usuarios confían en Ooasys" },
   ];
 
+  // Construir searchParams para el paginador
+  const currentSearchParams: Record<string, string | undefined> = {};
+  if (selectedMuniSlug) currentSearchParams.municipality = selectedMuniSlug;
+
   return (
     <div className="min-h-screen bg-linear-to-b from-[#FAFAF9] to-[#F5F0E8] dark:from-[#1C1917] dark:to-[#292524]">
       <Navbar municipalities={municipalitiesList} />
       <main id="main">
-        {/* Hero Section - Optimizado para pantallas grandes */}
+        {/* Hero Section */}
         <section className="relative overflow-hidden py-16 md:py-24 lg:py-32">
-          {/* Elementos decorativos con mejor control de posición */}
           <div className="absolute top-0 left-0 w-72 h-72 bg-[#14B8A6]/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 hidden lg:block" />
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#F59E0B]/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 hidden lg:block" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-[#10B981]/5 rounded-full blur-3xl" />
           
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-4xl text-center">
-              {/* Badge Ooasys */}
               <div className="mb-6 inline-flex animate-fade-in items-center gap-2 rounded-full bg-[#14B8A6]/10 dark:bg-[#14B8A6]/20 px-4 py-2 text-sm font-semibold text-[#0F766E] dark:text-[#14B8A6] shadow-sm backdrop-blur-sm">
                 <Sparkles className="h-4 w-4" aria-hidden="true" />
                 Bienvenido a Ooasys — Tu Oasis Digital
               </div>
               
-              {/* Título principal - Mejor jerarquía en desktop */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold font-heading tracking-tight text-[#1C1917] dark:text-white">
                 Encuentra negocios
                 <br />
                 <span className="bg-linear-to-r from-[#14B8A6] to-[#0F766E] bg-clip-text text-transparent">cerca de ti</span>
               </h1>
               
-              {/* Descripción */}
               <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg md:text-xl text-[#44403C] dark:text-[#D6D3D1]">
                 Explora servicios, comercios, restaurantes y experiencias. La guía más completa del Occidente Antioqueño.
               </p>
@@ -126,7 +137,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 <HomeSearch municipalities={municipalitiesList} />
               </div>
 
-              {/* Stats Ooasys - Mejor espaciado en desktop */}
               <div className="mt-12 md:mt-16 flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-16 text-center">
                 <div className="group cursor-default min-w-25">
                   <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#14B8A6] transition-all group-hover:scale-105">+110</p>
@@ -145,7 +155,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
         </section>
 
-        {/* Features Section - Grid mejorado para desktop */}
+        {/* Features Section */}
         <section className="py-12 md:py-16 lg:py-20 bg-white/50 dark:bg-[#1C1917]/50">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10 md:mb-12 lg:mb-16">
@@ -168,7 +178,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
         </section>
 
-        {/* Sección de Negocios Destacados - Grid responsivo */}
+        {/* Sección de Negocios Destacados con Paginación */}
         <section className="py-12 md:py-16 lg:py-20 bg-linear-to-br from-[#F5F0E8] to-white dark:from-[#292524] dark:to-[#1C1917]">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 md:mb-10 lg:mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -198,11 +208,23 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             </div>
 
             {featuredBusinesses.length > 0 ? (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                {featuredBusinesses.map((business: any) => (
-                  <BusinessCard key={business._id} business={business} />
-                ))}
-              </div>
+              <>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                  {featuredBusinesses.map((business: any) => (
+                    <BusinessCard key={business._id} business={business} />
+                  ))}
+                </div>
+                
+                {/* 🆕 PAGINATION INTEGRADO */}
+                <div className="mt-10">
+                  <Pagination
+                    page={currentPage}
+                    hasMore={hasMore}
+                    basePath="/"
+                    searchParams={currentSearchParams}
+                  />
+                </div>
+              </>
             ) : (
               <EmptyBlock
                 icon={<Store className="h-8 w-8" aria-hidden="true" />}
@@ -216,11 +238,10 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
         </section>
 
-        {/* CTA Section - Mejor ancho en desktop */}
+        {/* CTA Section */}
         <section className="py-16 md:py-20 lg:py-24">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-linear-to-br from-[#14B8A6] via-[#0F766E] to-[#0D5A54] p-8 md:p-12 lg:p-16">
-              {/* Elementos decorativos */}
               <div className="absolute top-0 right-0 w-48 md:w-64 h-48 md:h-64 bg-[#F59E0B]/20 rounded-full blur-3xl" />
               <div className="absolute bottom-0 left-0 w-48 md:w-64 h-48 md:h-64 bg-[#10B981]/20 rounded-full blur-3xl" />
               

@@ -36,68 +36,89 @@ interface BusinessPageProps {
   searchParams: Promise<Record<string, string | undefined>>;
 }
 
-// 🚀 1. SEO METADATA DINÁMICO REFORZADO CONTRA CONTENIDO DUPLICADO
+// ============================================================
+// 🎯 METADATA OPTIMIZADA PARA POSICIONAR #1 EN CADA BÚSQUEDA
+// ============================================================
+
 export async function generateMetadata({ searchParams }: BusinessPageProps): Promise<Metadata> {
   const params = await searchParams;
   
   const category = params.category ? decodeURIComponent(params.category) : "";
   const municipality = params.municipality ? decodeURIComponent(params.municipality) : "";
   const searchQuery = params.search ? decodeURIComponent(params.search) : "";
-  const page = params.page ? ` - Página ${params.page}` : "";
+  const page = params.page && Number(params.page) > 1 ? ` - Página ${params.page}` : "";
 
-  // Construcción de títulos comerciales de alto impacto local
-  let title = `Directorio de Negocios y Comercios Locales${page} | Oasis`;
+  // Títulos con keywords de alto impacto local
+  let title = `Directorio de Negocios y Comercios Locales en Antioquia${page} | Ooasys`;
   if (category && municipality) {
-    title = `${category} en ${municipality} | Guía Comercial${page} | Oasis`;
+    title = `Los mejores ${category} en ${municipality} | Teléfonos, Horarios y Ubicación${page} | Ooasys`;
   } else if (category) {
-    title = `${category} Locales | Guía de Comercios${page} | Oasis`;
+    title = `Directorio de ${category} en Antioquia | Guía Comercial Completa${page} | Ooasys`;
   } else if (municipality) {
-    title = `Negocios, Tiendas y Comercios en ${municipality}${page} | Oasis`;
+    title = `Negocios, Tiendas y Comercios en ${municipality}${page} | Directorio Local | Ooasys`;
   } else if (searchQuery) {
-    title = `Buscar "${searchQuery}" | Directorio de Negocios | Oasis`;
+    title = `Resultados para "${searchQuery}" | Directorio de Negocios${page} | Ooasys`;
   }
 
-  let description = "Explora el directorio comercial y turístico más completo. Encuentra restaurantes, servicios profesionales, hospedajes y comercios locales con números de contacto y ubicación.";
+  // Descripciones con CTA y datos relevantes
+  let description = `Encuentra restaurantes, hoteles, servicios profesionales y comercios locales en el Occidente Antioqueño. Filtra por categoría, municipio o disponibilidad. Contacto directo vía WhatsApp.`;
   if (category || municipality) {
-    description = `¿Buscas ${category || "establecimientos comerciales"} en ${municipality || "la región"}? Consulta los mejores lugares, horarios, teléfonos, WhatsApp y ubicaciones en el mapa interactivo de Oasis.`;
+    description = `¿Buscas ${category || "negocios"} en ${municipality || "Antioquia"}? 📍 Encuentra horarios, teléfonos, ubicación en mapa y contacto directo. ${category ? `Los mejores ${category} de la región.` : ""}`;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://oasis-directorio-ccg7.vercel.app";
+  // Keywords LSI para mejorar densidad semántica
+  const keywords = [
+    category,
+    municipality,
+    searchQuery,
+    `${category} ${municipality}`,
+    `negocios en ${municipality}`,
+    `directorio ${municipality}`,
+    "comercios locales",
+    "guía comercial",
+    "occidente antioqueño",
+    "ooasys",
+    "negocios cerca de mí"
+  ].filter(Boolean).join(", ");
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
   
-  // 💡 ESTRATEGIA CANÓNICA: Evitamos indexar strings basura generados por ordenamientos o filtros vacíos
+  // Canonical: evita duplicados por ordenamiento
   const queryParts = [];
   if (params.category) queryParts.push(`category=${params.category}`);
   if (params.municipality) queryParts.push(`municipality=${params.municipality}`);
-  if (params.page && Number(params.page) > 1) queryParts.push(`page=${params.page}`);
+  if (params.search) queryParts.push(`search=${params.search}`);
+  if (page && Number(params.page) > 1) queryParts.push(`page=${params.page}`);
   
   const canonicalUrl = `${baseUrl}/business${queryParts.length > 0 ? `?${queryParts.join('&')}` : ""}`;
 
-  // 💡 DIRECTIVA ROBOTS INTELIGENTE: Si el usuario usa filtros pesados de ordenación o búsquedas ultra específicas, 
-  // le permitimos rastrear (follow) pero no indexar (noindex) para no ensuciar el índice de Google.
-  const shouldIndex = !params.sort && !params.search && !params.minRating && !params.status;
+  // Robots: páginas con ordenamiento no se indexan (evita duplicados)
+  const shouldIndex = !params.sort && !params.minRating && !params.status;
 
   return {
     title,
     description,
+    keywords,
+    authors: [{ name: "Ooasys", url: "https://www.ooasys.com" }],
     alternates: {
       canonical: canonicalUrl,
     },
     robots: shouldIndex 
-      ? "index, follow" 
-      : "noindex, follow", // Evita que páginas clonadas con diferente orden nos quiten prioridad
+      ? { index: true, follow: true } 
+      : { index: false, follow: true },
     openGraph: {
       title,
       description,
       url: canonicalUrl,
       type: "website",
-      siteName: "Oasis",
+      siteName: "Ooasys",
       locale: "es_CO",
       images: [
         {
-          url: `${baseUrl}/oasis.png`, 
+          url: `${baseUrl}/ooasys.webp`,
           width: 1200,
           height: 630,
-          alt: `Directorio Comercial Oasis - ${title}`,
+          alt: `Directorio Ooasys - ${title}`,
         },
       ],
     },
@@ -105,7 +126,12 @@ export async function generateMetadata({ searchParams }: BusinessPageProps): Pro
       card: "summary_large_image",
       title,
       description,
-      images: [`${baseUrl}/og-directory.png`],
+      images: [`${baseUrl}/ooasys.webp`],
+      creator: "@ooasys",
+      site: "@ooasys",
+    },
+    verification: {
+      google: "OBYw5lH6K7WSL2FDIJyNnq9oKEsYHJndvLUQmPjZWrc",
     },
   };
 }
@@ -137,68 +163,117 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
     sanityFetch({ query: MUNICIPALITIES_LIST_QUERY }),
   ]);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://oasis-directorio-ccg7.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
+  const categoryName = params.category ? decodeURIComponent(params.category) : "";
+  const municipalityName = params.municipality ? decodeURIComponent(params.municipality) : "";
 
-  // 🚀 2. ESQUEMAS DE DATOS ESTRUCTURADOS (JSON-LD)
-  // Esquema 1: Colección de elementos (Lista de comercios indexables)
-  const itemListSchema = {
+  // ============================================================
+  // 🚀 SCHEMAS ENRIQUECIDOS PARA GOOGLE
+  // ============================================================
+
+  // Schema 1: CollectionPage (para SEO)
+  const collectionPageSchema = {
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Listado de Comercios Registrados en Oasis",
-    "description": "Lista detallada de los mejores comercios locales indexados",
+    "@type": "CollectionPage",
+    "name": categoryName && municipalityName 
+      ? `${categoryName} en ${municipalityName}`
+      : "Directorio de Negocios Ooasys",
+    "description": `Directorio de ${categoryName || "negocios"} en ${municipalityName || "el Occidente Antioqueño"}. Encuentra horarios, teléfonos y ubicaciones.`,
     "url": `${baseUrl}/business`,
-    "numberOfItems": businesses.length,
-    "itemListElement": businesses.map((b, index) => ({
+    "hasPart": businesses.map((b, idx) => ({
       "@type": "ListItem",
-      "position": index + 1,
+      "position": idx + 1,
       "url": `${baseUrl}/business/${typeof b.slug === 'object' && b.slug?.current ? b.slug.current : b.slug || ""}`,
       "name": b.name
     }))
   };
 
-  // Esquema 2: Buscador integrado directo para la caja de Google
+  // Schema 2: SearchAction (para búsquedas directas desde Google)
   const searchBoxSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "name": "Ooasys Directorio",
     "url": baseUrl,
     "potentialAction": {
       "@type": "SearchAction",
-      "target": `${baseUrl}/business?search={search_term_string}`,
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${baseUrl}/business?search={search_term_string}`
+      },
       "query-input": "required name=search_term_string"
     }
   };
 
+  // Schema 3: Breadcrumb (para navegación estructurada)
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Negocios",
+        "item": `${baseUrl}/business`
+      },
+      ...(municipalityName ? [{
+        "@type": "ListItem",
+        "position": 3,
+        "name": municipalityName,
+        "item": `${baseUrl}/business?municipality=${encodeURIComponent(municipalityName)}`
+      }] : []),
+      ...(categoryName ? [{
+        "@type": "ListItem",
+        "position": municipalityName ? 4 : 3,
+        "name": categoryName,
+        "item": `${baseUrl}/business?category=${encodeURIComponent(categoryName)}`
+      }] : [])
+    ]
+  };
+
   return (
     <div className="bg-accent/20">
-      {/* Inyección de los dos Scripts JSON-LD en el HEAD semántico */}
+      {/* Schemas JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }}
       />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(searchBoxSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
 
       <header className="border-b border-border/50 bg-background">
         <div className="container py-10">
-          <div className="mb-3 flex items-center gap-2 text-sm font-medium text-primary">
+          <div className="mb-3 flex items-center gap-2 text-sm font-medium text-emerald-600">
             <Store className="h-4 w-4" aria-hidden="true" />
-            <span>Directorio Oficial</span>
+            <span>Directorio Oficial del Occidente Antioqueño</span>
           </div>
           <h1 className="text-3xl font-bold font-heading md:text-4xl text-foreground">
-            Negocios locales
+            {categoryName || municipalityName 
+              ? `${categoryName ? `${categoryName} en ` : ""}${municipalityName || "Antioquia"}`
+              : "Directorio de Negocios Locales"}
           </h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            Filtra por categoría, municipio o disponibilidad en tiempo real y encuentra el
-            establecimiento o servicio que necesitas hoy mismo.
+            {categoryName || municipalityName 
+              ? `Encuentra los mejores ${categoryName || "negocios"} en ${municipalityName || "Antioquia"}. Teléfonos, horarios, ubicación y contacto directo.`
+              : "Filtra por categoría, municipio o disponibilidad y encuentra el establecimiento o servicio que necesitas hoy mismo."}
           </p>
         </div>
       </header>
 
       <main className="container py-8">
         <div className="flex flex-col gap-8 lg:flex-row">
-          {/* Barra de Filtros Lateral Semántica */}
+          {/* Barra de Filtros Lateral */}
           <aside className="lg:w-80 lg:shrink-0" aria-label="Filtros de búsqueda">
             <div className="lg:sticky lg:top-24">
               <Suspense fallback={<Skeleton className="h-96 rounded-2xl" />}>
@@ -228,14 +303,14 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
                 <TabsList className="mb-6 rounded-xl border border-border/50 bg-background p-1">
                   <TabsTrigger
                     value="grid"
-                    className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                    className="flex items-center gap-2 rounded-lg data-[state=active]:bg-emerald-600 data-[state=active]:text-white"
                   >
                     <LayoutGrid className="h-4 w-4" aria-hidden="true" />
                     <span>Grilla</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="map"
-                    className="flex items-center gap-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                    className="flex items-center gap-2 rounded-lg data-[state=active]:bg-emerald-600 data-[state=active]:text-white"
                   >
                     <MapIcon className="h-4 w-4" aria-hidden="true" />
                     <span>Vista en Mapa</span>
