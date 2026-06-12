@@ -48,7 +48,6 @@ export async function generateMetadata({ searchParams }: BusinessPageProps): Pro
   const searchQuery = params.search ? decodeURIComponent(params.search) : "";
   const page = params.page && Number(params.page) > 1 ? ` - Página ${params.page}` : "";
 
-  // Títulos con keywords de alto impacto local
   let title = `Directorio de Negocios y Comercios Locales en Antioquia${page} | Ooasys`;
   if (category && municipality) {
     title = `Los mejores ${category} en ${municipality} | Teléfonos, Horarios y Ubicación${page} | Ooasys`;
@@ -60,13 +59,11 @@ export async function generateMetadata({ searchParams }: BusinessPageProps): Pro
     title = `Resultados para "${searchQuery}" | Directorio de Negocios${page} | Ooasys`;
   }
 
-  // Descripciones con CTA y datos relevantes
   let description = `Encuentra restaurantes, hoteles, servicios profesionales y comercios locales en el Occidente Antioqueño. Filtra por categoría, municipio o disponibilidad. Contacto directo vía WhatsApp.`;
   if (category || municipality) {
     description = `¿Buscas ${category || "negocios"} en ${municipality || "Antioquia"}? 📍 Encuentra horarios, teléfonos, ubicación en mapa y contacto directo. ${category ? `Los mejores ${category} de la región.` : ""}`;
   }
 
-  // Keywords LSI para mejorar densidad semántica
   const keywords = [
     category,
     municipality,
@@ -83,7 +80,6 @@ export async function generateMetadata({ searchParams }: BusinessPageProps): Pro
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
   
-  // Canonical: evita duplicados por ordenamiento
   const queryParts = [];
   if (params.category) queryParts.push(`category=${params.category}`);
   if (params.municipality) queryParts.push(`municipality=${params.municipality}`);
@@ -92,7 +88,6 @@ export async function generateMetadata({ searchParams }: BusinessPageProps): Pro
   
   const canonicalUrl = `${baseUrl}/business${queryParts.length > 0 ? `?${queryParts.join('&')}` : ""}`;
 
-  // Robots: páginas con ordenamiento no se indexan (evita duplicados)
   const shouldIndex = !params.sort && !params.minRating && !params.status;
 
   return {
@@ -171,8 +166,9 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
   // 🚀 SCHEMAS ENRIQUECIDOS PARA GOOGLE
   // ============================================================
 
-  // Schema 1: CollectionPage (para SEO)
-  const collectionPageSchema = {
+  // ✅ Schema 1: CollectionPage (SOLO en página 1 para evitar contenido inconsistente)
+  // Google no quiere esquemas de listas paginadas en páginas posteriores
+  const collectionPageSchema = page === 1 ? {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "name": categoryName && municipalityName 
@@ -180,13 +176,13 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
       : "Directorio de Negocios Ooasys",
     "description": `Directorio de ${categoryName || "negocios"} en ${municipalityName || "el Occidente Antioqueño"}. Encuentra horarios, teléfonos y ubicaciones.`,
     "url": `${baseUrl}/business`,
-    "hasPart": businesses.map((b, idx) => ({
+    "hasPart": businesses.slice(0, 12).map((b, idx) => ({
       "@type": "ListItem",
       "position": idx + 1,
       "url": `${baseUrl}/business/${typeof b.slug === 'object' && b.slug?.current ? b.slug.current : b.slug || ""}`,
       "name": b.name
     }))
-  };
+  } : null;
 
   // Schema 2: SearchAction (para búsquedas directas desde Google)
   const searchBoxSchema = {
@@ -238,11 +234,13 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
 
   return (
     <div className="bg-accent/20">
-      {/* Schemas JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }}
-      />
+      {/* Schemas JSON-LD - Solo collectionPageSchema si existe (página 1) */}
+      {collectionPageSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }}
+        />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(searchBoxSchema) }}
@@ -326,6 +324,7 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
                   <Pagination
                     page={page}
                     hasMore={hasMore}
+                    basePath="/business"
                     searchParams={params}
                   />
                 </TabsContent>

@@ -7,6 +7,8 @@ export interface RadioStation {
   url: string;
   currentSong: string;
   listeners: string;
+  lat: number;
+  lon: number;
   color: {
     main: string;
     gradient: string;
@@ -14,7 +16,6 @@ export interface RadioStation {
     darkGlow: string;
   };
 }
-
 export const RADIO_STATIONS: Record<string, RadioStation> = {
   sopetran: {
     name: "SOPETRAN STEREO",
@@ -23,6 +24,8 @@ export const RADIO_STATIONS: Record<string, RadioStation> = {
     url: "https://radio25.virtualtronics.com:20029/;",
     currentSong: "Música popular colombiana",
     listeners: "127",
+    lat: 6.5028, // Parque Principal Sopetrán
+    lon: -75.7335,
     color: {
       main: "orange-500",
       gradient: "from-orange-500 to-orange-600",
@@ -37,6 +40,8 @@ export const RADIO_STATIONS: Record<string, RadioStation> = {
     url: "https://server2.ejeserver.com:8444/stream",
     currentSong: "Música y cultura antioqueña",
     listeners: "489",
+    lat: 6.5562, // Parque Principal Santa Fe de Antioquia
+    lon: -75.8344,
     color: {
       main: "emerald-500",
       gradient: "from-emerald-500 to-teal-600",
@@ -51,6 +56,8 @@ export const RADIO_STATIONS: Record<string, RadioStation> = {
     url: "https://live.asoredes.com:8230/GlobalFm.mp3;", 
     currentSong: "Éxitos internacionales",
     listeners: "234",
+    lat: 6.4475, // Parque Principal San Jerónimo
+    lon: -75.7272,
     color: {
       main: "sky-500",
       gradient: "from-sky-500 to-cyan-600",
@@ -58,7 +65,6 @@ export const RADIO_STATIONS: Record<string, RadioStation> = {
       darkGlow: "rgba(255,255,255,0.9)"
     }
   },
-  // 🆕 NUEVA ESTACIÓN: PLAZAS FM
   plazas: {
     name: "PLAZAS FM",
     frequency: "88.9 FM",
@@ -66,6 +72,8 @@ export const RADIO_STATIONS: Record<string, RadioStation> = {
     url: "https://stream.zeno.fm/wnt7nx3saxquv",
     currentSong: "Música variada y compañía",
     listeners: "87",
+    lat: 6.8208, // Parque Principal Liborina
+    lon: -75.8205,
     color: {
       main: "yellow-500",
       gradient: "from-yellow-500 to-amber-600",
@@ -74,7 +82,6 @@ export const RADIO_STATIONS: Record<string, RadioStation> = {
     }
   }
 };
-
 // Opcional: Array con los IDs de las estaciones para iterar fácilmente
 export const STATION_IDS = Object.keys(RADIO_STATIONS);
 
