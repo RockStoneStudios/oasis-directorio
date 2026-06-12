@@ -24,6 +24,7 @@ export const metadata: Metadata = {
     "🌴 Encuentra los mejores negocios, restaurantes, hoteles y servicios en Sopetrán, Santa Fe de Antioquia y San Jerónimo. Tu guía local de confianza en el Occidente Antioqueño. 🗺️✨",
 
   // ✅ Verificación de Google
+ 
   verification: {
     google: "OBYw5lH6K7WSL2FDIJyNnq9oKEsYHJndvLUQmPjZWrc"
   },
