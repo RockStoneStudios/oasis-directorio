@@ -264,7 +264,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
             
             {/* 🍍 ENLACE DE FIESTAS DE LAS FRUTAS CON ANIMACIÓN */}
             <Link 
-              href="/eventos/fiestas-de-las-frutas-2026" 
+              href="/eventos/fiestas-de-frutas-2026" 
               onClick={triggerParticles}
               className="fruit-link group px-4 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-300"
             >
@@ -454,12 +454,12 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
 
                     {/* 🍍 ENLACE DE FIESTAS DE LAS FRUTAS EN MÓVIL */}
                     <Link 
-                      href="/eventos/fiestas-de-las-frutas-2026" 
+                      href="/eventos/fiestas-de-frutas-2026" 
                       onClick={() => {
                         setIsOpen(false);
                         triggerParticles();
                       }}
-                      className="flex items-center gap-3 px-4 py-3 text-base font-bold rounded-lg transition-all bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md"
+                      className="flex items-center gap-3 px-4 py-3 text-base font-bold rounded-lg transition-all bg-linear-to-r from-orange-500 to-red-500 text-white shadow-md"
                     >
                       <span className="text-lg">🍍</span>
                       Fiestas de las Frutas
