@@ -47,7 +47,7 @@ export function Pagination({
           variant="outline"
           size="default"
           asChild
-          className="h-10 w-10 rounded-full border-[#E7E5E4] dark:border-[#44403C] bg-white dark:bg-[#292524] text-[#44403C] dark:text-[#D6D3D1] hover:border-[#14B8A6] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all duration-300"
+          className="h-11 w-11 rounded-full border-[#E7E5E4] dark:border-[#44403C] bg-white dark:bg-[#292524] text-[#44403C] dark:text-[#D6D3D1] hover:border-[#14B8A6] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all duration-300"
         >
           <Link href={buildHref(basePath, searchParams, page - 1)}>
             <ChevronLeft className="h-4 w-4" aria-hidden="true" />
@@ -86,7 +86,7 @@ export function Pagination({
           variant="outline"
           size="default"
           asChild
-          className="h-10 w-10 rounded-full border-[#E7E5E4] dark:border-[#44403C] bg-white dark:bg-[#292524] text-[#44403C] dark:text-[#D6D3D1] hover:border-[#14B8A6] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all duration-300"
+          className="h-11 w-11 rounded-full border-[#E7E5E4] dark:border-[#44403C] bg-white dark:bg-[#292524] text-[#44403C] dark:text-[#D6D3D1] hover:border-[#14B8A6] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all duration-300"
         >
           <Link href={buildHref(basePath, searchParams, page + 1)}>
             <ChevronRight className="h-4 w-4" aria-hidden="true" />
