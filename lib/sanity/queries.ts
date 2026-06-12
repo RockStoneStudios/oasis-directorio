@@ -195,6 +195,21 @@ export const UPCOMING_EVENTS_QUERY = defineQuery(/* groq */ `
     municipality->{ name }
   }
 `);
+export const EVENT_BY_SLUG_QUERY = defineQuery(/* groq */ `
+  *[_type == "event" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    description,
+    date,
+    endDate,
+    price,
+    venueName,
+    "image": image { ${imageFragment} },
+    municipality->{ name },
+    address
+  }
+`);
 
 export const DESVARE_DIRECTORY_QUERY = defineQuery(/* groq */ `
   *[_type == "business" && (status == "active" || status == "alwaysopen")] | order(name asc) {

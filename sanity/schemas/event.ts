@@ -35,9 +35,22 @@ export const event = {
     },
     {
       name: 'date',
-      title: 'Event Date & Time',
+      title: 'Start Date & Time',
       type: 'datetime',
       validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'endDate',
+      title: 'End Date & Time',
+      type: 'datetime',
+      description: 'Déjalo vacío si el evento dura solo un día.',
+    },
+    {
+      name: 'price',
+      title: 'Price',
+      type: 'string',
+      description: 'Escribe "0" o "Gratis" para eventos sin costo.',
+      initialValue: '0',
     },
     {
       name: 'municipality',
@@ -49,7 +62,7 @@ export const event = {
     {
       name: 'address',
       title: 'Exact Address',
-      type: 'address', // Usamos el objeto "address" que creamos antes
+      type: 'address',
     },
   ],
 };

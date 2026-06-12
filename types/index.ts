@@ -117,7 +117,9 @@ export interface Event {
   image?: LoadedSanityImage;
   description: string;
   venueName: string;
-  date: string;
+  date: string;       // startDate
+  endDate?: string;   // ¡Muy importante para eventos multidia!
+  price?: string;     // Para el campo 'offers'
   municipality: Municipality;
   address: Address;
 }
