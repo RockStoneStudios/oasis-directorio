@@ -100,26 +100,42 @@ export async function generateMetadata({
 
   if (!business) {
     return {
-      title: "Negocio no encontrado | Oasis",
+      title: "Negocio no encontrado | Ooasys",
+      robots: { index: false },
     };
   }
 
   const businessName = business.name;
   const category = business.category?.name || "Comercio";
   const municipality = business.municipality?.name || "Antioquia";
+  const description = business.description || `Información y contacto de ${businessName} en ${municipality}.`;
   
-  const seoTitle = `${businessName} en ${municipality} | ${category} | Oasis`;
-  const seoDescription = business.description 
-    ? `${business.description.slice(0, 150)}... Encuentra opiniones, ubicación, horarios y contacto directo vía WhatsApp en Oasis.`
-    : `Contacta con ${businessName} en ${municipality}. Información detallada de este establecimiento de ${category}, ubicación en mapa, teléfonos y horarios de atención en el directorio local Oasis.`;
+  const keywords = [
+    businessName,
+    category,
+    municipality,
+    `${businessName} ${municipality}`,
+    `${category} en ${municipality}`,
+    business.address,
+    business.phone,
+    business.whatsapp,
+    "directorio local",
+    "negocios cerca de mí",
+    "ooasys",
+  ].filter(Boolean).join(", ");
 
-  const imageUrl = business.logo?.asset?.url || "/fallback-og.png";
+  const seoTitle = `${businessName} | ${category} en ${municipality} | Teléfono y Horarios | Ooasys`;
+  const seoDescription = `${businessName} en ${municipality}. ${description.slice(0, 150)} Ubicación, teléfono ${business.phone || ""}, horarios y contacto.`;
+
+  const imageUrl = business.logo?.asset?.url || "https://www.ooasys.com/ooasys.webp";
 
   return {
     title: seoTitle,
     description: seoDescription,
+    keywords: keywords,
+    authors: [{ name: "Ooasys", url: "https://www.ooasys.com" }],
     alternates: {
-      canonical: `https://oasis-directorio-ccg7.vercel.app/business/${slug}`,
+      canonical: `https://www.ooasys.com/business/${slug}`,
     },
     robots: {
       index: true,
@@ -135,16 +151,16 @@ export async function generateMetadata({
     openGraph: {
       title: seoTitle,
       description: seoDescription,
-      url: `https://oasis-directorio-ccg7.vercel.app/business/${slug}`,
-      siteName: "Oasis Directorio Local",
+      url: `https://www.ooasys.com/business/${slug}`,
+      siteName: "Ooasys",
       locale: "es_CO",
-      type: "video.other",
+      type: "website",
       images: [
         {
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: `Ficha comercial de ${businessName} en Oasis`,
+          alt: `${businessName} - ${category} en ${municipality}`,
         },
       ],
     },
@@ -153,6 +169,8 @@ export async function generateMetadata({
       title: seoTitle,
       description: seoDescription,
       images: [imageUrl],
+      creator: "@ooasys",
+      site: "@ooasys",
     },
   };
 }
