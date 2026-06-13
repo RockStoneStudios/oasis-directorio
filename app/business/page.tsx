@@ -6,12 +6,11 @@ import {
   Store,
 } from "lucide-react";
 import type { Metadata } from "next";
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { getBusinesses } from "@/actions/getBusinesses";
 import { BusinessCard } from "@/components/BusinessCard";
 import { BusinessFilters } from "@/components/BusinessFilters";
 import { BusinessSearchBar } from "@/components/BusinessSearchBar";
-import { DynamicBusinessMapView } from "@/components/map/DynamicBusinessMapView";
 import { Pagination } from "@/components/Pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,6 +21,13 @@ import {
 } from "@/lib/sanity/queries";
 import type { BusinessSort } from "@/types/business";
 import { SortSelect } from "./sort-select";
+
+// 🚀 Carga diferida del mapa (solo cuando se necesita)
+const DynamicBusinessMapView = lazy(() =>
+  import("@/components/map/DynamicBusinessMapView").then((mod) => ({
+    default: mod.DynamicBusinessMapView,
+  }))
+);
 
 const PAGE_SIZE = 12;
 const SORT_VALUES: BusinessSort[] = [
@@ -37,7 +43,7 @@ interface BusinessPageProps {
 }
 
 // ============================================================
-// 🎯 METADATA OPTIMIZADA PARA POSICIONAR #1 EN CADA BÚSQUEDA
+// 🎯 METADATA OPTIMIZADA
 // ============================================================
 
 export async function generateMetadata({ searchParams }: BusinessPageProps): Promise<Metadata> {
@@ -136,6 +142,7 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
   const page = Math.max(Number(params.page) || 1, 1);
   const sort = getSafeSort(params.sort);
 
+  // 🚀 Ejecutar consultas en paralelo con Promise.all
   const [
     { businesses, hasMore },
     { data: categories },
@@ -162,12 +169,7 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
   const categoryName = params.category ? decodeURIComponent(params.category) : "";
   const municipalityName = params.municipality ? decodeURIComponent(params.municipality) : "";
 
-  // ============================================================
-  // 🚀 SCHEMAS ENRIQUECIDOS PARA GOOGLE
-  // ============================================================
-
-  // ✅ Schema 1: CollectionPage (SOLO en página 1 para evitar contenido inconsistente)
-  // Google no quiere esquemas de listas paginadas en páginas posteriores
+  // Schemas (sin cambios)
   const collectionPageSchema = page === 1 ? {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -184,7 +186,6 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
     }))
   } : null;
 
-  // Schema 2: SearchAction (para búsquedas directas desde Google)
   const searchBoxSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -200,7 +201,6 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
     }
   };
 
-  // Schema 3: Breadcrumb (para navegación estructurada)
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -234,7 +234,7 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
 
   return (
     <div className="bg-accent/20">
-      {/* Schemas JSON-LD - Solo collectionPageSchema si existe (página 1) */}
+      {/* Schemas JSON-LD */}
       {collectionPageSchema && (
         <script
           type="application/ld+json"
@@ -331,7 +331,10 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
 
                 <TabsContent value="map" className="mt-0">
                   <div className="h-160 overflow-hidden rounded-2xl border border-border/50 bg-background shadow-warm">
-                    <DynamicBusinessMapView businesses={businesses} />
+                    {/* 🚀 Carga diferida del mapa con lazy + Suspense */}
+                    <Suspense fallback={<div className="h-full w-full animate-pulse bg-gray-200 dark:bg-gray-800 flex items-center justify-center">Cargando mapa...</div>}>
+                      <DynamicBusinessMapView businesses={businesses} />
+                    </Suspense>
                   </div>
                 </TabsContent>
               </Tabs>
