@@ -18,7 +18,7 @@ export function SortSelect({ value }: { value: BusinessSort }) {
       value={value || "relevance"}
       onValueChange={(sort) => setFilters({ sort: sort as BusinessSort })}
     >
-      <SelectTrigger className="w-full">
+      <SelectTrigger className="w-full" aria-label="Ordenar resultados por">
         <SelectValue placeholder="Ordenar" />
       </SelectTrigger>
       <SelectContent>

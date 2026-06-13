@@ -292,7 +292,7 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
                   className="h-4 w-4 text-muted-foreground"
                   aria-hidden="true"
                 />
-                <SortSelect value={sort} />
+                <SortSelect  value={sort} aria-label="Ordenar resultados por"/>
               </div>
             </div>
 
