@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
   
   // 🚀 EXPERIMENTAL: Optimización de CSS y Scripts (NUEVO)
   experimental: {
-    optimizeCss: true,           // ← Optimiza CSS (reduce bloqueo)
+    optimizeCss: false,           // ← Optimiza CSS (reduce bloqueo)
     optimizePackageImports: ["lucide-react", "leaflet"], // ← Optimiza imports
     webpackBuildWorker: true,     // ← Paraleliza builds
     mdxRs: true,                  // ← Compilación más rápida

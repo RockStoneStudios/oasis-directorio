@@ -14,22 +14,22 @@
     "seed:clean": "npx tsx scripts/seed/seed.ts --clean"
   },
   "browserslist": {
-   "production": [
-    "last 2 years",
-    "> 1%",
-    "not dead",
-    "not IE 11",
-    "not op_mini all",
-    "not chrome < 80",
-    "not firefox < 75",
-    "not safari < 13",
-    "not edge < 80"
-  ],
-  "development": [
-    "last 1 chrome version",
-    "last 1 firefox version",
-    "last 1 safari version"
-  ]
+    "production": [
+      "last 2 years",
+      "> 1%",
+      "not dead",
+      "not IE 11",
+      "not op_mini all",
+      "not chrome < 80",
+      "not firefox < 75",
+      "not safari < 13",
+      "not edge < 80"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.10",
@@ -50,6 +50,7 @@
     "@sanity/image-url": "^2.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "critters": "^0.0.25",
     "leaflet": "^1.9.4",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.563.0",
