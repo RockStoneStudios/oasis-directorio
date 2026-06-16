@@ -5,7 +5,7 @@ import { client } from '@/lib/sanity/client';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://ooasys.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
   console.log('🚀 [Sitemap] Iniciando generación de mapa de sitio...');
 
