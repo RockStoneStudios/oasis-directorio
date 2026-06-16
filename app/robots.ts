@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next';
 export default function robots(): MetadataRoute.Robots {
   // Usamos tu URL de producción por defecto si la variable de entorno no está configurada
   
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https:https://www.ooasys.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
   
   return {
     rules: {
