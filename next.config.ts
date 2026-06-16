@@ -21,18 +21,60 @@ const nextConfig: NextConfig = {
   // 🔧 Compresión y optimización
   compress: true,
   
-  // 🚀 EXPERIMENTAL: Optimización de CSS y Scripts (NUEVO)
+  // 🚀 EXPERIMENTAL: Optimización de CSS y Scripts
   experimental: {
-    optimizeCss: false,           // ← Optimiza CSS (reduce bloqueo)
-    optimizePackageImports: ["lucide-react", "leaflet"], // ← Optimiza imports
-    webpackBuildWorker: true,     // ← Paraleliza builds
-    mdxRs: true,                  // ← Compilación más rápida
+    optimizeCss: false,
+    optimizePackageImports: ["lucide-react", "leaflet"],
+    webpackBuildWorker: true,
+    mdxRs: true,
   },
   
-  // 🔧 Transpilación para navegadores modernos (reduce JavaScript antiguo)
+  // 🚀 REDIRECCIONES 301 PARA CONSOLIDAR URLs
+  async redirects() {
+    return [
+      // Redirige http a https (sin www)
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'header',
+            key: 'x-forwarded-proto',
+            value: 'http',
+          },
+        ],
+        destination: 'https://www.ooasys.com/:path*',
+        permanent: true,
+      },
+      // Redirige ooasys.com (sin www) a www.ooasys.com
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'ooasys.com',
+          },
+        ],
+        destination: 'https://www.ooasys.com/:path*',
+        permanent: true,
+      },
+      // Redirige http://www.ooasys.com a https://www.ooasys.com
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'http://www.ooasys.com',
+          },
+        ],
+        destination: 'https://www.ooasys.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
+  
+  // 🔧 Transpilación para navegadores modernos
   transpilePackages: [],
 
-  
   // 🎯 Eliminar logs en producción
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
@@ -89,7 +131,7 @@ const nextConfig: NextConfig = {
   
   // ⚡ On-Demand Revalidation (ISR)
   onDemandEntries: {
-    maxInactiveAge: 60 * 60 * 1000, // 1 hora
+    maxInactiveAge: 60 * 60 * 1000,
     pagesBufferLength: 5,
   },
 };
