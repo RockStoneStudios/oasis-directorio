@@ -202,7 +202,7 @@ export default async function BusinessDetailPage({
     "@type": "LocalBusiness",
     "name": business.name,
     "description": business.description || `Información de contacto de ${business.name}`,
-    "url": `https://oasis-directorio-ccg7.vercel.app/business/${slug}`,
+    "url": `https://www.ooasys.com/business/${slug}`,
     "telephone": business.phone || business.whatsapp || "",
     "priceRange": "$$",
     "image": business.logo?.asset?.url || [],
@@ -374,7 +374,10 @@ export default async function BusinessDetailPage({
           <aside className="space-y-5">
             <section className="rounded-2xl border border-border/50 bg-background p-5 sm:p-6 shadow-warm">
               {/* Contenedor con grid para forzar UNA SOLA FILA */}
-              <div className={`grid grid-cols-${totalIcons} gap-3 justify-items-center`}>
+              <div 
+                  className="grid gap-3 justify-items-center" 
+                  style={{ gridTemplateColumns: `repeat(${totalIcons}, minmax(0, 1fr))` }}
+                >
                 {business.phone && (
                   <a
                     href={`tel:${business.phone}`}

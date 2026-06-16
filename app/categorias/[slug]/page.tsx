@@ -17,6 +17,7 @@ export const revalidate = 60;
 function formatSlugText(slug: string): string {
   return slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " ");
 }
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
 // 🚀 1. METADATOS DINÁMICOS ENFOCADOS EN INTENCIÓN LOCAL
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       : firstBiz.subcategory?.name || categoryName;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://oasis-directorio-ccg7.vercel.app";
+ 
   
   // Transformamos títulos planos en anzuelos comerciales del Occidente Antioqueño
   const title = `Los mejores ${categoryName} en el Occidente Antioqueño | Oasis`;
@@ -78,7 +79,7 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
     title = firstBiz.category?.slug?.current === slug ? firstBiz.category.name : title;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://oasis-directorio-ccg7.vercel.app";
+
 
   // 🚀 3. DATOS ESTRUCTURADOS (JSON-LD)
   // Le dice a Google que esta página es una lista estructurada de comercios de un sector específico

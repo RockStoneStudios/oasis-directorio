@@ -7,10 +7,11 @@ import { CategoryGrid } from "@/components/category/CategoryGrid";
 
 // Revalida los datos de Sanity automáticamente cada 60 segundos
 export const revalidate = 60;
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
 // 🚀 METADATOS ULTRA ENFOCADOS EN EL OCCIDENTE ANTIOQUEÑO PARA GOOGLE
 export async function generateMetadata(): Promise<Metadata> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://oasis-directorio-ccg7.vercel.app";
+ 
   const title = "Categorías de Negocios en el Occidente Antioqueño | Oasis";
   const description = "Descubre los mejores comercios y servicios del Occidente Antioqueño. Encuentra dónde comer, hoteles, fincas de recreo, salud y turismo en Sopetrán, San Jerónimo, Santa Fe de Antioquia y más.";
 
@@ -55,7 +56,7 @@ export default async function CategoriasPage() {
     client.fetch(CATEGORIES_LIST_QUERY),
   ]);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://oasis-directorio-ccg7.vercel.app";
+  
 
   // 🚀 DATOS ESTRUCTURADOS (JSON-LD) PARA POSICIONAR LA GUÍA REGIONAL
   const jsonLd = {

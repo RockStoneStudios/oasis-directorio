@@ -67,7 +67,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
         onKeyDown={handleKeyDown}
       >
         {/* Imagen principal */}
-        <div className="relative aspect-[4/3] sm:aspect-[16/9] w-full rounded-xl sm:rounded-2xl overflow-hidden group shadow-warm">
+        <div className="relative aspect-4/3 sm:aspect-video w-full rounded-xl sm:rounded-2xl overflow-hidden group shadow-warm">
           <button
             type="button"
             className="absolute inset-0 cursor-pointer rounded-xl sm:rounded-2xl overflow-hidden"
