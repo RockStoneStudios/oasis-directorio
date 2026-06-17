@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     locale: "es_CO",
     images: [
       {
-        url: `${APP_URL}/radio-og.jpg`,
+        url: `${APP_URL}/emisoras-occidente.png`,
         width: 1200,
         height: 630,
         alt: "Emisoras del Occidente Antioqueño - Radio Online",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "📻 Emisoras del Occidente Antioqueño | Radio Online",
     description: "🎙️ Sopetrán Stereo, Ondas del Tonusco, Global FM y Plazas FM. ¡Música y cultura antioqueña 24/7!",
-    images: [`${APP_URL}/radio-og.jpg`],
+    images: [`${APP_URL}/emisoras-occidente.png`],
     creator: "@ooasys",
     site: "@ooasys",
   },
