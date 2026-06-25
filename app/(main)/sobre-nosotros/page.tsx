@@ -342,7 +342,7 @@ export default function NosotrosPage() {
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div>
-                <div className="text-4xl md:text-5xl font-bold text-emerald-600 dark:text-emerald-400">+70</div>
+                <div className="text-4xl md:text-5xl font-bold text-emerald-600 dark:text-emerald-400">+100</div>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Negocios</p>
               </div>
               <div>
