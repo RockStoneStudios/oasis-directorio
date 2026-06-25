@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Mail, MapPin, Star, Clock, Users } from "lucide-react";
+import { Home, Mail, MapPin, Star, Clock, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -24,249 +24,177 @@ export function Footer() {
 
   return (
     <footer className="border-t border-[#E7E5E4] dark:border-[#44403C] bg-gradient-to-br from-[#FAFAF9] to-[#F5F0E8] dark:from-[#1C1917] dark:to-[#292524]">
-      <div className="container py-16">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-5 lg:gap-8">
-          {/* Brand Column */}
-          <div className="lg:col-span-2">
+      <div className="container mx-auto px-4 py-12 md:py-16">
+        {/* Grid principal - 2 columnas en móvil, 4 en tablet, 5 en desktop */}
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5 lg:gap-6">
+          
+          {/* Columna 1: Brand - ocupa 2 columnas en móvil, 2 en desktop */}
+          <div className="col-span-2 lg:col-span-2">
             <Link
               href="/"
-              className="flex items-center gap-2.5 mb-4 w-fit transition-all duration-200 hover:opacity-80 group"
+              className="inline-flex items-center gap-2.5 mb-4 transition-all duration-200 hover:opacity-80 group"
             >
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#14B8A6] to-[#0F766E] shadow-md group-hover:shadow-lg transition-all">
-                <Home
-                  className="h-5 w-5 text-white"
-                  aria-hidden="true"
-                />
+                <Home className="h-5 w-5 text-white" />
               </div>
               <span className="text-xl font-bold font-heading tracking-tight bg-gradient-to-r from-[#1C1917] to-[#44403C] dark:from-white dark:to-[#A8A29E] bg-clip-text text-transparent">
                 Ooasys
               </span>
             </Link>
-            <p className="text-[#78716C] dark:text-[#A8A29E] max-w-sm mb-6 text-sm leading-relaxed">
-              Tu oasis digital en el Occidente Antioqueño. Descubre negocios, eventos y servicios locales en Sopetrán, Santa Fe, San Jerónimo y más.
+            
+            <p className="text-[#78716C] dark:text-[#A8A29E] text-sm leading-relaxed mb-4 max-w-xs">
+              Tu oasis digital en el Occidente Antioqueño.
             </p>
 
-            {/* Mini features */}
-            <div className="flex flex-wrap gap-4 mb-6">
-              <div className="flex items-center gap-2 text-xs text-[#78716C] dark:text-[#A8A29E]">
-                <MapPin className="h-3.5 w-3.5 text-[#14B8A6]" />
-                <span>+15 Municipios</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-[#78716C] dark:text-[#A8A29E]">
-                <Star className="h-3.5 w-3.5 text-[#F59E0B]" />
-                <span>Negocios verificados</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-[#78716C] dark:text-[#A8A29E]">
-                <Clock className="h-3.5 w-3.5 text-[#10B981]" />
-                <span>Info actualizada</span>
-              </div>
+            {/* Features simplificados */}
+            <div className="flex flex-wrap gap-3 mb-6">
+              <span className="inline-flex items-center gap-1.5 text-xs text-[#78716C] dark:text-[#A8A29E] bg-white/50 dark:bg-[#292524]/50 px-3 py-1 rounded-full">
+                <MapPin className="h-3 w-3 text-[#14B8A6]" />
+                +5 Municipios
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs text-[#78716C] dark:text-[#A8A29E] bg-white/50 dark:bg-[#292524]/50 px-3 py-1 rounded-full">
+                <Star className="h-3 w-3 text-[#F59E0B]" />
+                Verificados
+              </span>
             </div>
 
-            {/* Newsletter Ooasys */}
-            <div className="max-w-sm">
-              <h3 className="font-semibold font-heading mb-3 text-[#1C1917] dark:text-white flex items-center gap-2">
-                <Mail className="h-4 w-4 text-[#14B8A6]" />
-                Novedades de Ooasys
-              </h3>
+            {/* Newsletter - solo en desktop, en móvil abajo */}
+            <div className="hidden lg:block">
+              <h4 className="text-sm font-semibold text-[#1C1917] dark:text-white mb-2">
+                Suscríbete
+              </h4>
               <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
-                <div className="flex-1">
-                  <label htmlFor="newsletter-email" className="sr-only">
-                    Correo electrónico
-                  </label>
-                  <Input
-                    id="newsletter-email"
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Tu mejor correo"
-                    autoComplete="email"
-                    required
-                    className="h-11 bg-white dark:bg-[#292524] border-[#E7E5E4] dark:border-[#44403C] text-[#1C1917] dark:text-white placeholder:text-[#A8A29E] focus:border-[#14B8A6] focus:ring-[#14B8A6]/20"
-                  />
-                </div>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Tu correo"
+                  required
+                  className="h-9 text-sm bg-white dark:bg-[#292524] border-[#E7E5E4] dark:border-[#44403C]"
+                />
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="h-11 px-4 bg-gradient-to-r from-[#14B8A6] to-[#0F766E] hover:from-[#0F766E] hover:to-[#0D5A54] text-white shadow-md hover:shadow-lg transition-all"
+                  size="sm"
+                  className="h-9 px-3 bg-gradient-to-r from-[#14B8A6] to-[#0F766E] hover:from-[#0F766E] hover:to-[#0D5A54] text-white text-sm"
                 >
-                  {isSubmitting ? (
-                    <span className="flex items-center gap-2">
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      <span className="sr-only">Suscribiendo</span>
-                    </span>
-                  ) : (
-                    <>
-                      <Mail className="h-4 w-4" aria-hidden="true" />
-                      <span className="sr-only sm:not-sr-only sm:ml-2">
-                        Suscribirme
-                      </span>
-                    </>
-                  )}
+                  {isSubmitting ? "..." : "Ir"}
                 </Button>
               </form>
-              <p className="text-xs text-[#A8A29E] mt-3">
-                Recibe tips, negocios nuevos y eventos. Sin spam. 🌊
-              </p>
             </div>
           </div>
 
-          {/* Browse Column */}
-          <nav aria-label="Explorar negocios">
-            <h3 className="font-semibold font-heading mb-4 text-[#1C1917] dark:text-white">Explorar</h3>
-            <ul className="space-y-3 text-sm">
+          {/* Columna 2: Explorar */}
+          <div>
+            <h3 className="text-sm font-semibold text-[#1C1917] dark:text-white mb-3">
+              Explorar
+            </h3>
+            <ul className="space-y-2">
               <li>
-                <Link
-                  href="/business"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
-                  Todos los negocios
+                <Link href="/business" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
+                  Negocios
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/business?status=open"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
+                <Link href="/business?status=open" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
                   Abiertos ahora
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/business?sort=rating_desc"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
-                  Mejor calificados
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/business?sort=name_asc"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
-                  Orden alfabético
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/categorias"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
+                <Link href="/categorias" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
                   Categorías
                 </Link>
               </li>
             </ul>
-          </nav>
+          </div>
 
-          {/* For Business Owners Column */}
-          <nav aria-label="Recursos para negocios">
-            <h3 className="font-semibold font-heading mb-4 text-[#1C1917] dark:text-white">Para negocios</h3>
-            <ul className="space-y-3 text-sm">
+          {/* Columna 3: Para negocios */}
+          <div>
+            <h3 className="text-sm font-semibold text-[#1C1917] dark:text-white mb-3">
+              Negocios
+            </h3>
+            <ul className="space-y-2">
               <li>
-                <Link
-                  href="/pricing"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
-                  Registrar negocio
+                <Link href="/pricing" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
+                  Registrar
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
+                <Link href="/dashboard" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
                   Dashboard
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/listings"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
-                  Gestionar negocios
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/dashboard/leads"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
-                  Solicitudes
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/guia-registro"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
-                  Guía de registro
+                <Link href="/guia-registro" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
+                  Guía
                 </Link>
               </li>
             </ul>
-          </nav>
+          </div>
 
-          {/* Account Column */}
-          <nav aria-label="Cuenta">
-            <h3 className="font-semibold font-heading mb-4 text-[#1C1917] dark:text-white">Cuenta</h3>
-            <ul className="space-y-3 text-sm">
+          {/* Columna 4: Cuenta */}
+          <div>
+            <h3 className="text-sm font-semibold text-[#1C1917] dark:text-white mb-3">
+              Cuenta
+            </h3>
+            <ul className="space-y-2">
               <li>
-                <Link
-                  href="/saved"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
+                <Link href="/saved" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
                   Guardados
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/profile"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
-                  Mi perfil
+                <Link href="/profile" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
+                  Perfil
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/sign-in"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
+                <Link href="/sign-in" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
                   Iniciar sesión
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/help"
-                  className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200"
-                >
-                  Ayuda
-                </Link>
-              </li>
             </ul>
-          </nav>
+          </div>
         </div>
 
-        {/* Bottom Bar Ooasys */}
-        <div className="border-t border-[#E7E5E4] dark:border-[#44403C] mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-          <p className="text-[#78716C] dark:text-[#A8A29E] flex items-center gap-1" suppressHydrationWarning>
-            © {new Date().getFullYear()} <span className="font-semibold text-[#14B8A6]">Ooasys</span>. Hecho con 🏜️ para el Occidente Antioqueño.
-          </p>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/privacy"
-              className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200 text-sm"
+        {/* Newsletter móvil - solo visible en móvil */}
+        <div className="mt-8 lg:hidden">
+          <h4 className="text-sm font-semibold text-[#1C1917] dark:text-white mb-2">
+            Suscríbete a novedades
+          </h4>
+          <form onSubmit={handleNewsletterSubmit} className="flex gap-2 max-w-md">
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Tu correo"
+              required
+              className="h-10 bg-white dark:bg-[#292524] border-[#E7E5E4] dark:border-[#44403C]"
+            />
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="h-10 px-4 bg-gradient-to-r from-[#14B8A6] to-[#0F766E] hover:from-[#0F766E] hover:to-[#0D5A54] text-white"
             >
+              {isSubmitting ? "..." : "Suscribirme"}
+            </Button>
+          </form>
+        </div>
+
+        {/* Bottom Bar - más compacto */}
+        <div className="border-t border-[#E7E5E4] dark:border-[#44403C] mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-[#78716C] dark:text-[#A8A29E]" suppressHydrationWarning>
+            © {new Date().getFullYear()} Ooasys. Todos los derechos reservados.
+          </p>
+          
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="text-xs text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
               Privacidad
             </Link>
-            <Link
-              href="/terms"
-              className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200 text-sm"
-            >
+            <Link href="/terms" className="text-xs text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
               Términos
             </Link>
-            <Link
-              href="/contacto"
-              className="text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors duration-200 text-sm"
-            >
+            <Link href="/contacto" className="text-xs text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
               Contacto
             </Link>
           </div>

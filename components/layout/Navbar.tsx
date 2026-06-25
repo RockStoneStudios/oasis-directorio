@@ -258,10 +258,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
             <Link href="/sobre-nosotros" className="px-4 py-2 text-sm font-medium text-[#44403C] dark:text-[#D6D3D1] rounded-lg hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">
               Conócenos
             </Link>
-            <Link href="/elecciones" className={`px-4 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-1.5 ${pathname === '/elecciones' ? 'text-[#F59E0B] bg-[#F59E0B]/10' : 'text-[#D97706] dark:text-[#FBBF24] hover:bg-[#F59E0B]/10'}`}>
-              <Vote className="w-4 h-4" /> Elecciones
-            </Link>
-            
+          
             {/* 🍍 ENLACE DE FIESTAS DE LAS FRUTAS CON ANIMACIÓN */}
             <Link 
               href="/eventos/fiestas-de-frutas-2026" 
@@ -447,11 +444,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     <Link href="/mapa" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><MapPin className="h-5 w-5" />Cerca de mí</Link>
                     <Link href="/atm" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><BadgeDollarSign className="h-5 w-5" /> ¿Dónde retirar dinero?</Link>
                     <Link href="/estereo" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><RadioIcon className="h-5 w-5" /> Emisoras del occidente antioqueño</Link>
-                    
-                    <Link href="/elecciones" onClick={() => setIsOpen(false)} className={`flex items-center gap-3 px-4 py-3 text-base font-bold rounded-lg transition-all ${pathname === '/elecciones' ? 'text-[#F59E0B] bg-[#F59E0B]/10' : 'text-[#D97706] dark:text-[#FBBF24] hover:bg-[#F59E0B]/10'}`}>
-                      <Vote className="h-5 w-5" /> Elecciones 2026
-                    </Link>
-
+                  
                     {/* 🍍 ENLACE DE FIESTAS DE LAS FRUTAS EN MÓVIL */}
                     <Link 
                       href="/eventos/fiestas-de-frutas-2026" 
