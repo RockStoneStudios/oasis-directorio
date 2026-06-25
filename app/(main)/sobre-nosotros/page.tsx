@@ -211,11 +211,11 @@ export default function NosotrosPage() {
     </h2>
     
     <div className="space-y-5 text-lg leading-relaxed">
-      <p className="text-gray-700 dark:text-gray-600">
+      <p className="text-gray-700 dark:text-gray-300">
         <span className="font-semibold text-emerald-600 dark:text-emerald-400">Directorio Sopetrán</span> nació con la misión de visibilizar los negocios locales de Sopetrán. Lo que comenzó como un proyecto pequeño, creció rápidamente gracias al apoyo de la comunidad y los emprendedores de la región.
       </p>
       
-      <p className="text-gray-700 dark:text-gray-600">
+      <p className="text-gray-700 dark:text-gray-300">
         Hoy, <span className="font-semibold text-emerald-600 dark:text-emerald-400">Ooasys</span> es la evolución natural de ese sueño, expandiendo su alcance a todo el <span className="font-semibold text-teal-600 dark:text-teal-400">Occidente Antioqueño</span>. Conectamos Sopetrán, Santa Fe de Antioquia, San Jerónimo, Liborina y toda la región.
       </p>
       
