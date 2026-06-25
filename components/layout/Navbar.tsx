@@ -461,6 +461,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
 
                     <div className="h-px bg-[#E7E5E4] dark:bg-[#44403C] my-2" />
                     <Link href="/business" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">Negocios</Link>
+                    <Link href="/sobre-nosotros" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">Quienes Somos</Link>
 
                     {user && (
                       <>
