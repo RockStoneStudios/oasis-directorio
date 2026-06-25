@@ -12,10 +12,9 @@ import {
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
-// ✅ METADATA AQUÍ
 export const metadata: Metadata = {
   title: "Nosotros | Ooasys - La Evolución del Directorio Sopetrán y el Occidente Antioqueño",
-  description: "🚀 Conoce la historia de Ooasys, la plataforma de transformación digital que conecta negocios en Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina. De un sueño local a una realidad regional.",
+  description: "🚀 Conoce la historia de Ooasys, la plataforma de transformación digital que conecta negocios en Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina.",
   keywords: [
     "Ooasys nosotros",
     "Directorio Sopetrán",
@@ -26,10 +25,7 @@ export const metadata: Metadata = {
     "Sopetrán",
     "Santa Fe de Antioquia",
     "San Jerónimo",
-    "Liborina",
-    "directorio comercial antioquia",
-    "apoyo local antioquia",
-    "emprendimientos occidente antioqueño"
+    "Liborina"
   ].join(", "),
   authors: [{ name: "Ooasys", url: APP_URL }],
   alternates: {
@@ -73,7 +69,7 @@ export const metadata: Metadata = {
   category: "tecnologia y negocios",
 };
 
-// ✅ SCHEMAS
+// Schemas...
 const aboutPageSchema = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
@@ -129,7 +125,7 @@ const organizationSchema = {
 };
 
 // ============================================================
-// ✅ PÁGINA NOSOTROS - CON DARK MODE FUNCIONANDO
+// ✅ PÁGINA NOSOTROS - COMPLETA CON DARK MODE
 // ============================================================
 
 export default function NosotrosPage() {
@@ -155,24 +151,27 @@ export default function NosotrosPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
 
-      {/* Meta tags geo */}
       <meta name="geo.region" content="CO-ANT" />
       <meta name="geo.placename" content="Occidente Antioqueño" />
 
       <h1 className="sr-only">Ooasys: Conoce la Evolución e Historia del Directorio de Sopetrán</h1>
 
-      {/* ✅ CONTENIDO CON DARK MODE */}
-      <div className="min-h-screen bg-white dark:bg-black-950 transition-colors duration-300">
+      {/* ================================ */}
+      {/* CONTENIDO - CON DARK MODE */}
+      {/* ================================ */}
+      <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
         
+        {/* ================================ */}
         {/* HERO */}
+        {/* ================================ */}
         <section className="relative px-4 pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
           <div className="absolute inset-0 -z-10">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-100/40 dark:bg-emerald-900/30 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-100/40 dark:bg-teal-900/30 rounded-full blur-3xl" />
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-100/40 dark:bg-emerald-900/40 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-100/40 dark:bg-teal-900/40 rounded-full blur-3xl" />
           </div>
           
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/60 border border-emerald-200/50 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/70 border border-emerald-200/50 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
               <Sparkles className="h-4 w-4" />
               <span>Historia de Transformación Digital</span>
             </div>
@@ -183,17 +182,17 @@ export default function NosotrosPage() {
               </span>
             </h1>
             
-            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto font-medium">
+            <p className="text-xl text-gray-800 dark:text-gray-200 max-w-2xl mx-auto font-medium">
               La evolución natural del Directorio Sopetrán
             </p>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mt-4">
+            <p className="text-lg text-gray-700 dark:text-gray-400 max-w-2xl mx-auto mt-4">
               De un sueño local a una realidad regional.
             </p>
             
             <div className="mt-8">
               <Link
-                href="/negocios"
-                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-emerald-500/25 dark:shadow-emerald-900/50"
+                href="/"
+                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-emerald-500/30 dark:shadow-emerald-900/50"
               >
                 <span>Explorar Ooasys</span>
                 <ArrowRight className="h-5 w-5" />
@@ -202,38 +201,42 @@ export default function NosotrosPage() {
           </div>
         </section>
 
+        {/* ================================ */}
         {/* HISTORIA */}
-        <section className="px-4 py-16 md:py-20 border-t border-gray-200 dark:border-gray-800">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white text-center mb-8">
-              Nuestra historia
-            </h2>
-            
-            <div className="space-y-5 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-              <p>
-                <span className="font-semibold text-emerald-600 dark:text-emerald-400">Directorio Sopetrán</span> nació con la misión de visibilizar los negocios locales de Sopetrán. Lo que comenzó como un proyecto pequeño, creció rápidamente gracias al apoyo de la comunidad y los emprendedores de la región.
-              </p>
-              
-              <p>
-                Hoy, <span className="font-semibold text-emerald-600 dark:text-emerald-400">Ooasys</span> es la evolución natural de ese sueño, expandiendo su alcance a todo el <span className="font-semibold text-teal-600 dark:text-teal-400">Occidente Antioqueño</span>. Conectamos Sopetrán, Santa Fe de Antioquia, San Jerónimo, Liborina y toda la región.
-              </p>
-              
-              <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-6 rounded-xl border border-emerald-100 dark:border-emerald-900/50 mt-6">
-                <p className="text-gray-800 dark:text-gray-200 text-lg italic font-medium text-center">
-                  "Somos el puente digital entre los negocios locales y las personas que los necesitan."
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* ================================ */}
+<section className="px-4 py-16 md:py-20 border-t border-gray-200 dark:border-gray-800">
+  <div className="max-w-4xl mx-auto">
+    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-emerald-700 text-center mb-8">
+      Nuestra historia
+    </h2>
+    
+    <div className="space-y-5 text-lg leading-relaxed">
+      <p className="text-gray-700 dark:text-gray-600">
+        <span className="font-semibold text-emerald-600 dark:text-emerald-400">Directorio Sopetrán</span> nació con la misión de visibilizar los negocios locales de Sopetrán. Lo que comenzó como un proyecto pequeño, creció rápidamente gracias al apoyo de la comunidad y los emprendedores de la región.
+      </p>
+      
+      <p className="text-gray-700 dark:text-gray-600">
+        Hoy, <span className="font-semibold text-emerald-600 dark:text-emerald-400">Ooasys</span> es la evolución natural de ese sueño, expandiendo su alcance a todo el <span className="font-semibold text-teal-600 dark:text-teal-400">Occidente Antioqueño</span>. Conectamos Sopetrán, Santa Fe de Antioquia, San Jerónimo, Liborina y toda la región.
+      </p>
+      
+      <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-6 rounded-xl border border-emerald-100 dark:border-emerald-900/50 mt-6">
+        <p className="text-gray-800 dark:text-gray-200 text-lg italic font-medium text-center">
+          "Somos el puente digital entre los negocios locales y las personas que los necesitan."
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
+        {/* ================================ */}
         {/* MUNICIPIOS */}
+        {/* ================================ */}
         <section className="px-4 py-16 md:py-20 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-800">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white text-center mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-green-700 text-center mb-4">
               Conectamos toda la región
             </h2>
-            <p className="text-center text-gray-600 dark:text-gray-400 mb-10">
+            <p className="text-center text-gray-600 dark:text-emerald-700 mb-10">
               Más de 70 negocios en 4 municipios del Occidente Antioqueño
             </p>
             
@@ -262,11 +265,13 @@ export default function NosotrosPage() {
           </div>
         </section>
 
+        {/* ================================ */}
         {/* MISIÓN + VISIÓN */}
+        {/* ================================ */}
         <section className="px-4 py-16 md:py-20 border-t border-gray-200 dark:border-gray-800">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white text-center mb-12">
-              Misión <span className="text-gray-400 dark:text-gray-600">y</span> Visión
+              Misión 
             </h2>
             
             <div className="grid md:grid-cols-2 gap-8">
@@ -296,7 +301,9 @@ export default function NosotrosPage() {
           </div>
         </section>
 
+        {/* ================================ */}
         {/* VALORES */}
+        {/* ================================ */}
         <section className="px-4 py-16 md:py-20 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-800 dark:to-teal-800">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
@@ -328,7 +335,9 @@ export default function NosotrosPage() {
           </div>
         </section>
 
+        {/* ================================ */}
         {/* CIFRAS */}
+        {/* ================================ */}
         <section className="px-4 py-16 md:py-20 border-t border-gray-200 dark:border-gray-800">
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -352,7 +361,9 @@ export default function NosotrosPage() {
           </div>
         </section>
 
+        {/* ================================ */}
         {/* CTA FINAL */}
+        {/* ================================ */}
         <section className="px-4 py-16 md:py-20 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-800">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -365,7 +376,7 @@ export default function NosotrosPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/registro"
-                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-emerald-500/25 dark:shadow-emerald-900/50"
+                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-emerald-500/30 dark:shadow-emerald-900/50"
               >
                 Registrar mi negocio
               </Link>
@@ -378,6 +389,7 @@ export default function NosotrosPage() {
             </div>
           </div>
         </section>
+
       </div>
     </>
   );
