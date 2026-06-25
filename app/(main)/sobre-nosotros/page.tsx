@@ -161,13 +161,13 @@ export default function NosotrosPage() {
       {/* ================================ */}
       <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
         
-        {/* ================================ */}
+
         {/* HERO */}
         {/* ================================ */}
         <section className="relative px-4 pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
           <div className="absolute inset-0 -z-10">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-100/40 dark:bg-emerald-900/40 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-100/40 dark:bg-teal-900/40 rounded-full blur-3xl" />
+            <div className="absolute top-0 right-0 w-125 h-125 bg-emerald-100/40 dark:bg-emerald-900/40 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-125 h-125 bg-teal-100/40 dark:bg-teal-900/40 rounded-full blur-3xl" />
           </div>
           
           <div className="max-w-4xl mx-auto text-center">
@@ -177,7 +177,7 @@ export default function NosotrosPage() {
             </div>
             
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
                 Ooasys
               </span>
             </h1>
@@ -237,7 +237,7 @@ export default function NosotrosPage() {
               Conectamos toda la región
             </h2>
             <p className="text-center text-gray-600 dark:text-emerald-700 mb-10">
-              Más de 70 negocios en 4 municipios del Occidente Antioqueño
+              Más de 100 negocios en 4 municipios del Occidente Antioqueño
             </p>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
