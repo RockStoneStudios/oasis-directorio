@@ -152,7 +152,7 @@ const eventSchema = {
     }
   },
   "image": [
-    "https://www.ooasys.com/images/fiestas-frutas-2026-banner.jpg",
+    "https://www.ooasys.com/images/fiestas-frutas-2026-banner.png",
     "https://www.ooasys.com/images/fiestas-frutas-artistas.jpg"
   ],
   "performer": performersList.map(p => ({
