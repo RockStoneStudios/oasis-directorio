@@ -87,14 +87,65 @@ export function formatDay(day: string) {
 }
 
 export function generateWhatsAppUrl(phone?: string | null, message?: string) {
+  // 1. Validar que el teléfono exista
   if (!phone) return "";
+  
+  // 2. Limpiar el número (solo dígitos)
   const cleanPhone = phone.replace(/\D/g, "");
-  const text = encodeURIComponent(
-    message || "Hola, vi tu negocio en Oasis y me gustaria recibir informacion.",
-  );
-  return `https://wa.me/${cleanPhone}?text=${text}`;
+  
+  // 3. Validar que tenga al menos 10 dígitos
+  if (cleanPhone.length < 10) {
+    console.warn(`⚠️ Número inválido (muy corto): ${phone}`);
+    return "";
+  }
+  
+  // 4. Formatear número para Colombia
+  let formattedPhone = cleanPhone;
+  
+  // Caso 1: Número colombiano de 10 dígitos (3106201920)
+  if (cleanPhone.length === 10 && cleanPhone.startsWith("3")) {
+    formattedPhone = `57${cleanPhone}`; // → 573106201920
+  }
+  // Caso 2: Número colombiano con 0 inicial (03106201920)
+  else if (cleanPhone.length === 11 && cleanPhone.startsWith("0")) {
+    formattedPhone = `57${cleanPhone.substring(1)}`; // → 573106201920
+  }
+  // Caso 3: Número colombiano con 57 incluido (573106201920)
+  else if (cleanPhone.length === 12 && cleanPhone.startsWith("57")) {
+    formattedPhone = cleanPhone; // → 573106201920
+  }
+  // Caso 4: Número colombiano de 10 dígitos que NO empieza con 3 (fijo)
+  else if (cleanPhone.length === 10 && !cleanPhone.startsWith("3")) {
+    formattedPhone = `57${cleanPhone}`; // → 574xxx...
+  }
+  // Caso 5: Número con prefijo + (ej: +573106201920 → 573106201920)
+  else if (cleanPhone.length === 13 && cleanPhone.startsWith("57")) {
+    formattedPhone = cleanPhone; // → 573106201920
+  }
+  // Caso 6: Cualquier otro número (intentar forzar código Colombia)
+  else if (cleanPhone.length > 10 && !cleanPhone.startsWith("57")) {
+    // Quitar prefijos extraños y añadir 57
+    const last10Digits = cleanPhone.slice(-10);
+    if (last10Digits.startsWith("3")) {
+      formattedPhone = `57${last10Digits}`;
+    } else {
+      formattedPhone = `57${last10Digits}`;
+    }
+  }
+  
+  // 5. Validación final: asegurar que tenga 12 dígitos (57 + 10)
+  if (formattedPhone.length !== 12) {
+    console.warn(`⚠️ Número formateado incorrecto: ${formattedPhone} (original: ${phone})`);
+    return "";
+  }
+  
+  // 6. Codificar el mensaje
+  const defaultMessage = "Hola, vi tu negocio en Oasis y me gustaría recibir información.";
+  const text = encodeURIComponent(message || defaultMessage);
+  
+  // 7. Retornar URL final
+  return `https://wa.me/${formattedPhone}?text=${text}`;
 }
-
 export function normalizeBusinessData<T extends BusinessCardData | BusinessDetail>(
   business: T,
 ) {

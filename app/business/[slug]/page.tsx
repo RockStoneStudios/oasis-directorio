@@ -152,6 +152,7 @@ export async function generateMetadata({
 export default async function BusinessDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const business = await getBusinessBySlug(slug);
+  console.log("Whatsapp++++",business.whatsapp)
   
   if (!business) notFound();
 
@@ -316,6 +317,17 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
       {/* ============================================================ */}
       <div className="fixed right-0 sm:right-0.5 md:right-1 lg:right-1.5 top-1/2 -translate-y-1/2 z-50">
         <div className="flex flex-col gap-2.5 sm:gap-3 md:gap-3.5">
+           {whatsappUrl && (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-[#e0e5ec] dark:bg-[#151a20] shadow-[8px_8px_16px_#b0b6c0,_-8px_-8px_16px_#ffffff] dark:shadow-[8px_8px_16px_#080b0f,_-8px_-8px_16px_#222a33] flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 active:shadow-[inset_4px_4px_10px_#b0b6c0,inset_-4px_-4px_10px_#ffffff] dark:active:shadow-[inset_4px_4px_10px_#080b0f,inset_-4px_-4px_10px_#222a33]"
+              title="WhatsApp"
+            >
+              <SiWhatsapp className="h-4 w-4 sm:h-4.5 sm:w-4.5 md:h-5 md:w-5 text-green-600 dark:text-green-400" />
+            </a>
+          )}
           {business.phone && (
             <a
               href={`tel:${business.phone}`}
@@ -350,17 +362,7 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
             </a>
           )}
           
-          {whatsappUrl && (
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-[#e0e5ec] dark:bg-[#151a20] shadow-[8px_8px_16px_#b0b6c0,_-8px_-8px_16px_#ffffff] dark:shadow-[8px_8px_16px_#080b0f,_-8px_-8px_16px_#222a33] flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 active:shadow-[inset_4px_4px_10px_#b0b6c0,inset_-4px_-4px_10px_#ffffff] dark:active:shadow-[inset_4px_4px_10px_#080b0f,inset_-4px_-4px_10px_#222a33]"
-              title="WhatsApp"
-            >
-              <SiWhatsapp className="h-4 w-4 sm:h-4.5 sm:w-4.5 md:h-5 md:w-5 text-green-600 dark:text-green-400" />
-            </a>
-          )}
+         
         </div>
       </div>
     </div>
