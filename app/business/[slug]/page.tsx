@@ -152,7 +152,7 @@ export async function generateMetadata({
 export default async function BusinessDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const business = await getBusinessBySlug(slug);
-  console.log("Whatsapp++++",business.whatsapp)
+  
   
   if (!business) notFound();
 
