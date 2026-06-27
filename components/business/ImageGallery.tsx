@@ -75,14 +75,16 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
             onKeyDown={handleMainImageKeyDown}
             aria-label="Open image gallery"
           >
-            <Image
-              src={urlFor(images[selectedIndex]).width(1200).height(675).url()}
-              alt={images[selectedIndex].alt || title}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 66vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-              priority
-            />
+<div className="w-full flex justify-center px-4">
+  <Image
+    src={urlFor(images[selectedIndex]).url()}
+    alt={images[selectedIndex].alt || title}
+    width={315}
+    height={420}
+    className="object-contain rounded-xl"
+    priority
+  />
+</div>
 
             {/* Overlay hover — solo en desktop */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-[background-color] duration-300 hidden sm:flex items-center justify-center">
