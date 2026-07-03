@@ -195,33 +195,38 @@ const allSchemas = [
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.google.com" />
+ <head>
+  <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
+  <link rel="preconnect" href="https://www.google.com" />
 
-        <link rel="canonical" href={APP_URL} />
-        <link rel="alternate" href={APP_URL} hrefLang="es-co" />
-        <link rel="alternate" href={APP_URL} hrefLang="es" />
+  <link rel="canonical" href="https://www.ooasys.com/" />
 
-        {/* Geo Meta Tags Mejorados */}
-        <meta name="geo.region" content="CO-ANT" />
-        <meta name="geo.placename" content="Sopetrán, Antioquia" />
-        <meta name="geo.position" content="6.500893;-75.742225" />
-        <meta name="ICBM" content="6.500893, -75.742225" />
-        <meta name="og:region" content="Antioquia" />
-        <meta name="og:country-name" content="Colombia" />
+  <link rel="alternate" href="https://www.ooasys.com/" hrefLang="es-co" />
+  <link rel="alternate" href="https://www.ooasys.com/" hrefLang="es" />
+  <link rel="alternate" href="https://www.ooasys.com/" hrefLang="x-default" />
 
-        {/* Schemas */}
-        {allSchemas.map((schema, index) => (
-          <Script
-            key={`schema-${index}`}
-            id={`schema-${index}`}
-            type="application/ld+json"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-          />
-        ))}
-      </head>
+  {/* Geo Meta Tags */}
+  <meta name="geo.region" content="CO-ANT" />
+  <meta 
+    name="geo.placename" 
+    content="Sopetrán, Santa Fe de Antioquia, San Jerónimo, Liborina, Olaya" 
+  />
+  <meta name="geo.position" content="6.500893;-75.742225" />
+  <meta name="ICBM" content="6.500893,-75.742225" />
+
+  {/* Structured Data - Schemas */}
+  {allSchemas.map((schema, index) => (
+    <Script
+      key={`schema-${index}`}
+      id={`schema-${index}`}
+      type="application/ld+json"
+      strategy="afterInteractive"        
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(schema),
+      }}
+    />
+  ))}
+</head>
       <body className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} font-body antialiased`}>
         <ClerkProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange enableColorScheme={false}>
