@@ -107,7 +107,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   if (selectedMuniSlug) currentSearchParams.municipality = selectedMuniSlug;
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-[#FAFAF9] to-[#F5F0E8] dark:from-[#1C1917] dark:to-[#292524]">
+    <div 
+    className="min-h-screen bg-linear-to-b from-[#FAFAF9] to-[#F5F0E8] dark:from-[#1C1917] dark:to-[#292524]"
+     suppressHydrationWarning
+    >
+      
       <Navbar municipalities={municipalitiesList} />
       <main id="main">
         {/* Hero Section */}
