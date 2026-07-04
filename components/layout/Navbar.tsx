@@ -259,16 +259,6 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
               Conócenos
             </Link>
           
-            {/* 🍍 ENLACE DE FIESTAS DE LAS FRUTAS CON ANIMACIÓN */}
-            <Link 
-              href="/eventos/fiestas-de-frutas-2026" 
-              onClick={triggerParticles}
-              className="fruit-link group px-4 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-300"
-            >
-              <span className="fruit-icon-bounce text-base">🍍</span>
-              <span>Fiestas de las Frutas</span>
-              <span className="fruit-icon-bounce text-base">🍓</span>
-            </Link>
 
             {mounted && user && isAgent && (
               <Link href="/dashboard" className="px-4 py-2 text-sm font-medium text-[#44403C] dark:text-[#D6D3D1] rounded-lg hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">
@@ -445,19 +435,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     <Link href="/atm" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><BadgeDollarSign className="h-5 w-5" /> ¿Dónde retirar dinero?</Link>
                     <Link href="/estereo" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><RadioIcon className="h-5 w-5" /> Emisoras del occidente antioqueño</Link>
                   
-                    {/* 🍍 ENLACE DE FIESTAS DE LAS FRUTAS EN MÓVIL */}
-                    <Link 
-                      href="/eventos/fiestas-de-frutas-2026" 
-                      onClick={() => {
-                        setIsOpen(false);
-                        triggerParticles();
-                      }}
-                      className="flex items-center gap-3 px-4 py-3 text-base font-bold rounded-lg transition-all bg-linear-to-r from-orange-500 to-red-500 text-white shadow-md"
-                    >
-                      <span className="text-lg">🍍</span>
-                      Fiestas de las Frutas
-                      <span className="text-lg">🍓</span>
-                    </Link>
+                   
 
                     <div className="h-px bg-[#E7E5E4] dark:bg-[#44403C] my-2" />
                     <Link href="/business" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">Negocios</Link>
