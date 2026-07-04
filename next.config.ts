@@ -20,27 +20,19 @@ const nextConfig: NextConfig = {
     mdxRs: true,
   },
 
-  // Redirecciones 301 - Mejoradas
+  // 🔥 REDIRECCIONES SIMPLIFICADAS - SIN BUCLE
   async redirects() {
     return [
-      // HTTP → HTTPS + WWW
+      // SOLO redirigir de HTTP a HTTPS + WWW (en producción)
       {
         source: "/:path*",
-        has: [{ type: "header", key: "x-forwarded-proto", value: "http" }],
-        destination: "https://www.ooasys.com/:path*",
-        permanent: true,
-      },
-      // Sin WWW → Con WWW
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "ooasys.com" }],
-        destination: "https://www.ooasys.com/:path*",
-        permanent: true,
-      },
-      // WWW pero HTTP → HTTPS
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "www.ooasys.com" }],
+        has: [
+          {
+            type: "header",
+            key: "x-forwarded-proto",
+            value: "http",
+          },
+        ],
         destination: "https://www.ooasys.com/:path*",
         permanent: true,
       },
@@ -54,7 +46,6 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   poweredByHeader: false,
 
-  // Headers
   async headers() {
     return [
       {
