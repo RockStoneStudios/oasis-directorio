@@ -14,7 +14,7 @@ export default function RadioPlayerPage() {
   const [isMuted, setIsMuted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [selectedStation, setSelectedStation] = useState('sopetran');
+  const [selectedStation, setSelectedStation] = useState('ondas');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);

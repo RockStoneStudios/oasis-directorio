@@ -17,6 +17,22 @@ export interface RadioStation {
   };
 }
 export const RADIO_STATIONS: Record<string, RadioStation> = {
+   ondas: {
+    name: "ONDAS DEL TONUSCO",
+    frequency: "104.4 FM",
+    location: "Santa Fe de Antioquia",
+    url: "https://server2.ejeserver.com:8444/stream",
+    currentSong: "Música y cultura antioqueña",
+    listeners: "489",
+    lat: 6.5562, // Parque Principal Santa Fe de Antioquia
+    lon: -75.8344,
+    color: {
+      main: "emerald-500",
+      gradient: "from-emerald-500 to-teal-600",
+      glow: "rgba(16,185,129,0.85)",
+      darkGlow: "rgba(255,255,255,0.9)"
+    }
+  },
   sopetran: {
     name: "SOPETRAN STEREO",
     frequency: "105.4 FM",
@@ -33,22 +49,7 @@ export const RADIO_STATIONS: Record<string, RadioStation> = {
       darkGlow: "rgba(255,255,255,0.9)"
     }
   },
-  ondas: {
-    name: "ONDAS DEL TONUSCO",
-    frequency: "104.4 FM",
-    location: "Santa Fe de Antioquia",
-    url: "https://server2.ejeserver.com:8444/stream",
-    currentSong: "Música y cultura antioqueña",
-    listeners: "489",
-    lat: 6.5562, // Parque Principal Santa Fe de Antioquia
-    lon: -75.8344,
-    color: {
-      main: "emerald-500",
-      gradient: "from-emerald-500 to-teal-600",
-      glow: "rgba(16,185,129,0.85)",
-      darkGlow: "rgba(255,255,255,0.9)"
-    }
-  },
+ 
   global: {
     name: "GLOBAL FM",
     frequency: "89.4 FM",
