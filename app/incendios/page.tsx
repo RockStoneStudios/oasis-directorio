@@ -133,7 +133,7 @@ function IncendiosMapViewComponent() {
         container: mapContainerRef.current,
         style: mapStyle,
         center: ANTIOQUIA_CENTER,
-        zoom: 8.6,
+        zoom: 9.1,
         pitch: 35,  
         bearing: 0,
         antialias: true
