@@ -10,17 +10,14 @@ export async function GET() {
       return NextResponse.json({ error: 'Token de la NASA no configurado en el servidor' }, { status: 500 });
     }
 
-    // Retrocedemos 2 días para asegurar datos consolidados
     const fecha = new Date();
     fecha.setDate(fecha.getDate() - 2);
     const fechaFormateada = fecha.toISOString().split('T')[0];
 
-    // SOLUCIÓN: Cambiamos 'MODIS_SPHERICAL' por 'VIIRS_NOAA20_NRT' que es la fuente válida y precisa para BBOX
     const fuenteValida = 'VIIRS_NOAA20_NRT'; 
-    
     const urlNasa = `https://firms.modaps.eosdis.nasa.gov/api/area/csv/${tokenNasa}/${fuenteValida}/${BOX_OCCIDENTE_ANTIOQUIA}/1/${fechaFormateada}`;
     
-    console.log(`📡 [Server] Consultando API de la NASA FIRMS con fuente corregida: ${urlNasa}`);
+    console.log(`📡 [Server] Consultando API de la NASA FIRMS: ${urlNasa}`);
 
     const response = await fetch(urlNasa, {
       method: 'GET',
@@ -37,8 +34,20 @@ export async function GET() {
     }
 
     const textoCSV = await response.text();
-    console.log(`✅ [Server API] ¡Éxito! Datos CSV recibidos. Filas devueltas: ${textoCSV.split('\n').length}`);
-    
+    const lineas = textoCSV.trim().split('\n');
+
+    // 🔍 CONSOLE.LOGS DE INSPECCIÓN DE DATOS
+    console.log('\n================ NASA FIRMS DATA ================');
+    console.log(`📊 Filas totales recibidas: ${lineas.length}`);
+    if (lineas.length > 0) {
+      console.log('📌 Columnas disponibles:', lineas[0]); // Muestra los encabezados (latitude, longitude, brightness, etc.)
+      console.log('🔥 Muestra de primeros 3 registros:');
+      console.log(lineas.slice(1, 4).join('\n'));
+    } else {
+      console.log('⚠️ El CSV vino vacío (sin puntos de calor detectados).');
+    }
+    console.log('=================================================\n');
+
     return new NextResponse(textoCSV, {
       status: 200,
       headers: { 

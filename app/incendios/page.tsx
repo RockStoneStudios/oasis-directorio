@@ -6,7 +6,6 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useTheme } from "next-themes";
 
-// Forzar la lectura del token de Mapbox en el cliente
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -15,8 +14,9 @@ interface FocoIncendio {
   longitude: number;
   acq_time: string;
   acq_date: string;
-  confidence: string; // En VIIRS suele ser 'n' (nominal), 'h' (alta), 'l' (baja)
-  frp: number;        // Potencia radiativa del fuego en Megavatios
+  confidence: string; // 'n' (nominal), 'h' (alta), 'l' (baja)
+  frp: number;        // Fire Radiative Power (MW) - Tamaño/fuerza del incendio
+  bright_ti4: number; // Temperatura del canal infrarrojo (Kelvin) - Intensidad térmica
   daynight: string;   // D = Día, N = Noche
 }
 
@@ -61,7 +61,7 @@ function IncendiosMapViewComponent() {
     }, labelLayer?.id);
   };
 
-  // 1. Carga de datos unificada desde el Route Handler seguro
+  // 1. Carga y lectura del CSV incluyendo 'bright_ti4' y 'frp'
   useEffect(() => {
     async function cargarDatosIncendios() {
       try {
@@ -76,9 +76,14 @@ function IncendiosMapViewComponent() {
         }
 
         const textoCSV = await response.text();
-        const lineas = textoCSV.split('\n');
+        const lineas = textoCSV.trim().split('\n');
         
-        // Mapeo dinámico de cabeceras para asegurar exactitud posicional en VIIRS
+        if (lineas.length <= 1) {
+          setFocos([]);
+          return;
+        }
+
+        // Parseo dinámico por nombres de columna en el CSV
         const cabeceras = lineas[0].split(',');
         const idxLat = cabeceras.indexOf('latitude');
         const idxLng = cabeceras.indexOf('longitude');
@@ -86,6 +91,7 @@ function IncendiosMapViewComponent() {
         const idxTime = cabeceras.indexOf('acq_time');
         const idxConfidence = cabeceras.indexOf('confidence');
         const idxFrp = cabeceras.indexOf('frp');
+        const idxBrightTi4 = cabeceras.indexOf('bright_ti4');
         const idxDayNight = cabeceras.indexOf('daynight');
 
         const resultado: FocoIncendio[] = [];
@@ -100,6 +106,7 @@ function IncendiosMapViewComponent() {
               acq_time: columnas[idxTime] || '',
               confidence: columnas[idxConfidence] || 'n',
               frp: parseFloat(columnas[idxFrp]) || 0,
+              bright_ti4: parseFloat(columnas[idxBrightTi4]) || 0,
               daynight: columnas[idxDayNight] || 'D',
             });
           }
@@ -117,11 +124,10 @@ function IncendiosMapViewComponent() {
     cargarDatosIncendios();
   }, []);
 
-  // 2. Controladores de renderizado de Mapbox
+  // 2. Control de mapa Mapbox
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    // Si la variable está vacía, usamos un fallback público temporal para asegurar renderizado visual
     if (!mapboxgl.accessToken) {
       mapboxgl.accessToken = "pk.eyJ1IjoibWFwYm94Z2wiLCJhIjoiY2N4bW9kZXN0MTE5MmR0MnB4bnd4bnd4Ynd4In0.fallback";
     }
@@ -133,7 +139,7 @@ function IncendiosMapViewComponent() {
         container: mapContainerRef.current,
         style: mapStyle,
         center: ANTIOQUIA_CENTER,
-        zoom: 9.1,
+        zoom: 8.8,
         pitch: 35,  
         bearing: 0,
         antialias: true
@@ -160,7 +166,7 @@ function IncendiosMapViewComponent() {
     };
   }, []);
 
-  // 3. Inyección de Marcadores Enriquecidos con datos VIIRS
+  // 3. Renderizado de Marcadores y Popups enriquecidos
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -180,7 +186,6 @@ function IncendiosMapViewComponent() {
       el.style.width = "28px";
       el.style.height = "28px";
 
-      // El tamaño del pulso visual ahora depende de la potencia destructiva (FRP) del incendio
       const pulseScale = foco.frp > 10 ? 'h-7 w-7 bg-red-600/40' : 'h-5 w-5 bg-orange-500/30';
       const coreColor = foco.frp > 10 ? 'bg-red-600' : 'bg-amber-500';
 
@@ -189,11 +194,13 @@ function IncendiosMapViewComponent() {
         <span class="relative inline-flex rounded-full h-3 w-3 ${coreColor} border border-white shadow-md"></span>
       `;
 
-      // Traducción amigable de niveles de confianza VIIRS
       const confLabel = foco.confidence === 'h' ? 'Alta 🚨' : foco.confidence === 'l' ? 'Baja ⚠️' : 'Nominal (Estándar)';
 
+      // Convertimos Kelvin a Celsius para mostrar un dato complementario amigable
+      const tempCelsius = foco.bright_ti4 ? (foco.bright_ti4 - 273.15).toFixed(1) : null;
+
       const popupHTML = `
-        <div class="p-0 font-sans min-w-60 text-slate-900 bg-white rounded-xl shadow-xl">
+        <div class="p-0 font-sans min-w-64 text-slate-900 bg-white rounded-xl shadow-xl">
           <div class="bg-slate-900 text-white rounded-t-xl px-4 py-2.5">
             <h3 class="font-bold text-xs tracking-wide uppercase">Detección Satelital VIIRS</h3>
             <p class="text-[10px] text-slate-400">Órbita NOAA — Sensor Activo</p>
@@ -201,28 +208,30 @@ function IncendiosMapViewComponent() {
           <div class="p-4 space-y-3 text-xs">
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Potencia Térmica</p>
-                <p class="font-extrabold text-slate-800 text-sm">${foco.frp.toFixed(1)} MW</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Potencia (FRP)</p>
+                <p class="font-extrabold text-red-600 text-sm">${foco.frp.toFixed(1)} <span class="text-xs text-slate-500 font-normal">MW</span></p>
+                <p class="text-[9px] text-slate-400">Fuerza del fuego</p>
               </div>
               <div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Horario Captura</p>
-                <p class="font-medium text-slate-700">${foco.acq_time} UTC</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Temp. Infrarroja</p>
+                <p class="font-extrabold text-amber-600 text-sm">${foco.bright_ti4.toFixed(1)} <span class="text-xs text-slate-500 font-normal">K</span></p>
+                <p class="text-[9px] text-slate-400">${tempCelsius ? `(~${tempCelsius} °C)` : 'Temperatura infrarroja'}</p>
               </div>
             </div>
-            
+
             <div class="grid grid-cols-2 gap-2 border-t border-slate-100 pt-2">
               <div>
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Confianza</p>
                 <p class="font-medium text-slate-700">${confLabel}</p>
               </div>
               <div>
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Ambiente</p>
-                <p class="font-medium text-slate-700">${foco.daynight === 'D' ? 'Diurno ☀️' : 'Nocturno 🌙'}</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Hora Captura</p>
+                <p class="font-medium text-slate-700">${foco.acq_time} UTC</p>
               </div>
             </div>
 
             <div class="border-t border-slate-100 pt-2 text-[10px] text-slate-400 text-center">
-              Foco: ${lat.toFixed(4)}, ${lng.toFixed(4)}
+              Coordenadas: ${lat.toFixed(4)}, ${lng.toFixed(4)}
             </div>
           </div>
         </div>
@@ -232,7 +241,7 @@ function IncendiosMapViewComponent() {
         offset: 14,
         closeButton: true,
         closeOnClick: false,
-        maxWidth: '280px',
+        maxWidth: '300px',
         className: 'custom-incendio-popup'
       }).setHTML(popupHTML);
 
@@ -258,6 +267,10 @@ function IncendiosMapViewComponent() {
     });
 
   }, [focos]);
+
+  // Cálculos estadísticos para el panel lateral
+  const maxFRP = focos.length > 0 ? Math.max(...focos.map(f => f.frp)) : 0;
+  const maxBright = focos.length > 0 ? Math.max(...focos.map(f => f.bright_ti4)) : 0;
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 p-6 md:p-10 font-sans">
@@ -297,6 +310,28 @@ function IncendiosMapViewComponent() {
                     {focos.length}
                   </span>
                 </div>
+
+                {/* Métricas destacadas de FRP y Temp Infrarroja */}
+                <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800">
+                  <div>
+                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300 block">Máx. Potencia Radiativa (FRP)</span>
+                    <span className="text-[10px] text-slate-400">Fuerza del incendio</span>
+                  </div>
+                  <span className="text-sm font-bold text-red-600">
+                    {focos.length > 0 ? `${maxFRP.toFixed(1)} MW` : 'N/A'}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800">
+                  <div>
+                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300 block">Máx. Temp. Infrarroja</span>
+                    <span className="text-[10px] text-slate-400">Intensidad térmica</span>
+                  </div>
+                  <span className="text-sm font-bold text-amber-600">
+                    {focos.length > 0 ? `${maxBright.toFixed(1)} K` : 'N/A'}
+                  </span>
+                </div>
+
                 <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-sm text-slate-600 dark:text-slate-400">Región de Análisis:</span>
                   <span className="text-xs font-medium text-slate-500 text-right">
