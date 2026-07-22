@@ -1,67 +1,64 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { RADIO_STATIONS, STATION_IDS } from "@/components/stations/radioStations";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
 // ============================================================
-// 🎯 METADATA OPTIMIZADA - RADIOS DEL OCCIDENTE ANTIOQUEÑO
+// 🎯 METADATA OPTIMIZADA (SEO 10/10 - OASIS RADIOS)
 // ============================================================
 
 export const metadata: Metadata = {
-  title: "📻 Emisoras del Occidente Antioqueño | Radio Online Sopetrán, Santa Fe, San Jerónimo y Liborina | Ooasys",
-  
-  description: "🎙️ Escucha las mejores emisoras de radio en vivo desde Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina. Radio Stereo 105.4 FM, Ondas del Tonusco 104.4 FM, Global FM 89.4 FM y Plazas FM 88.9 FM. ¡Música, noticias y cultura antioqueña! 📻✨",
+  metadataBase: new URL(APP_URL),
+  title: "Emisoras del Occidente Antioqueño en Vivo | Radio Online Sopetrán, Santa Fe, San Jerónimo",
+  description: "Escucha gratis y en vivo las emisoras de radio del Occidente Antioqueño: Sopetrán Stereo 105.4 FM, Ondas del Tonusco 104.4 FM, Global FM 89.4 y Plazas FM 88.9. Música, noticias y cultura en directo.",
   
   keywords: [
-    "radio online occidente antioqueño",
-    "emisoras Sopetrán",
-    "radio Santa Fe de Antioquia",
-    "radio San Jerónimo",
-    "radio Liborina",
+    "emisoras del occidente antioqueño",
+    "radio en vivo Sopetrán",
+    "radio Santa Fe de Antioquia en vivo",
+    "radio San Jerónimo online",
+    "radio Liborina gratis",
     "Sopetrán Stereo 105.4 FM",
     "Ondas del Tonusco 104.4 FM",
-    "Global FM 89.4 FM San Jerónimo",
-    "Plazas FM 88.9 Liborina",
-    "música popular colombiana",
-    "salsa y tropical",
-    "vallenato",
-    "tropipop",
-    "radios antioqueñas online",
-    "escuchar radio gratis",
-    "Ooasys radio"
-  ].join(", "),
+    "Global FM 89.4 FM",
+    "Plazas FM 88.9",
+    "escuchar radio antioquia online",
+    "emisoras de radio colombianas en vivo",
+    "Oasis radio"
+  ],
   
-  authors: [{ name: "Ooasys", url: APP_URL }],
+  authors: [{ name: "Oasis", url: APP_URL }],
   
   alternates: {
     canonical: `${APP_URL}/estereo`,
+    languages: {
+      "es-CO": `${APP_URL}/estereo`,
+      es: `${APP_URL}/estereo`,
+    },
   },
   
   openGraph: {
-    title: "📻 Emisoras del Occidente Antioqueño | Radio Online en Vivo",
-    description: "🎙️ Escucha Sopetrán Stereo, Ondas del Tonusco, Global FM y Plazas FM. La mejor música, noticias y entretenimiento desde Antioquia.",
+    title: "Emisoras del Occidente Antioqueño en Vivo | Radio Online | Oasis",
+    description: "Sintoniza en directo Sopetrán Stereo, Ondas del Tonusco, Global FM y Plazas FM. La mejor música y noticias de la subregión del Occidente.",
     url: `${APP_URL}/estereo`,
     type: "website",
-    siteName: "Ooasys",
+    siteName: "Oasis",
     locale: "es_CO",
     images: [
       {
         url: `${APP_URL}/emisoras-occidente.png`,
         width: 1200,
         height: 630,
-        alt: "Emisoras del Occidente Antioqueño - Radio Online",
+        alt: "Emisoras de Radio en Vivo del Occidente Antioqueño - Oasis",
       },
     ],
   },
   
   twitter: {
     card: "summary_large_image",
-    title: "📻 Emisoras del Occidente Antioqueño | Radio Online",
-    description: "🎙️ Sopetrán Stereo, Ondas del Tonusco, Global FM y Plazas FM. ¡Música y cultura antioqueña 24/7!",
+    title: "Emisoras del Occidente Antioqueño en Vivo | Oasis Radio",
+    description: "Escucha las mejores estaciones de radio de Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina 24/7.",
     images: [`${APP_URL}/emisoras-occidente.png`],
-    creator: "@ooasys",
-    site: "@ooasys",
   },
   
   robots: {
@@ -70,7 +67,7 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-snippet': -1,
+      'max-snippet': 200,
       'max-image-preview': 'large',
       'max-video-preview': -1,
     },
@@ -80,7 +77,7 @@ export const metadata: Metadata = {
     google: "OBYw5lH6K7WSL2FDIJyNnq9oKEsYHJndvLUQmPjZWrc",
   },
 
-  category: "entretenimiento",
+  category: "Entretenimiento y Medios",
 };
 
 export const viewport: Viewport = {
@@ -90,44 +87,51 @@ export const viewport: Viewport = {
 };
 
 // ============================================================
-// 🚀 SCHEMAS PARA RADIOS (ESTRUCTURADOS Y ENRIQUECIDOS)
+// 🚀 SCHEMAS ESTRUCTURADOS (JSON-LD ROBUSTO)
 // ============================================================
 
-// Schema 1: ItemList - Lista de todas las emisoras
+// Schema 1: ItemList con BroadcastService / RadioStation
 const radioStationsListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  "name": "Emisoras del Occidente Antioqueño",
-  "description": "Lista completa de emisoras de radio en Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina. Escucha online gratis.",
+  "@id": `${APP_URL}/estereo#station-list`,
+  "name": "Emisoras de Radio del Occidente Antioqueño",
+  "description": "Directorio oficial de estaciones de radio FM en transmisión digital para Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina.",
   "numberOfItems": STATION_IDS.length,
   "itemListElement": STATION_IDS.map((stationId, idx) => {
     const station = RADIO_STATIONS[stationId];
+    const freqValue = parseFloat(station.frequency.replace(/[^0-9.]/g, "")) || 0;
+    const municipalityName = station.location ? station.location.split(",")[0].trim() : "Occidente Antioqueño";
+
     return {
       "@type": "ListItem",
       "position": idx + 1,
       "item": {
         "@type": "RadioStation",
+        "@id": `${APP_URL}/estereo#${stationId}`,
         "name": station.name,
-        "description": `Emisora ${station.name} en ${station.frequency}. ${station.currentSong}.`,
+        "description": `Emisora de radio ${station.name} transmitiendo desde ${municipalityName} en la frecuencia ${station.frequency}.`,
         "url": `${APP_URL}/estereo`,
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": station.lat,
-          "longitude": station.lon
-        },
+        ...(station.lat && station.lon && {
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": station.lat,
+            "longitude": station.lon
+          }
+        }),
         "broadcastFrequency": station.frequency,
         "broadcastFrequencyValue": {
           "@type": "QuantitativeValue",
-          "value": parseFloat(station.frequency.split(" ")[0]),
-          "unitCode": "Megahertz"
+          "value": freqValue,
+          "unitText": "MHz"
         },
         "areaServed": {
           "@type": "City",
-          "name": station.location.split(",")[0]
+          "name": municipalityName
         },
         "address": {
           "@type": "PostalAddress",
-          "addressLocality": station.location.split(",")[0],
+          "addressLocality": municipalityName,
           "addressRegion": "Antioquia",
           "addressCountry": "CO"
         },
@@ -136,18 +140,18 @@ const radioStationsListSchema = {
           "name": "Oyentes del Occidente Antioqueño",
           "geographicArea": "Antioquia, Colombia"
         },
-        "logo": `${APP_URL}/radio-logo-${stationId}.png`,
-        "sameAs": []
+        "logo": `${APP_URL}/radio-logo-${stationId}.png`
       }
     };
   })
 };
 
-// Schema 2: WebSite con SearchAction para radios
+// Schema 2: SearchAction
 const searchActionSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Ooasys Radios",
+  "@id": `${APP_URL}/#website`,
+  "name": "Oasis Radios",
   "url": `${APP_URL}/estereo`,
   "potentialAction": {
     "@type": "SearchAction",
@@ -159,7 +163,7 @@ const searchActionSchema = {
   }
 };
 
-// Schema 3: Breadcrumb para radios
+// Schema 3: Breadcrumb
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -173,26 +177,27 @@ const breadcrumbSchema = {
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "Emisoras",
+      "name": "Radio en Vivo",
       "item": `${APP_URL}/estereo`
     }
   ]
 };
 
-// Schema 4: Organization (autoridad)
+// Schema 4: Organization
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Ooasys - Directorio del Occidente Antioqueño",
+  "@id": `${APP_URL}/#organization`,
+  "name": "Oasis - Directorio y Guía del Occidente Antioqueño",
   "url": APP_URL,
-  "logo": `${APP_URL}/ooasys.webp`,
+  "logo": `${APP_URL}/oasis.png`,
   "sameAs": ["https://www.facebook.com/profile.php?id=61582100796538"],
-  "description": "Directorio comercial y turístico del Occidente Antioqueño. Incluye guía de emisoras de radio locales.",
-  "areaServed": ["Sopetrán", "Santa Fe de Antioquia", "San Jerónimo", "Liborina"]
+  "description": "Directorio comercial, turístico y plataforma de radio en vivo del Occidente Antioqueño.",
+  "areaServed": ["Sopetrán", "Santa Fe de Antioquia", "San Jerónimo", "Liborina", "Olaya"]
 };
 
 // ============================================================
-// 🎨 LAYOUT PRINCIPAL
+// 🎨 LAYOUT PRINCIPAL (OPTIMIZADO PARA SSR & GOOGLEBOT)
 // ============================================================
 
 export default function RadioLayout({
@@ -202,40 +207,38 @@ export default function RadioLayout({
 }) {
   return (
     <>
-      {/* Schemas JSON-LD */}
-      <Script
+      {/* Schemas JSON-LD inyectados directamente para garantizar indexación instantánea */}
+      <script
         id="schema-radio-stations"
         type="application/ld+json"
-        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(radioStationsListSchema) }}
       />
-      <Script
+      <script
         id="schema-search-action"
         type="application/ld+json"
-        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(searchActionSchema) }}
       />
-      <Script
+      <script
         id="schema-breadcrumb-radio"
         type="application/ld+json"
-        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <Script
+      <script
         id="schema-organization-radio"
         type="application/ld+json"
-        strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
 
-      {/* Geo metas específicas para radios */}
+      {/* Meta etiquetas geográficas avanzadas */}
       <meta name="geo.region" content="CO-ANT" />
-      <meta name="geo.placename" content="Occidente Antioqueño" />
+      <meta name="geo.placename" content="Occidente Antioqueño, Colombia" />
 
-      {/* H1 oculto para SEO (refuerza keyword principal) */}
-      <h1 className="sr-only">Emisoras de Radio en el Occidente Antioqueño | Sopetrán, Santa Fe, San Jerónimo y Liborina</h1>
+      {/* H1 accesible oculto para dar peso jerárquico a la keyword central */}
+      <h1 className="sr-only">
+        Emisoras de Radio en Vivo del Occidente Antioqueño | Sopetrán, Santa Fe de Antioquia, San Jerónimo y Liborina
+      </h1>
 
-      {/* Contenido de la página (tu componente RadioPlayer) */}
+      {/* Contenido principal */}
       {children}
     </>
   );
