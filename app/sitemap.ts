@@ -1,81 +1,78 @@
-
 import { MetadataRoute } from 'next';
-// 💡 Importa tu cliente de Sanity o la función con la que traes tus datos
 import { client } from '@/lib/sanity/client'; 
 
+interface SanityDocumentSlug {
+  slug: string;
+  updatedAt?: string;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
-  console.log('🚀 [Sitemap] Iniciando generación de mapa de sitio...');
+  console.log('🚀 [Sitemap Oasis] Generando mapa de sitio...');
 
-  // 1. Rutas estáticas base
+  // 1. Rutas estáticas
   const staticRoutes = [
     '', 
     '/mapa', 
     '/categorias',
-    '/radio',
+    '/estereo',
     '/incendios'
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'daily' as const,
-    priority: route === '' ? 1.0 : 0.8,
+    priority: route === '' ? 1.0 : (route === '/incendios' || route === '/estereo') ? 0.9 : 0.8,
   }));
 
-  console.log(`📌 [Sitemap] Cargadas ${staticRoutes.length} rutas estáticas base.`);
-
-  let businessRoutes: any[] = [];
-  let categoryRoutes: any[] = [];
+  let businessRoutes: MetadataRoute.Sitemap = [];
+  let categoryRoutes: MetadataRoute.Sitemap = [];
 
   try {
-    // 2. Traer dinámicamente los slugs de todos los negocios desde Sanity
-    console.log('🔍 [Sitemap] Solicitando slugs de negocios a Sanity...');
-    const businessSlugs: string[] = await client.fetch(
-      `*[_type == "business" && defined(slug.current)].slug.current`
+    const businessData: SanityDocumentSlug[] = await client.fetch(
+      `*[_type == "business" && defined(slug.current)]{
+        "slug": slug.current,
+        "updatedAt": _updatedAt
+      }`
     );
     
-    // 🔥 LOG CLAVE: Te dice cuántos negocios trajo y cuáles son sus slugs
-    console.log(`✅ [Sitemap] Éxito: Se encontraron ${businessSlugs.length} negocios.`);
-    console.log('📋 [Sitemap] Slugs de negocios encontrados:', businessSlugs);
+    console.log(`✅ [Sitemap Oasis] Se encontraron ${businessData.length} negocios.`);
 
-    businessRoutes = businessSlugs.map((slug) => ({
-      url: `${baseUrl}/business/${slug}`,
-      lastModified: new Date(),
+    businessRoutes = businessData.map((item) => ({
+      url: `${baseUrl}/business/${item.slug}`,
+      lastModified: item.updatedAt ? new Date(item.updatedAt) : new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }));
 
   } catch (error) {
-    console.error('❌ [Sitemap] Error al traer los negocios desde Sanity:', error);
+    console.error('❌ [Sitemap Oasis] Error consultando negocios en Sanity:', error);
   }
 
   try {
-    // 3. Traer dinámicamente los slugs de todas las categorías
-    console.log('🔍 [Sitemap] Solicitando slugs de categorías a Sanity...');
-    const categorySlugs: string[] = await client.fetch(
-      `*[_type == "category" && defined(slug.current)].slug.current`
+    const categoryData: SanityDocumentSlug[] = await client.fetch(
+      `*[_type == "category" && defined(slug.current)]{
+        "slug": slug.current,
+        "updatedAt": _updatedAt
+      }`
     );
 
-    // 🔥 LOG CLAVE: Te dice cuántas categorías trajo
-    console.log(`✅ [Sitemap] Éxito: Se encontraron ${categorySlugs.length} categorías.`);
-    console.log('📋 [Sitemap] Slugs de categorías encontradas:', categorySlugs);
+    console.log(`✅ [Sitemap Oasis] Se encontraron ${categoryData.length} categorías.`);
 
-    categoryRoutes = categorySlugs.map((slug) => ({
-      url: `${baseUrl}/categorias/${slug}`, // Cámbialo si tu ruta real usa /category/ en vez de /categorias/
-      lastModified: new Date(),
+    categoryRoutes = categoryData.map((item) => ({
+      url: `${baseUrl}/categorias/${item.slug}`,
+      lastModified: item.updatedAt ? new Date(item.updatedAt) : new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }));
 
   } catch (error) {
-    console.error('❌ [Sitemap] Error al traer las categorías desde Sanity:', error);
+    console.error('❌ [Sitemap Oasis] Error consultando categorías en Sanity:', error);
   }
 
   const allRoutes = [...staticRoutes, ...businessRoutes, ...categoryRoutes];
-  
-  console.log(`✨ [Sitemap] Generación finalizada con éxito. Total de URLs en el sitemap: ${allRoutes.length}`);
 
-  // Juntamos todo en un solo mapa para Google
+  console.log(`✨ [Sitemap Oasis] Proceso finalizado. Total URLs: ${allRoutes.length}`);
+
   return allRoutes;
 }
