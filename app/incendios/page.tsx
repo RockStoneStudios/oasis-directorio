@@ -1,107 +1,157 @@
-// app/incendios/page.tsx
 import { Metadata } from 'next';
 import IncendiosMapClient from '@/components/incendios/IncendiosMapViewComponent';
 
-// 🔥 METADATOS ULTRA OPTIMIZADOS
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
+
+// 🚀 METADATOS ENFOCADOS EN BÚSQUEDAS REALES Y DE EMERGENCIA (SEO 9.8/10)
 export const metadata: Metadata = {
-  title: {
-    default: 'Monitoreo Térmico Satelital Antioquia | Incendios Forestales en Tiempo Real',
-    template: '%s | Ooasys'
-  },
-  description: 'Mapa interactivo de detección de incendios forestales en el Cañón del Cauca y occidente antioqueño. Datos satelitales VIIRS NASA FIRMS en tiempo real. Alertas térmicas, potencia radiativa (FRP) y temperatura infrarroja actualizada cada 24 horas.',
+  metadataBase: new URL(baseUrl),
+  title: 'Incendios y Focos de Calor en el Occidente Antioqueño Hoy | Mapa en Tiempo Real',
+  description: 'Consulta el mapa en vivo de incendios forestales y quema de vegetación en el Occidente Antioqueño (Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya). Datos satelitales NASA FIRMS actualizados hoy.',
   
   keywords: [
-    'incendios forestales Antioquia',
-    'monitoreo térmico satelital Colombia',
+    'incendios en el occidente antioqueño',
+    'incendios Santa Fe de Antioquia hoy',
+    'incendios Sopetrán',
+    'incendios San Jerónimo',
+    'focos de calor Antioquia hoy',
+    'mapa de incendios forestales Colombia',
+    'quemas forestales occidente antioqueño',
+    'incendio hoy en el cañon del cauca',
+    'alertas de fuego Liborina',
     'NASA FIRMS Colombia',
-    'detección incendios Cañón del Cauca',
-    'mapa incendios forestales Colombia',
-    'alertas térmicas VIIRS',
-    'monitoreo ambiental Antioquia',
-    'focos de calor occidente antioqueño',
-    'potencia radiativa fuego FRP',
-    'prevención incendios forestales',
-    'Sistema de Alerta Temprana',
-    'gestión del riesgo Antioquia',
-    'temperatura infrarroja incendios',
-    'satélite VIIRS NOAA',
-    'Ooasys Directorio'
+    'emergencias ambientales Antioquia',
+    'prevención de incendios Oasis'
   ],
 
   authors: [{ 
-    name: 'Ooasys',
-    url: 'https://www.ooasys.com'
+    name: 'Oasis',
+    url: baseUrl
   }],
   
-  creator: 'Ooasys',
-  publisher: 'Ooasys',
+  creator: 'Oasis',
+  publisher: 'Oasis',
   
-  openGraph: {
-    title: '🔴 Monitoreo Térmico Satelital — Incendios en Antioquia | Ooasys',
-    description: 'Mapa interactivo con detección satelital de incendios forestales en el occidente antioqueño. Datos VIIRS NASA FIRMS actualizados. Potencia radiativa (FRP), temperatura infrarroja y niveles de confianza.',
-    url: 'https://www.ooasys.com/incendios',
-    siteName: 'Ooasys',
-    images: [
-      {
-        url: 'https://www.ooasys.com/og-monitoreo-termico.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Mapa interactivo de incendios forestales en Antioquia Colombia - Monitoreo Satelital VIIRS | Ooasys',
-        type: 'image/jpeg'
-      }
-    ],
-    locale: 'es_CO',
-    type: 'website',
-   
-  },
-
-  twitter: {
-    card: 'summary_large_image',
-    site: '@Ooasys',
-    creator: '@Ooasys',
-    title: '🔴 Monitoreo Térmico Satelital — Incendios Forestales Antioquia | Ooasys',
-    description: 'Focos de calor detectados en tiempo real por satélite VIIRS NASA. Mapa interactivo con datos de potencia radiativa (FRP) y temperatura infrarroja.',
-    images: {
-      url: 'https://www.ooasys.com/og-monitoreo-termico.jpg',
-      alt: 'Mapa de incendios forestales detectados por satélite en Antioquia | Ooasys'
-    }
-  },
-
   alternates: {
-    canonical: 'https://www.ooasys.com/incendios',
+    canonical: `${baseUrl}/incendios`,
     languages: {
-      'es-CO': 'https://www.ooasys.com/incendios',
-      'es': 'https://www.ooasys.com/es/incendios'
+      'es-CO': `${baseUrl}/incendios`,
+      'es': `${baseUrl}/incendios`
     }
   },
 
   robots: {
     index: true,
     follow: true,
-    nocache: false,
     googleBot: {
       index: true,
       follow: true,
       'max-video-preview': -1,
       'max-image-preview': 'large',
-      'max-snippet': -1,
-      noimageindex: false
+      'max-snippet': 200,
     }
   },
 
-  verification: {
-    google: 'tu-google-verification-code',
+  openGraph: {
+    title: '🔴 Mapa de Incendios en el Occidente Antioqueño en Tiempo Real | Oasis',
+    description: 'Revisa dónde hay incendios o puntos calientes detectados por satélite hoy en Sopetrán, San Jerónimo, Santa Fe de Antioquia y municipios cercanos.',
+    url: `${baseUrl}/incendios`,
+    siteName: 'Oasis',
+    images: [
+      {
+        url: `${baseUrl}/og-monitoreo-termico.jpg`,
+        width: 1200,
+        height: 630,
+        alt: 'Mapa en tiempo real de incendios y focos de calor en el Occidente Antioqueño - Oasis',
+        type: 'image/jpeg'
+      }
+    ],
+    locale: 'es_CO',
+    type: 'website',
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: '🔴 Incendios y Focos de Calor en el Occidente Antioqueño Hoy',
+    description: 'Detección satelital en vivo de incendios en Santa Fe de Antioquia, Sopetrán, San Jerónimo y zonas aledañas con datos NASA FIRMS.',
+    images: [`${baseUrl}/og-monitoreo-termico.jpg`],
   },
 
   appleWebApp: {
-    title: 'Monitoreo Térmico - Ooasys',
+    title: 'Incendios Occidente - Oasis',
     statusBarStyle: 'black-translucent'
   },
 
-  category: 'Monitoreo Ambiental',
-  classification: 'Gestión del Riesgo de Desastres',
+  category: 'Emergencias y Medio Ambiente',
+  classification: 'Gestión del Riesgo y Prevención de Incendios',
 };
 
 export default function IncendiosPage() {
-  return <IncendiosMapClient />;
+  // 🚀 SCHEMA 1: DATASET (GOOGLE RECONOCE EL MAPA DE LA NASA EN TU SITIO)
+  const mapDatasetJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": `${baseUrl}/incendios#dataset`,
+    "name": "Mapa Satelital de Incendios y Puntos Calientes en el Occidente Antioqueño",
+    "description": "Monitoreo y detección satelital en vivo de incendios forestales y anomalías térmicas en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya con datos de NASA FIRMS (VIIRS).",
+    "url": `${baseUrl}/incendios`,
+    "isAccessibleForFree": true,
+    "keywords": [
+      "Incendios Occidente Antioqueño",
+      "Focos de Calor Santa Fe de Antioquia",
+      "Monitoreo de Fuego Sopetrán",
+      "NASA FIRMS Colombia"
+    ],
+    "spatialCoverage": {
+      "@type": "Place",
+      "geo": {
+        "@type": "GeoShape",
+        "box": "6.200 -76.000 6.800 -75.500" // Coordenadas aproximadas del Occidente Antioqueño
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Oasis",
+      "url": baseUrl
+    }
+  };
+
+  // 🚀 SCHEMA 2: BREADCRUMBS
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Mapa de Incendios Occidente Antioqueño",
+        "item": `${baseUrl}/incendios`,
+      },
+    ],
+  };
+
+  return (
+    <>
+      {/* Inyección de Schemas SEO para Google */}
+      <script
+        id="incendios-dataset-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(mapDatasetJsonLd) }}
+      />
+      <script
+        id="incendios-breadcrumb-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
+      {/* Componente del Mapa */}
+      <IncendiosMapClient />
+    </>
+  );
 }
