@@ -230,7 +230,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const title = `✅ Los Mejores ${categoryName} en el Occidente Antioqueño | Oasis`;
   const description = buildCategoryDescription(categoryName, businesses.length);
   const keywords = getKeywordsByCategory(categoryName, slug);
-
+  
   return {
     metadataBase: new URL(baseUrl),
     title,
@@ -273,6 +273,11 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
         "max-video-preview": -1,
       },
     },
+    other: {
+      "geo.region": "CO-ANT",
+      "geo.placename": "Occidente Antioqueño",
+    },
+
     openGraph: {
       title,
       description,
