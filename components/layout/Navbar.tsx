@@ -23,16 +23,10 @@ import {
   Moon,
   Sun,
   ChevronDown,
-  Vote,
-  Calendar,
-  Apple,
-  Cherry,
-  Grape,
   AlertTriangleIcon,
-
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,7 +52,6 @@ interface NavbarProps {
 }
 
 export function Navbar({ municipalities = [] }: NavbarProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { user } = useUser();
@@ -68,29 +61,38 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
   const [isMobileMuniOpen, setIsMobileMuniOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [currentMuni, setCurrentMuni] = useState<Municipality | null>(null);
-  const [showParticles, setShowParticles] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
-  const isAgent = user?.publicMetadata?.plan === "agent" || user?.organizationMemberships?.some(m => m.role === "agent");
+  const isAgent =
+    user?.publicMetadata?.plan === "agent" ||
+    user?.organizationMemberships?.some((m) => m.role === "agent");
 
   useEffect(() => {
     setMounted(true);
     updateSelectedMunicipality();
 
     function handleClickOutside(event: MouseEvent | TouchEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsMuniOpen(false);
       }
-      if (mobileDropdownRef.current && !mobileDropdownRef.current.contains(event.target as Node)) {
+      if (
+        mobileDropdownRef.current &&
+        !mobileDropdownRef.current.contains(event.target as Node)
+      ) {
         setIsMobileMuniOpen(false);
       }
     }
 
     document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside, { passive: true });
-    
+    document.addEventListener("touchstart", handleClickOutside, {
+      passive: true,
+    });
+
     const handleCustomEvent = () => updateSelectedMunicipality();
     window.addEventListener("oasis_muni_changed", handleCustomEvent);
     window.addEventListener("storage", updateSelectedMunicipality);
@@ -101,9 +103,23 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
       window.removeEventListener("oasis_muni_changed", handleCustomEvent);
       window.removeEventListener("storage", updateSelectedMunicipality);
     };
-  }, [municipalities]);
+  }, [municipalities, pathname]);
 
   const updateSelectedMunicipality = () => {
+    const currentSlug = pathname.split("/")[2];
+
+    if (currentSlug && municipalities.length > 0) {
+      const found = municipalities.find((m) => {
+        const mSlug = typeof m.slug === "string" ? m.slug : m.slug?.current || "";
+        return mSlug === currentSlug;
+      });
+      if (found) {
+        setCurrentMuni(found);
+        localStorage.setItem("oasis_municipality", currentSlug);
+        return;
+      }
+    }
+
     const savedSlug = localStorage.getItem("oasis_municipality");
     if (savedSlug && municipalities.length > 0) {
       const found = municipalities.find((m) => {
@@ -118,28 +134,16 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
     setCurrentMuni(null);
   };
 
-  const handleSelectMunicipality = (slug: string | null, isMobile = false) => {
-    const params = new URLSearchParams(window.location.search);
+  const handleSelectMunicipality = (slug: string | null) => {
+    setIsMuniOpen(false);
+    setIsMobileMuniOpen(false);
+
     if (slug) {
       localStorage.setItem("oasis_municipality", slug);
-      params.set("municipality", slug);
     } else {
       localStorage.removeItem("oasis_municipality");
-      params.delete("municipality");
     }
-
-    if (isMobile) setIsMobileMuniOpen(false);
-    else setIsMuniOpen(false);
-
     window.dispatchEvent(new Event("oasis_muni_changed"));
-    updateSelectedMunicipality();
-    router.push(`/?${params.toString()}`, { scroll: false });
-  };
-
-  // Función para activar la animación de partículas
-  const triggerParticles = () => {
-    setShowParticles(true);
-    setTimeout(() => setShowParticles(false), 3000);
   };
 
   const isPricingPage = pathname === "/pricing";
@@ -153,97 +157,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
           : "sticky top-0 z-50 w-full border-b border-[#E7E5E4]/50 dark:border-[#44403C]/50 bg-white/95 dark:bg-[#1C1917]/95 backdrop-blur supports-backdrop-filter:bg-white/80 dark:supports-backdrop-filter:bg-[#1C1917]/80"
       }
     >
-      {/* Estilos CSS para las partículas */}
-      <style jsx>{`
-        @keyframes fruit-pop {
-          0% {
-            transform: scale(0) translate(0, 0);
-            opacity: 0;
-          }
-          20% {
-            transform: scale(1.2) translate(var(--tx, 0px), var(--ty, 0px));
-            opacity: 1;
-          }
-          100% {
-            transform: scale(0.8) translate(var(--tx-end, 0px), var(--ty-end, -40px));
-            opacity: 0;
-          }
-        }
-
-        .fruit-particle {
-          position: absolute;
-          pointer-events: none;
-          z-index: 100;
-          animation: fruit-pop 0.8s ease-out forwards;
-        }
-
-        .fruit-link {
-          position: relative;
-          overflow: visible;
-        }
-
-        .fruit-link:hover .fruit-icon-bounce {
-          animation: bounce 0.5s ease infinite;
-        }
-
-        @keyframes bounce {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-3px);
-          }
-        }
-
-        .fruit-icon-bounce {
-          display: inline-block;
-          transition: transform 0.2s ease;
-        }
-      `}</style>
-
-      {/* Contenedor de partículas */}
-      {showParticles && (
-        <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
-          {[...Array(12)].map((_, i) => {
-            const fruits = [
-              { icon: "🍍", color: "#F59E0B", name: "piña" },
-              { icon: "🍓", color: "#EF4444", name: "fresa" },
-              { icon: "🍌", color: "#EAB308", name: "banano" },
-              { icon: "🥭", color: "#F97316", name: "mango" },
-              { icon: "🍊", color: "#F59E0B", name: "naranja" },
-              { icon: "🍉", color: "#10B981", name: "sandía" },
-              { icon: "🍒", color: "#DC2626", name: "cereza" },
-              { icon: "🍑", color: "#F97316", name: "durazno" },
-            ];
-            const fruit = fruits[i % fruits.length];
-            const randomX = (Math.random() - 0.5) * 200;
-            const randomY = (Math.random() - 0.5) * 100 - 50;
-            const randomDelay = Math.random() * 0.5;
-            return (
-              <div
-                key={i}
-                className="fruit-particle"
-                style={
-                  {
-                    left: `${50 + (Math.random() - 0.5) * 40}%`,
-                    top: `${30 + (Math.random() - 0.5) * 30}%`,
-                    animationDelay: `${randomDelay}s`,
-                    fontSize: `${20 + Math.random() * 20}px`,
-                    "--tx": `${randomX}px`,
-                    "--ty": `${randomY}px`,
-                    "--tx-end": `${randomX * 1.5}px`,
-                    "--ty-end": `${randomY * 1.5 - 60}px`,
-                  } as React.CSSProperties
-                }
-              >
-                {fruit.icon}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between px-4 mx-auto">
         {/* Logo */}
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2.5 transition-opacity duration-200 hover:opacity-80">
@@ -252,14 +166,13 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+          <nav className="hidden md:flex items-center gap-1" aria-label="Navegación principal">
             <Link href="/business" className="px-4 py-2 text-sm font-medium text-[#44403C] dark:text-[#D6D3D1] rounded-lg hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">
               Negocios
             </Link>
             <Link href="/sobre-nosotros" className="px-4 py-2 text-sm font-medium text-[#44403C] dark:text-[#D6D3D1] rounded-lg hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">
               Conócenos
             </Link>
-          
 
             {mounted && user && isAgent && (
               <Link href="/dashboard" className="px-4 py-2 text-sm font-medium text-[#44403C] dark:text-[#D6D3D1] rounded-lg hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">
@@ -273,13 +186,13 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
         <div className="hidden md:flex items-center gap-3">
           {mounted && (
             <>
-              {/* Selector Escritorio */}
+              {/* Selector Escritorio con Links nativos para SEO */}
               <div className="relative" ref={dropdownRef}>
                 <button
                   type="button"
                   onClick={() => setIsMuniOpen(!isMuniOpen)}
                   className="flex items-center gap-2 px-3 py-1.5 h-9 rounded-full bg-[#F5F0E8] dark:bg-[#292524] border border-[#E7E5E4] dark:border-[#44403C] text-xs font-semibold text-[#44403C] dark:text-[#D6D3D1] hover:border-[#14B8A6] hover:text-[#14B8A6] transition-all cursor-pointer"
-                  aria-label={currentMuni ? `Municipio seleccionado: ${currentMuni.name}. Tocar para cambiar municipio` : "Seleccionar municipio para filtrar negocios"}
+                  aria-label={currentMuni ? `Municipio seleccionado: ${currentMuni.name}` : "Seleccionar municipio"}
                 >
                   {currentMuni && currentMuni.flag ? (
                     <>
@@ -299,20 +212,20 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
 
                 {isMuniOpen && (
                   <div className="absolute top-full right-0 mt-2 w-56 z-50 bg-white dark:bg-[#292524] border border-[#E7E5E4] dark:border-[#44403C] rounded-xl shadow-xl overflow-hidden py-1 max-h-72 overflow-y-auto">
-                    <button
-                      type="button"
-                      onClick={() => handleSelectMunicipality(null, false)}
+                    <Link
+                      href="/"
+                      onClick={() => handleSelectMunicipality(null)}
                       className={`w-full text-left px-4 py-2.5 text-xs font-medium flex items-center gap-2 hover:bg-[#14B8A6]/10 transition-colors ${!currentMuni ? "text-[#14B8A6] font-bold bg-[#14B8A6]/5" : "text-[#44403C] dark:text-[#D6D3D1]"}`}
                     >
                       <MapPin className="h-3.5 w-3.5 text-[#14B8A6]" /> Todo el Occidente
-                    </button>
+                    </Link>
                     {municipalities.map((muni) => {
                       const mSlug = typeof muni.slug === "string" ? muni.slug : muni.slug?.current || "";
                       return (
-                        <button
+                        <Link
                           key={muni._id}
-                          type="button"
-                          onClick={() => handleSelectMunicipality(mSlug, false)}
+                          href={`/municipios/${mSlug}`}
+                          onClick={() => handleSelectMunicipality(mSlug)}
                           className={`w-full text-left px-4 py-2.5 text-xs font-medium flex items-center gap-2 hover:bg-[#14B8A6]/10 transition-colors ${currentMuni?._id === muni._id ? "text-[#14B8A6] font-bold bg-[#14B8A6]/5" : "text-[#44403C] dark:text-[#D6D3D1]"}`}
                         >
                           {muni.flag ? (
@@ -321,7 +234,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                             </div>
                           ) : <MapPin className="h-3.5 w-3.5 opacity-40 shrink-0" />}
                           <span className="truncate">{muni.name}</span>
-                        </button>
+                        </Link>
                       );
                     })}
                   </div>
@@ -356,44 +269,43 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
         <div className="flex md:hidden items-center gap-2">
           {mounted ? (
             <>
-              {/* Selector Móvil */}
+              {/* Selector Móvil con Links */}
               <div className="relative" ref={mobileDropdownRef}>
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsMobileMuniOpen(!isMobileMuniOpen);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setIsMobileMuniOpen(!isMobileMuniOpen);
-                    }
-                  }}
+                <button
+                  type="button"
+                  onClick={() => setIsMobileMuniOpen(!isMobileMuniOpen)}
                   className="flex items-center justify-center h-8 px-2.5 rounded-lg text-xs font-semibold bg-[#F5F0E8] dark:bg-[#292524] border border-[#E7E5E4] dark:border-[#44403C] text-[#44403C] dark:text-[#D6D3D1] gap-1 cursor-pointer select-none"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={currentMuni ? `Municipio seleccionado: ${currentMuni.name}. Tocar para cambiar` : "Seleccionar municipio para filtrar negocios"}
+                  aria-label={currentMuni ? `Municipio seleccionado: ${currentMuni.name}` : "Seleccionar municipio"}
                 >
                   {currentMuni && currentMuni.flag ? (
                     <div className="relative h-3.5 w-5 rounded-sm overflow-hidden border border-black/10 shrink-0 pointer-events-none">
                       <Image src={urlFor(currentMuni.flag).url()} alt="" fill className="object-cover" />
                     </div>
                   ) : <MapPin className="h-3.5 w-3.5 text-[#14B8A6] pointer-events-none" />}
-                  <span className="max-w-16.25 truncate pointer-events-none">{currentMuni ? currentMuni.name : "Occidente"}</span>
+                  <span className="max-w-16 truncate pointer-events-none">{currentMuni ? currentMuni.name : "Occidente"}</span>
                   <ChevronDown className="h-2.5 w-2.5 opacity-50 pointer-events-none" />
-                </div>
+                </button>
 
                 {isMobileMuniOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-48 z-60 bg-white dark:bg-[#292524] border border-[#E7E5E4] dark:border-[#44403C] rounded-xl shadow-xl overflow-hidden py-1 max-h-60 overflow-y-auto">
-                    <div onClick={() => handleSelectMunicipality(null, true)} className="w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-[#14B8A6]/10 transition-colors text-[#44403C] dark:text-[#D6D3D1] cursor-pointer">
+                  <div className="absolute top-full right-0 mt-2 w-48 z-50 bg-white dark:bg-[#292524] border border-[#E7E5E4] dark:border-[#44403C] rounded-xl shadow-xl overflow-hidden py-1 max-h-60 overflow-y-auto">
+                    <Link
+                      href="/"
+                      onClick={() => handleSelectMunicipality(null)} 
+                      className="block w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-[#14B8A6]/10 transition-colors text-[#44403C] dark:text-[#D6D3D1]"
+                    >
                       Todo el Occidente
-                    </div>
+                    </Link>
                     {municipalities.map((muni) => {
                       const mSlug = typeof muni.slug === "string" ? muni.slug : muni.slug?.current || "";
                       return (
-                        <div key={muni._id} onClick={() => handleSelectMunicipality(mSlug, true)} className="w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-[#14B8A6]/10 transition-colors text-[#44403C] dark:text-[#D6D3D1] truncate cursor-pointer">
+                        <Link
+                          key={muni._id} 
+                          href={`/municipios/${mSlug}`}
+                          onClick={() => handleSelectMunicipality(mSlug)} 
+                          className="block w-full text-left px-4 py-2.5 text-xs font-medium hover:bg-[#14B8A6]/10 transition-colors text-[#44403C] dark:text-[#D6D3D1] truncate"
+                        >
                           {muni.name}
-                        </div>
+                        </Link>
                       );
                     })}
                   </div>
@@ -420,13 +332,13 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-75 sm:w-87.5 overscroll-contain bg-white dark:bg-[#1C1917] border-l border-[#E7E5E4] dark:border-[#44403C]">
+                <SheetContent side="right" className="w-72 sm:w-80 overscroll-contain bg-white dark:bg-[#1C1917] border-l border-[#E7E5E4] dark:border-[#44403C]">
                   <SheetHeader>
                     <SheetTitle className="flex items-center gap-2">
                       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#14B8A6]">
                         <Home className="h-4 w-4 text-white" />
                       </div>
-                      <span className="font-heading text-[#1C1917] dark:text-white">Ooasys</span>
+                      <span className="font-bold text-[#1C1917] dark:text-white">Ooasys</span>
                     </SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col gap-2 mt-6">
@@ -439,7 +351,6 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                       <AlertTriangleIcon className="h-5 w-5" />
                       Incendios
                     </Link>
-                   
 
                     <div className="h-px bg-[#E7E5E4] dark:bg-[#44403C] my-2" />
                     <Link href="/business" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">Negocios</Link>

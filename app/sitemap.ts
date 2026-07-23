@@ -27,7 +27,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   let businessRoutes: MetadataRoute.Sitemap = [];
   let categoryRoutes: MetadataRoute.Sitemap = [];
+  let municipalityRoutes: MetadataRoute.Sitemap = [];
 
+  // 2. Rutas dinámicas de Negocios
   try {
     const businessData: SanityDocumentSlug[] = await client.fetch(
       `*[_type == "business" && defined(slug.current)]{
@@ -49,6 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('❌ [Sitemap Oasis] Error consultando negocios en Sanity:', error);
   }
 
+  // 3. Rutas dinámicas de Categorías
   try {
     const categoryData: SanityDocumentSlug[] = await client.fetch(
       `*[_type == "category" && defined(slug.current)]{
@@ -70,7 +73,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('❌ [Sitemap Oasis] Error consultando categorías en Sanity:', error);
   }
 
-  const allRoutes = [...staticRoutes, ...businessRoutes, ...categoryRoutes];
+  // 4. Rutas dinámicas de Municipios (Para mejorar SEO Local)
+  try {
+    const municipalityData: SanityDocumentSlug[] = await client.fetch(
+      `*[_type == "municipality" && defined(slug.current)]{
+        "slug": slug.current,
+        "updatedAt": _updatedAt
+      }`
+    );
+
+    console.log(`✅ [Sitemap Oasis] Se encontraron ${municipalityData.length} municipios.`);
+
+    municipalityRoutes = municipalityData.map((item) => ({
+      url: `${baseUrl}/municipios/${item.slug}`,
+      lastModified: item.updatedAt ? new Date(item.updatedAt) : new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.8, // Prioridad alta (0.8) porque son páginas aterrizaje de SEO local
+    }));
+
+  } catch (error) {
+    console.error('❌ [Sitemap Oasis] Error consultando municipios en Sanity:', error);
+  }
+
+  const allRoutes = [
+    ...staticRoutes, 
+    ...businessRoutes, 
+    ...categoryRoutes,
+    ...municipalityRoutes
+  ];
 
   console.log(`✨ [Sitemap Oasis] Proceso finalizado. Total URLs: ${allRoutes.length}`);
 
