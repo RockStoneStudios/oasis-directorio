@@ -192,27 +192,27 @@ const unifiedGraphSchema = {
 // ============================================================
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <head>
-        {/* Preconexión de dominios críticos para optimizar performance (Core Web Vitals) */}
-        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.google.com" />
+    <ClerkProvider>
+      <html lang="es" suppressHydrationWarning>
+        <head>
+          {/* Preconexión de dominios críticos para optimizar performance (Core Web Vitals) */}
+          <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
+          <link rel="preconnect" href="https://www.google.com" />
 
-        {/* Script JSON-LD inyectado de forma estática para indexación inmediata */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(unifiedGraphSchema) }}
-        />
-      </head>
-      <body className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} font-body antialiased`}>
-        <ClerkProvider>
+          {/* Script JSON-LD inyectado de forma estática para indexación inmediata */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(unifiedGraphSchema) }}
+          />
+        </head>
+        <body className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} font-body antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange enableColorScheme={false}>
             {children}
             <Toaster />
             <SanityLive />
           </ThemeProvider>
-        </ClerkProvider>
-      </body>
-    </html>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
