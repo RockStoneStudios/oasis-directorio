@@ -58,6 +58,12 @@ export default function IncendiosPage() {
     "description": "Monitoreo satelital en tiempo real de incendios forestales y anomalías térmicas en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina, Olaya y el Cañón del Cauca.",
     "url": `${baseUrl}/incendios`,
     "isAccessibleForFree": true,
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+  "creator": {                                               
+    "@type": "Organization",
+    "name": "Ooasys",
+    "url": baseUrl
+  },
     "publisher": { "@type": "Organization", "name": "Ooasys", "url": baseUrl }
   };
 
