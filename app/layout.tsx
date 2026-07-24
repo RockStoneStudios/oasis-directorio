@@ -4,7 +4,6 @@ import { Geist_Mono, Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SanityLive } from "@/lib/sanity/live";
 import { ThemeProvider } from "@/components/theme-provider";
-import Script from "next/script";
 //@ts-ignore
 import "./globals.css";
 
@@ -15,7 +14,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
 // ============================================================
-// CONFIGURACIÓN DE VIEWPORT (Next.js 14+)
+// CONFIGURACIÓN DE VIEWPORT
 // ============================================================
 export const viewport: Viewport = {
   themeColor: "#0f172a",
@@ -44,11 +43,9 @@ export const metadata: Metadata = {
     template: "%s | Ooasys",
   },
   description: "🌴 Descubre y contacta los mejores hoteles, restaurantes, fincas, tiendas y servicios en Sopetrán, Santa Fe de Antioquia, San Jerónimo, Liborina y Olaya.",
-
   authors: [{ name: "Ooasys", url: APP_URL }],
   metadataBase: new URL(APP_URL),
   category: "Business Directory",
-
   alternates: {
     canonical: "/",
     languages: {
@@ -57,14 +54,12 @@ export const metadata: Metadata = {
       'x-default': "/",
     },
   },
-
   other: {
     "geo.region": "CO-ANT",
     "geo.placename": "Sopetrán, Santa Fe de Antioquia, San Jerónimo, Liborina, Olaya",
     "geo.position": "6.500893;-75.742225",
     "ICBM": "6.500893, -75.742225",
   },
-
   openGraph: {
     type: "website",
     locale: "es_CO",
@@ -73,7 +68,7 @@ export const metadata: Metadata = {
     description: "Encuentra teléfonos, ubicaciones y servicios de comercios en Sopetrán, Santa Fe de Antioquia y San Jerónimo.",
     images: [
       {
-        url: `${APP_URL}/ooasys.webp`,
+        url: `${APP_URL}/ooasys-banner.jpeg`,
         width: 1200,
         height: 630,
         alt: "Ooasys - Guía Comercial y Turística del Occidente Antioqueño",
@@ -81,15 +76,13 @@ export const metadata: Metadata = {
     ],
     url: APP_URL,
   },
-
   twitter: {
     card: "summary_large_image",
     title: "Ooasys | Directorio de Negocios Occidente Antioqueño",
     description: "Conecta con los mejores comercios, alojamientos y servicios de la región.",
-    images: [`${APP_URL}/ooasys.webp`],
+    images: [`${APP_URL}/ooasys-banner.jpeg`],
     creator: "@ooasys",
   },
-
   robots: {
     index: true,
     follow: true,
@@ -100,7 +93,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-
   verification: {
     google: "OBYw5lH6K7WSL2FDIJyNnq9oKEsYHJndvLUQmPjZWrc",
   },
@@ -117,7 +109,7 @@ const unifiedGraphSchema = {
       "@id": `${APP_URL}/#organization`,
       "name": "Ooasys",
       "url": APP_URL,
-      "logo": `${APP_URL}/ooasys.webp`,
+      "logo": `${APP_URL}/ooasys-banner.jpeg`,
       "description": "Plataforma digital y directorio comercial del Occidente Antioqueño.",
       "areaServed": CITIES.map(c => c.name),
       "sameAs": [
@@ -195,18 +187,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="es" suppressHydrationWarning>
         <head>
-          {/* Preconexión de dominios críticos para optimizar performance (Core Web Vitals) */}
           <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
           <link rel="preconnect" href="https://www.google.com" />
-
-          {/* Script JSON-LD inyectado de forma estática para indexación inmediata */}
+        </head>
+        <body 
+          className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} font-body antialiased`}
+          suppressHydrationWarning
+        >
+          {/* El JSON-LD ahora vive dentro de body para evitar discrepancias en head */}
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(unifiedGraphSchema) }}
           />
-        </head>
-        <body className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} font-body antialiased`}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange enableColorScheme={false}>
+          <ThemeProvider 
+            attribute="class" 
+            defaultTheme="system" 
+            enableSystem 
+            disableTransitionOnChange 
+            enableColorScheme={false}
+          >
             {children}
             <Toaster />
             <SanityLive />

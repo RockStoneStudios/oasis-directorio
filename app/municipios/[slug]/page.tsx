@@ -21,7 +21,7 @@ interface MunicipalityPageProps {
 }
 
 // ============================================================
-// METADATOS METICULOSAMENTE OPTIMIZADOS PARA SEO LOCAL
+// METADATOS METICULOSAMENTE OPTIMIZADOS PARA SEO LOCAL Y CTR
 // ============================================================
 export async function generateMetadata({
   params,
@@ -42,9 +42,16 @@ export async function generateMetadata({
     };
   }
 
-  const title = `Negocios y Servicios en ${municipality.name} | Guía Comercial Ooasys`;
-  const description = `Explora los mejores restaurantes, hoteles, fincas, tiendas y servicios disponibles en ${municipality.name}, Occidente Antioqueño. Contacto directo por WhatsApp.`;
+  const muniName = municipality.name;
+  
+  // Título enfocado en intención de búsqueda directa + palabras clave regionales
+  const title = `${muniName}: Hosterías, Restaurantes,Heladerias, Discotecas y WhatsApp | Ooasys`;
+  
+  // Descripción con emoji visual y CTA de alto impacto
+  const description = `🌴 ¿Planes o servicios en ${muniName}? Encuentra las mejores hosterías, supermercados, discotecas, restaurantes y comercios. ¡Contacta directo por WhatsApp!`;
+  
   const canonicalUrl = `${APP_URL}/municipios/${slug}`;
+  const imageUrl = `${APP_URL}/ooasys-banner.jpeg`;
 
   return {
     title,
@@ -61,10 +68,10 @@ export async function generateMetadata({
       type: "website",
       images: [
         {
-          url: `${APP_URL}/ooasys.webp`,
+          url: imageUrl,
           width: 1200,
           height: 630,
-          alt: `Directorio de negocios en ${municipality.name}`,
+          alt: `Guía comercial y turística de ${muniName} en Ooasys`,
         },
       ],
     },
@@ -72,7 +79,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [`${APP_URL}/ooasys.webp`],
+      images: [imageUrl],
     },
   };
 }
@@ -97,7 +104,7 @@ export default async function MunicipalityPage({
     (item: FilterOption) => getSlugValue(item.slug) === slug
   );
 
-  // Si el slug no coincide con ningún municipio registrado, mandamos 404
+  // Si el slug no coincide con ningún municipio registrado ni hay negocios, mandamos 404
   if (!municipality && businesses.length === 0) {
     notFound();
   }
@@ -119,14 +126,14 @@ export default async function MunicipalityPage({
               </div>
               
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading text-[#1C1917] dark:text-white tracking-tight">
-                Negocios y Servicios en{" "}
+                Directorio y Guía en{" "}
                 <span className="bg-linear-to-r from-[#14B8A6] to-[#0F766E] bg-clip-text text-transparent">
                   {muniName}
                 </span>
               </h1>
               
               <p className="mt-4 text-base md:text-lg text-[#44403C] dark:text-[#D6D3D1]">
-                Descubre los comercios, hoteles, restaurantes, fincas y profesionales destacados disponibles en {muniName}. Contacta directamente sin intermediarios.
+                Descubre las mejores hosterías, estaderos, discotecas, restaurantes, comercios y servicios disponibles en {muniName}. Contacta directamente por WhatsApp sin intermediarios.
               </p>
             </div>
           </div>
@@ -165,7 +172,7 @@ export default async function MunicipalityPage({
                   Aún no hay comercios registrados en {muniName}
                 </h2>
                 <p className="mt-2 text-sm text-[#78716C] dark:text-[#A8A29E] max-w-md mx-auto">
-                  ¿Tienes un establecimiento o prestas un servicio aquí? ¡Sé el primero en aparecer!
+                  ¿Tienes una hostería, estadero, discoteca, restaurante o prestas un servicio aquí? ¡Sé el primero en aparecer!
                 </p>
                 <Button size="lg" className="mt-6 bg-[#14B8A6] hover:bg-[#0F766E] text-white" asChild>
                   <Link href="/dashboard">
