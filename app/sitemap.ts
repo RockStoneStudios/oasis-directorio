@@ -1,98 +1,97 @@
 import { MetadataRoute } from 'next';
 import { client } from '@/lib/sanity/client'; 
 
+// 1. CACHEO: Solo se regenera cada 24 horas, ahorra consultas a Sanity
+export const revalidate = 86400; 
+
 interface SanityDocumentSlug {
   slug: string;
   updatedAt?: string;
 }
 
+// 2. SEGURIDAD: Evita que un slug con espacios rompa el XML
+function safeSlug(slug: string): string {
+  return encodeURIComponent(slug.trim());
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com").replace(/\/+$/, "");
 
   console.log('🚀 [Sitemap Oasis] Generando mapa de sitio...');
 
-  // 1. Rutas estáticas
+  // 3. FECHAS REALES: No le mientas a Google. Pon la fecha real de la última modificación de estas páginas
   const staticRoutes = [
-    '', 
-    '/mapa', 
-    '/categorias',
-    '/estereo',
-    '/incendios'
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: route === '' ? 1.0 : (route === '/incendios' || route === '/estereo') ? 0.9 : 0.8,
+    { route: '', lastModified: '2026-07-29', changeFrequency: 'daily' as const, priority: 1.0 },
+    { route: '/mapa', lastModified: '2026-07-30', changeFrequency: 'weekly' as const, priority: 0.8 },
+    { route: '/categorias', lastModified: '2026-07-24', changeFrequency: 'monthly' as const, priority: 0.8 },
+    { route: '/estereo', lastModified: '2026-07-30', changeFrequency: 'monthly' as const, priority: 0.9 },
+    { route: '/incendios', lastModified: '2026-07-29', changeFrequency: 'daily' as const, priority: 0.9 },
+    { route: '/fiestas-patronales-sopetran-2026', lastModified: '2026-07-31', changeFrequency: 'weekly' as const, priority: 0.9 },
+  ].map((page) => ({
+    url: `${baseUrl}${page.route}`,
+    lastModified: new Date(page.lastModified),
+    changeFrequency: page.changeFrequency,
+    priority: page.priority,
   }));
 
   let businessRoutes: MetadataRoute.Sitemap = [];
   let categoryRoutes: MetadataRoute.Sitemap = [];
   let municipalityRoutes: MetadataRoute.Sitemap = [];
 
-  // 2. Rutas dinámicas de Negocios
-  try {
-    const businessData: SanityDocumentSlug[] = await client.fetch(
-      `*[_type == "business" && defined(slug.current)]{
-        "slug": slug.current,
-        "updatedAt": _updatedAt
-      }`
-    );
-    
-    console.log(`✅ [Sitemap Oasis] Se encontraron ${businessData.length} negocios.`);
+  // 4. PROMESAS EN PARALELO Y SEGUROS
+  console.log('🔍 [Sitemap Oasis] Consultando datos dinámicos a Sanity...');
 
+  const [
+    businessResult,
+    categoryResult,
+    municipalityResult,
+  ] = await Promise.allSettled([
+    client.fetch<SanityDocumentSlug[]>(`*[_type == "business" && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt }`),
+    client.fetch<SanityDocumentSlug[]>(`*[_type == "category" && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt }`),
+    client.fetch<SanityDocumentSlug[]>(`*[_type == "municipality" && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt }`)
+  ]);
+
+  // --- Procesamiento de Negocios ---
+  if (businessResult.status === "fulfilled") {
+    const businessData = businessResult.value;
+    console.log(`✅ [Sitemap Oasis] Se encontraron ${businessData.length} negocios.`);
     businessRoutes = businessData.map((item) => ({
-      url: `${baseUrl}/business/${item.slug}`,
-      lastModified: item.updatedAt ? new Date(item.updatedAt) : new Date(),
+      url: `${baseUrl}/business/${safeSlug(item.slug)}`,
+      // Si no hay updatedAt, mejor no enviar fecha (undefined) a enviar una falsa
+      lastModified: item.updatedAt ? new Date(item.updatedAt) : undefined,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }));
-
-  } catch (error) {
-    console.error('❌ [Sitemap Oasis] Error consultando negocios en Sanity:', error);
+  } else {
+    console.error('❌ [Sitemap Oasis] Error consultando negocios en Sanity:', businessResult.reason);
   }
 
-  // 3. Rutas dinámicas de Categorías
-  try {
-    const categoryData: SanityDocumentSlug[] = await client.fetch(
-      `*[_type == "category" && defined(slug.current)]{
-        "slug": slug.current,
-        "updatedAt": _updatedAt
-      }`
-    );
-
+  // --- Procesamiento de Categorías ---
+  if (categoryResult.status === "fulfilled") {
+    const categoryData = categoryResult.value;
     console.log(`✅ [Sitemap Oasis] Se encontraron ${categoryData.length} categorías.`);
-
     categoryRoutes = categoryData.map((item) => ({
-      url: `${baseUrl}/categorias/${item.slug}`,
-      lastModified: item.updatedAt ? new Date(item.updatedAt) : new Date(),
+      url: `${baseUrl}/categorias/${safeSlug(item.slug)}`,
+      lastModified: item.updatedAt ? new Date(item.updatedAt) : undefined,
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }));
-
-  } catch (error) {
-    console.error('❌ [Sitemap Oasis] Error consultando categorías en Sanity:', error);
+  } else {
+    console.error('❌ [Sitemap Oasis] Error consultando categorías en Sanity:', categoryResult.reason);
   }
 
-  // 4. Rutas dinámicas de Municipios (Para mejorar SEO Local)
-  try {
-    const municipalityData: SanityDocumentSlug[] = await client.fetch(
-      `*[_type == "municipality" && defined(slug.current)]{
-        "slug": slug.current,
-        "updatedAt": _updatedAt
-      }`
-    );
-
+  // --- Procesamiento de Municipios ---
+  if (municipalityResult.status === "fulfilled") {
+    const municipalityData = municipalityResult.value;
     console.log(`✅ [Sitemap Oasis] Se encontraron ${municipalityData.length} municipios.`);
-
     municipalityRoutes = municipalityData.map((item) => ({
-      url: `${baseUrl}/municipios/${item.slug}`,
-      lastModified: item.updatedAt ? new Date(item.updatedAt) : new Date(),
+      url: `${baseUrl}/municipios/${safeSlug(item.slug)}`,
+      lastModified: item.updatedAt ? new Date(item.updatedAt) : undefined,
       changeFrequency: 'daily' as const,
-      priority: 0.8, // Prioridad alta (0.8) porque son páginas aterrizaje de SEO local
+      priority: 0.8,
     }));
-
-  } catch (error) {
-    console.error('❌ [Sitemap Oasis] Error consultando municipios en Sanity:', error);
+  } else {
+    console.error('❌ [Sitemap Oasis] Error consultando municipios en Sanity:', municipalityResult.reason);
   }
 
   const allRoutes = [
@@ -102,7 +101,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...municipalityRoutes
   ];
 
-  console.log(`✨ [Sitemap Oasis] Proceso finalizado. Total URLs: ${allRoutes.length}`);
+  // 5. LIMPIEZA: Elimina posibles duplicados (por si hay algún error en Sanity)
+  const uniqueRoutes = [...new Map(allRoutes.map((r) => [r.url, r])).values()];
 
-  return allRoutes;
+  // 6. ORDENAMIENTO: Un XML ordenado es sinónimo de calidad técnica
+  uniqueRoutes.sort((a, b) => a.url.localeCompare(b.url));
+
+  console.log(`✨ [Sitemap Oasis] Proceso finalizado. Total URLs generadas: ${uniqueRoutes.length}`);
+
+  return uniqueRoutes;
 }
