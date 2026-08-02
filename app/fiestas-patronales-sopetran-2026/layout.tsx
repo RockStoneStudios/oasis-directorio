@@ -2,7 +2,6 @@ import { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import React from 'react';
 
-// --- VIEWPORT (separado de metadata, como exige Next.js App Router) ---
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -28,7 +27,6 @@ export const metadata: Metadata = {
     siteName: "Ooasys - Directorio Occidente",
     locale: "es_CO",
   },
- 
   robots: {
     index: true,
     follow: true,
@@ -41,7 +39,6 @@ export const metadata: Metadata = {
   },
 };
 
-// --- DATOS ESTRUCTURADOS PARA EL SCHEMA ---
 const alferesList = [
   { name: "Familia Parra Londoño", day: "Jueves 6", date: "2026-08-06" },
   { name: "Comercio Unido de Sopetrán", day: "Viernes 7", date: "2026-08-07" },
@@ -93,11 +90,11 @@ const eventSchema = {
     "height": 630
   },
 
-  // Cada día de la novena es un sub-evento propio con su propia fecha,
-  // esto habilita rich snippets tipo carrusel de eventos en el SERP.
   "subEvent": alferesList.map((p) => ({
     "@type": "Event",
     "name": `Novena y Misa - ${p.day} (Alférez: ${p.name})`,
+    // 👇 campo agregado para resolver el warning de Search Console
+    "description": `Novena en honor a la Virgen Morena de Sopetrán correspondiente al ${p.day} de agosto de 2026, con la Santa Misa y el acompañamiento del alférez ${p.name}. Actividad religiosa gratuita y abierta a toda la comunidad.`,
     "startDate": `${p.date}T18:00:00-05:00`,
     "endDate": `${p.date}T20:00:00-05:00`,
     "location": LUGAR_PRINCIPAL,
@@ -121,9 +118,6 @@ const eventSchema = {
     "name": "Parroquia Nuestra Señora de la Asunción de Sopetrán",
     "url": "https://www.diocesisdesantafe.org/",
     "email": "parroquiasopetran@diocesisdesantafe.org",
-    // 👇 Solo deja las URLs que existan REALMENTE. No inventes redes sociales
-    // que no puedas verificar — Google penaliza structured data falso.
-    // Si no tienes estas cuentas, elimina el campo "sameAs" completo.
     "sameAs": [
       "https://www.facebook.com/profile.php?id=61582100796538",
       "https://www.instagram.com/directoriosope/"
@@ -146,8 +140,6 @@ const eventSchema = {
   "accessibilityInformation": "El parque principal y las iglesias cuentan con acceso para sillas de ruedas."
 };
 
-// --- BREADCRUMB: mejora cómo se ve la URL en el SERP (ruta en vez de URL cruda) ---
-// Ajusta los nombres/URLs intermedios ("Eventos") a la estructura real de tu sitio.
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -166,6 +158,7 @@ const breadcrumbSchema = {
     }
   ]
 };
+
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -253,7 +246,6 @@ const faqSchema = {
   ]
 };
 
-// --- COMPONENTE DE LAYOUT ---
 export default function FiestasLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -270,16 +262,14 @@ export default function FiestasLayout({ children }: { children: React.ReactNode 
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-    <Script
+
+      <Script
         id="schema-faq"
         type="application/ld+json"
         strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-         __html: JSON.stringify(faqSchema)
-        }}
-    />
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
 
-    
       <div className="fiestas-patronales-wrapper">
         {children}
       </div>
