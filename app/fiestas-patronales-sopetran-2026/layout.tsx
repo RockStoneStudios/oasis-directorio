@@ -98,6 +98,10 @@ const eventSchema = {
     "startDate": `${p.date}T18:00:00-05:00`,
     "endDate": `${p.date}T20:00:00-05:00`,
     "location": LUGAR_PRINCIPAL,
+    "organizer": {
+      "@type": "Organization",
+      "name": "Parroquia Nuestra Señora de la Asunción"
+    },
     "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
     "eventStatus": "https://schema.org/EventScheduled",
     "isAccessibleForFree": true,

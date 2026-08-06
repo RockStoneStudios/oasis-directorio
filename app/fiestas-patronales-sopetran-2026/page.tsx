@@ -175,7 +175,32 @@ export default function Home() {
           </p>
 
           {/* Caja de Ooasys como en la imagen de referencia */}
-          
+          {/* 📄 BLOQUE DE TEXTO PARA GOOGLE (Palabras clave reales) */}
+<section className="max-w-5xl mx-auto px-4 md:px-8 py-12">
+  <div className="bg-[#161b22] p-8 rounded-2xl border border-gray-800 shadow-lg">
+    <h2 className="text-3xl font-bold text-white mb-4 border-l-4 border-orange-500 pl-4">
+      Tradición y Fe: La Virgen Morena de Sopetrán
+    </h2>
+    <div className="prose prose-lg prose-invert text-gray-300 space-y-4">
+      <p>
+        Las <strong>Fiestas Patronales de Sopetrán 2026</strong> son uno de los eventos 
+        religiosos más esperados del Occidente Antioqueño. Del <strong>6 al 15 de agosto</strong>, 
+        el municipio de Sopetrán se viste de gala para honrar a <strong>Nuestra Señora de la Asunción</strong>, 
+        conocida cariñosamente por la comunidad como la <strong>Virgen Morena</strong>.
+      </p>
+      <p>
+        Durante estos 10 días, la <strong>Basílica Menor Nuestra Señora de la Asunción</strong> 
+        y las calles principales del pueblo serán el escenario de <strong>misas, novenas, 
+        rosarios de aurora y procesiones</strong> que reúnen a miles de peregrinos, 
+        turistas y devotos de todo el departamento de Antioquia y el país.
+      </p>
+      <p className="text-orange-300/80 font-medium">
+        ✅ Todos los eventos son <strong>gratuitos</strong> y abiertos a todo el público. 
+        ¡Te esperamos en Sopetrán para celebrar juntos esta hermosa tradición!
+      </p>
+    </div>
+  </div>
+</section>
         </div>
       </section>
 
