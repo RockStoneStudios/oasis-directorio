@@ -15,18 +15,21 @@ function safeSlug(slug: string): string {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com").replace(/\/+$/, "");
+  // 🛡️ Seguridad: Si la variable de entorno tiene una barra al final, la quitamos para evitar // o ///
+  const rawUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
+  const baseUrl = rawUrl.replace(/\/+$/, "");
 
   console.log('🚀 [Sitemap Oasis] Generando mapa de sitio...');
 
-  // 3. FECHAS REALES: No le mientas a Google. Pon la fecha real de la última modificación de estas páginas
+  // 3. FECHAS REALES: Actualiza la ruta de la Virgen Morena y ponle prioridad 1.0 (Máxima)
   const staticRoutes = [
     { route: '', lastModified: '2026-07-29', changeFrequency: 'daily' as const, priority: 1.0 },
     { route: '/mapa', lastModified: '2026-07-30', changeFrequency: 'weekly' as const, priority: 0.8 },
     { route: '/categorias', lastModified: '2026-07-24', changeFrequency: 'monthly' as const, priority: 0.8 },
     { route: '/estereo', lastModified: '2026-07-30', changeFrequency: 'monthly' as const, priority: 0.9 },
     { route: '/incendios', lastModified: '2026-07-29', changeFrequency: 'daily' as const, priority: 0.9 },
-    { route: '/fiestas-patronales-sopetran-2026', lastModified: '2026-07-31', changeFrequency: 'weekly' as const, priority: 0.9 },
+    // ✅ RUTA ACTUALIZADA A LA NUEVA URL
+    { route: '/virgen-morena-sopetran-programacion-2026', lastModified: '2026-07-31', changeFrequency: 'weekly' as const, priority: 1.0 },
   ].map((page) => ({
     url: `${baseUrl}${page.route}`,
     lastModified: new Date(page.lastModified),
