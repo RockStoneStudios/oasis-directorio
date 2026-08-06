@@ -175,16 +175,7 @@ export default function Home() {
           </p>
 
           {/* Caja de Ooasys como en la imagen de referencia */}
-          <div className="mt-10 p-4 md:p-6 max-w-2xl mx-auto rounded-xl border border-emerald-500/30 bg-emerald-900/10 backdrop-blur-sm flex items-start md:items-center gap-4 text-left">
-            <div className="bg-blue-500/20 p-2 rounded-full text-blue-400">
-              <Info className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-300">
-                <span className="font-bold text-white">¿Quieres más información sobre Sopetrán y el Occidente?</span> Descubre <a href="#" className="text-emerald-400 hover:underline font-medium">Ooasys</a>, el nuevo directorio con negocios, eventos y servicios de toda la región.
-              </p>
-            </div>
-          </div>
+          
         </div>
       </section>
 
