@@ -8,20 +8,20 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Fiestas Patronales de Sopetrán 2026 | Programación Oficial, Misas y Procesiones",
-  description: "Consulta la programación oficial de las Fiestas Patronales de Sopetrán 2026: misas, novenas, procesiones, Rosario de Aurora, horarios completos y actividades religiosas del 6 al 15 de agosto.",
+  title: "Virgen Morena de Sopetrán 2026 | Programación Oficial, Misas y Procesiones",
+  description: "Consulta la programación oficial de las fiestas de la Virgen Morena de Sopetrán 2026: misas, novenas, procesiones, Rosario de Aurora, horarios completos y actividades religiosas del 6 al 15 de agosto.",
   authors: [{ name: "Ooasys - Directorio Occidente" }],
   alternates: {
-    canonical: "https://www.ooasys.com/fiestas-patronales-sopetran-2026",
+    canonical: "https://www.ooasys.com/virgen-morena-sopetran-programacion-2026", // ✅ ACTUALIZADO
     languages: {
-      'es-CO': "https://www.ooasys.com/fiestas-patronales-sopetran-2026",
-      'x-default': "https://www.ooasys.com/fiestas-patronales-sopetran-2026",
+      'es-CO': "https://www.ooasys.com/virgen-morena-sopetran-programacion-2026", // ✅ ACTUALIZADO
+      'x-default': "https://www.ooasys.com/virgen-morena-sopetran-programacion-2026", // ✅ ACTUALIZADO
     },
   },
   openGraph: {
-    title: "Fiestas Patronales Sopetrán 2026 | Virgen Morena | Misas y Procesiones",
+    title: "Virgen Morena de Sopetrán 2026 | Misas, Procesiones y Novenas",
     description: "Del 6 al 15 de agosto: Celebración de la Virgen Morena de Sopetrán. Conoce los horarios de misas, rosarios y procesiones día por día.",
-    url: "https://www.ooasys.com/fiestas-patronales-sopetran-2026",
+    url: "https://www.ooasys.com/virgen-morena-sopetran-programacion-2026", // ✅ ACTUALIZADO
     type: "website",
     images: [{ url: "https://www.ooasys.com/images/virgen-morena.jpg", alt: "Imagen de la Virgen Morena de Sopetrán", width: 1200, height: 630 }],
     siteName: "Ooasys - Directorio Occidente",
@@ -54,7 +54,7 @@ const alferesList = [
 
 const LUGAR_PRINCIPAL = {
   "@type": "Place",
-  "@id": "https://www.ooasys.com/fiestas-patronales-sopetran-2026#lugar-principal",
+  "@id": "https://www.ooasys.com/virgen-morena-sopetran-programacion-2026#lugar-principal", // ✅ ACTUALIZADO
   "name": "Parroquia Nuestra Señora de la Asunción / Basílica Menor",
   "address": {
     "@type": "PostalAddress",
@@ -76,7 +76,7 @@ const eventSchema = {
   "@type": "Event",
   "name": "Fiestas Patronales Virgen Morena de Sopetrán 2026",
   "description": "Programación oficial de las festividades religiosas en honor a Nuestra Señora de la Asunción (Virgen Morena) en Sopetrán, Antioquia. Del 6 al 15 de agosto de 2026. Misas, Rosarios de Aurora, Novenas y Procesiones.",
-  "url": "https://www.ooasys.com/fiestas-patronales-sopetran-2026",
+  "url": "https://www.ooasys.com/virgen-morena-sopetran-programacion-2026", // ✅ ACTUALIZADO
   "inLanguage": "es-CO",
   "startDate": "2026-08-06T06:00:00-05:00",
   "endDate": "2026-08-15T23:59:59-05:00",
@@ -93,7 +93,6 @@ const eventSchema = {
   "subEvent": alferesList.map((p) => ({
     "@type": "Event",
     "name": `Novena y Misa - ${p.day} (Alférez: ${p.name})`,
-    // 👇 campo agregado para resolver el warning de Search Console
     "description": `Novena en honor a la Virgen Morena de Sopetrán correspondiente al ${p.day} de agosto de 2026, con la Santa Misa y el acompañamiento del alférez ${p.name}. Actividad religiosa gratuita y abierta a toda la comunidad.`,
     "startDate": `${p.date}T18:00:00-05:00`,
     "endDate": `${p.date}T20:00:00-05:00`,
@@ -133,7 +132,7 @@ const eventSchema = {
     "description": "¡Todos los eventos religiosos, misas y procesiones son completamente GRATUITOS! Entrada libre.",
     "price": "0",
     "priceCurrency": "COP",
-    "url": "https://www.ooasys.com/fiestas-patronales-sopetran-2026",
+    "url": "https://www.ooasys.com/virgen-morena-sopetran-programacion-2026", // ✅ ACTUALIZADO
     "availability": "https://schema.org/InStock",
     "validFrom": "2026-01-01T00:00:00-05:00",
     "validThrough": "2026-08-15T23:59:59-05:00"
@@ -157,8 +156,8 @@ const breadcrumbSchema = {
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "Fiestas Patronales Sopetrán 2026",
-      "item": "https://www.ooasys.com/fiestas-patronales-sopetran-2026"
+      "name": "Virgen Morena Sopetrán 2026", // ✅ ACTUALIZADO EL NOMBRE DEL BREADCRUMB
+      "item": "https://www.ooasys.com/virgen-morena-sopetran-programacion-2026" // ✅ ACTUALIZADO
     }
   ]
 };
