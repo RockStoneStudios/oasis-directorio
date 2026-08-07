@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     description: "Del 6 al 15 de agosto: Celebración de la Virgen Morena de Sopetrán. Conoce los horarios de misas, rosarios y procesiones día por día.",
     url: "https://www.ooasys.com/virgen-morena-sopetran-programacion-2026", // ✅ ACTUALIZADO
     type: "website",
-    images: [{ url: "https://www.ooasys.com/images/virgen-morena.jpg", alt: "Imagen de la Virgen Morena de Sopetrán", width: 1200, height: 630 }],
+    images: [{ url: "https://www.ooasys.com/virgen-morena.jpg", alt: "Imagen de la Virgen Morena de Sopetrán", width: 1200, height: 630 }],
     siteName: "Ooasys - Directorio Occidente",
     locale: "es_CO",
   },
@@ -85,7 +85,7 @@ const eventSchema = {
   "location": LUGAR_PRINCIPAL,
   "image": {
     "@type": "ImageObject",
-    "url": "https://www.ooasys.com/images/virgen-morena.jpg",
+    "url": "https://www.ooasys.com/virgen-morena.jpg",
     "width": 1200,
     "height": 630
   },
