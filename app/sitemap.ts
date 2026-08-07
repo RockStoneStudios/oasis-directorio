@@ -21,15 +21,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   console.log('🚀 [Sitemap Oasis] Generando mapa de sitio...');
 
-  // 3. FECHAS REALES: Actualiza la ruta de la Virgen Morena y ponle prioridad 1.0 (Máxima)
+  // 3. FECHAS REALES Y RUTAS ESTÁTICAS
   const staticRoutes = [
     { route: '', lastModified: '2026-07-29', changeFrequency: 'daily' as const, priority: 1.0 },
     { route: '/mapa', lastModified: '2026-07-30', changeFrequency: 'weekly' as const, priority: 0.8 },
     { route: '/categorias', lastModified: '2026-07-24', changeFrequency: 'monthly' as const, priority: 0.8 },
     { route: '/estereo', lastModified: '2026-07-30', changeFrequency: 'monthly' as const, priority: 0.9 },
     { route: '/incendios', lastModified: '2026-07-29', changeFrequency: 'daily' as const, priority: 0.9 },
-    // ✅ RUTA ACTUALIZADA A LA NUEVA URL
+    // ✅ RUTA DE LA VIRGEN MORENA
     { route: '/virgen-morena-sopetran-programacion-2026', lastModified: '2026-07-31', changeFrequency: 'weekly' as const, priority: 1.0 },
+    // ✅ 🆕 RUTA DE OLAYA (Agregada aquí)
+    { route: '/fiestas-olaya-2026', lastModified: '2026-08-07', changeFrequency: 'weekly' as const, priority: 1.0 },
   ].map((page) => ({
     url: `${baseUrl}${page.route}`,
     lastModified: new Date(page.lastModified),
