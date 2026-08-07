@@ -99,7 +99,11 @@ const eventSchema = {
     "location": LUGAR_PRINCIPAL,
     "organizer": {
       "@type": "Organization",
-      "name": "Parroquia Nuestra Señora de la Asunción"
+      "name": "Parroquia Nuestra Señora de la Asunción",
+      "url": "https://www.arquisantioquia.co/vicaria-nuestra-senora-de-la-asuncion-2/",
+      "sameAs": [
+        "https://www.facebook.com/ParroquiadeSopetran/?locale=es_LA"
+      ]
     },
     "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
     "eventStatus": "https://schema.org/EventScheduled",
@@ -119,13 +123,12 @@ const eventSchema = {
   "organizer": {
     "@type": "Organization",
     "name": "Parroquia Nuestra Señora de la Asunción de Sopetrán",
-    "url": "https://www.diocesisdesantafe.org/",
-    "email": "parroquiasopetran@diocesisdesantafe.org",
+    "url": "https://www.arquisantioquia.co/vicaria-nuestra-senora-de-la-asuncion-2/",
     "sameAs": [
-      "https://www.facebook.com/profile.php?id=61582100796538",
-      "https://www.instagram.com/directoriosope/"
+      "https://www.facebook.com/ParroquiadeSopetran/?locale=es_LA"
     ]
   },
+
   "offers": {
     "@type": "Offer",
     "name": "Evento 100% gratuito",
