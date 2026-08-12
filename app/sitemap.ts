@@ -30,8 +30,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { route: '/incendios', lastModified: '2026-07-29', changeFrequency: 'daily' as const, priority: 0.9 },
     // ✅ RUTA DE LA VIRGEN MORENA
     { route: '/virgen-morena-sopetran-programacion-2026', lastModified: '2026-07-31', changeFrequency: 'weekly' as const, priority: 1.0 },
-    // ✅ 🆕 RUTA DE OLAYA (Agregada aquí)
+    // ✅ RUTA DE OLAYA
     { route: '/fiestas-olaya-2026', lastModified: '2026-08-07', changeFrequency: 'weekly' as const, priority: 1.0 },
+    // ✅ 🆕 RUTA DE LA FERIA DEL TAMARINDO (Agregada aquí)
+    { route: '/feria-del-tamarindo-2026', lastModified: '2026-08-12', changeFrequency: 'weekly' as const, priority: 1.0 },
   ].map((page) => ({
     url: `${baseUrl}${page.route}`,
     lastModified: new Date(page.lastModified),
