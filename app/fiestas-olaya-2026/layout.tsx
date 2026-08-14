@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     url: "https://www.ooasys.com/fiestas-olaya-2026",
     type: "website",
     images: [{
-      url: "https://www.ooasys.com/olaya/olaya_fiestas.png",
+      url: "https://www.ooasys.com/olaya_fiestas.png",
       alt: "Afiche oficial Fiestas de Olaya 2026",
       width: 1200,
       height: 630
