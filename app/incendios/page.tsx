@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     description: 'Monitoreo satelital en vivo de incendios forestales y focos de calor en Santa Fe de Antioquia, Sopetrán, San Jerónimo y municipios cercanos.',
     url: `${baseUrl}/incendios`,
     siteName: 'Ooasys',
-    images: [{ url: `${baseUrl}/og-monitoreo-termico.jpg`, width: 1200, height: 630 }],
+    images: [{ url: `${baseUrl}/incendios.png`, width: 1200, height: 630 }],
     locale: 'es_CO',
     type: 'website',
   },
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '🔴 Incendios y Focos de Calor en el Occidente Antioqueño Hoy',
     description: 'Detección satelital en vivo con datos de NASA FIRMS para el Occidente Antioqueño.',
-    images: [`${baseUrl}/og-monitoreo-termico.jpg`],
+    images: [`${baseUrl}/incendios.png`],
   },
 };
 
