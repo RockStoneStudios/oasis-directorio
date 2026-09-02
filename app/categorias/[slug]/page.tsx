@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Store } from "lucide-react";
+import { ArrowLeft, Store, HelpCircle } from "lucide-react";
 import { client } from "@/lib/sanity/client";
 import { BUSINESS_BY_SUBCATEGORY_QUERY } from "@/lib/sanity/queries";
 import { BusinessCard } from "@/components/BusinessCard";
@@ -208,7 +208,25 @@ function buildCategoryDescription(categoryName: string, count: number): string {
     return `🌐 Instalación de internet y wifi para fincas en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya. 📶 Conectividad garantizada en zonas rurales. 💻`;
   }
 
-  return `📍 Encuentra ${categoryName} en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya (${count} opciones verificadas). 📞 Teléfonos, WhatsApp y ubicación exacta en Oasis.`;
+  return `📍 Encuentra ${categoryName} en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya (${count} opciones verificadas). 📞 Teléfonos, WhatsApp y ubicación exacta en Ooasys.`;
+}
+
+// Generación de Preguntas Frecuentes específicas por categoría
+function getCategoryFaqs(categoryName: string) {
+  return [
+    {
+      q: `¿Dónde encontrar establecimientos de ${categoryName} en el Occidente Antioqueño?`,
+      a: `En Ooasys disponemos del directorio comercial verificado más completo con opciones de ${categoryName} distribuidos en los municipios de Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya.`
+    },
+    {
+      q: `¿Cómo contactar directamente con un servicio de ${categoryName}?`,
+      a: `Puedes hacer clic en cualquiera de los negocios listados arriba para abrir su perfil, desde donde podrás contactar por WhatsApp sin intermediarios, llamar directamente o ver su ubicación exacta.`
+    },
+    {
+      q: `¿Ofrecen servicio a domicilio o atención en fincas de recreo?`,
+      a: `La mayoría de los negocios de ${categoryName} registrados en San Jerónimo, Sopetrán y Santa Fe de Antioquia cuentan con atención directa en zona urbana y despachos a zonas rurales o fincas de descanso.`
+    }
+  ];
 }
 
 // ============================================================================
@@ -227,7 +245,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
         : firstBiz.subcategory?.name || categoryName;
   }
 
-  const title = `✅ Los Mejores ${categoryName} en el Occidente Antioqueño | Oasis`;
+  const title = `✅ Los Mejores ${categoryName} en el Occidente Antioqueño | Ooasys`;
   const description = buildCategoryDescription(categoryName, businesses.length);
   const keywords = getKeywordsByCategory(categoryName, slug);
   
@@ -249,10 +267,10 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       date: false,
       url: false,
     },
-    applicationName: "Oasis",
+    applicationName: "Ooasys",
     appleWebApp: {
       capable: true,
-      title: "Oasis Direct",
+      title: "Ooasys Direct",
       statusBarStyle: "black-translucent",
     },
     alternates: {
@@ -283,14 +301,14 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       description,
       url: `${baseUrl}/categorias/${slug}`,
       type: "website",
-      siteName: "Oasis",
+      siteName: "Ooasys",
       locale: "es_CO",
       images: [
         {
           url: `${baseUrl}/og-categories.png`,
           width: 1200,
           height: 630,
-          alt: `Sección de ${categoryName} en Occidente Antioqueño - Oasis`,
+          alt: `Sección de ${categoryName} en Occidente Antioqueño - Ooasys`,
         },
       ],
     },
@@ -304,7 +322,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 }
 
 // ============================================================================
-// 🚀 2. COMPONENTE DE PÁGINA CON SCHEMA.ORG ACTUALIZADO
+// 🚀 2. COMPONENTE DE PÁGINA CON SCHEMA.ORG Y SECCIÓN DE FAQ
 // ============================================================================
 export default async function CategoryBusinessPage({ params }: CategoryPageProps) {
   const { slug } = await params;
@@ -317,7 +335,9 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
       firstBiz.category?.slug?.current === slug ? firstBiz.category.name : title;
   }
 
-  // 🚀 Esquema de Colección con Cobertura Geográfica Completa
+  const categoryFaqs = getCategoryFaqs(title);
+
+  // 🚀 Esquema de Colección
   const collectionJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -359,7 +379,7 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
               "addressRegion": "Antioquia",
               "addressCountry": "CO"
             }
-          },
+          }
         };
       }),
     },
@@ -391,6 +411,20 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
     ],
   };
 
+  // 🚀 Esquema Estructurado de Preguntas Frecuentes (FAQSchema)
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": categoryFaqs.map((faq) => ({
+      "@type": "Question",
+      "name": faq.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.a,
+      },
+    })),
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Inyección de Datos Estructurados JSON-LD */}
@@ -403,6 +437,11 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
         id="breadcrumb-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        id="faq-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       <Link
@@ -449,6 +488,24 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
           ))}
         </div>
       )}
+
+      {/* 🚀 Sección visual de Preguntas Frecuentes (SEO & CTR) */}
+      <section className="mt-16 pt-10 border-t border-border/60">
+        <div className="flex items-center gap-2 mb-6">
+          <HelpCircle className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-bold tracking-tight text-foreground font-heading">
+            Preguntas Frecuentes sobre {title}
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {categoryFaqs.map((faq, idx) => (
+            <div key={idx} className="p-5 rounded-2xl bg-card border border-border/50 shadow-sm">
+              <h3 className="font-semibold text-foreground text-sm mb-2">{faq.q}</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">{faq.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -21,7 +21,7 @@ interface MunicipalityPageProps {
 }
 
 // ============================================================
-// METADATOS METICULOSAMENTE OPTIMIZADOS PARA SEO LOCAL Y CTR
+// METADATOS OPTIMIZADOS CON INTENCIONALIDAD SEO (ANSWER THE PUBLIC)
 // ============================================================
 export async function generateMetadata({
   params,
@@ -44,11 +44,11 @@ export async function generateMetadata({
 
   const muniName = municipality.name;
   
-  // Título enfocado en intención de búsqueda directa + palabras clave regionales
-  const title = `${muniName}: Hosterías, Restaurantes,Heladerias, Discotecas y WhatsApp | Ooasys`;
+  // Título dinámico optimizado con Keywords de alta conversión (fincas, restaurantes, dónde comer)
+  const title = `${muniName}: Fincas de Alquiler, Dónde Comer y Negocios | Ooasys`;
   
-  // Descripción con emoji visual y CTA de alto impacto
-  const description = `🌴 ¿Planes o servicios en ${muniName}? Encuentra las mejores hosterías, supermercados, discotecas, restaurantes y comercios. ¡Contacta directo por WhatsApp!`;
+  // Descripción enfocada en resolver dudas inmediatas de usuarios y llamadas a la acción
+  const description = `🌴 ¿Qué hacer y dónde comer en ${muniName}? Descubre las mejores fincas para alquilar, restaurantes, hosterías y servicios locales en ${muniName}. ¡Contacta directo por WhatsApp!`;
   
   const canonicalUrl = `${APP_URL}/municipios/${slug}`;
   const imageUrl = `${APP_URL}/ooasys-banner.jpeg`;
@@ -71,7 +71,7 @@ export async function generateMetadata({
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: `Guía comercial y turística de ${muniName} en Ooasys`,
+          alt: `Guía turística, fincas y comercios en ${muniName} - Ooasys`,
         },
       ],
     },
@@ -104,15 +104,37 @@ export default async function MunicipalityPage({
     (item: FilterOption) => getSlugValue(item.slug) === slug
   );
 
-  // Si el slug no coincide con ningún municipio registrado ni hay negocios, mandamos 404
   if (!municipality && businesses.length === 0) {
     notFound();
   }
 
   const muniName = municipality?.name || slug;
 
+  // Schema estructurado dinámico (JSON-LD) específico para la guía del municipio
+  const municipalitySchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemPage",
+    "name": `Guía Comercial y Turística de ${muniName}`,
+    "description": `Directorio de fincas para alquilar, restaurantes donde comer y servicios locales en ${muniName}, Occidente Antioqueño.`,
+    "url": `${APP_URL}/municipios/${slug}`,
+    "mainEntity": {
+      "@type": "AdministrativeArea",
+      "name": muniName,
+      "containedInPlace": {
+        "@type": "AdministrativeArea",
+        "name": "Occidente Antioqueño"
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-b from-[#FAFAF9] to-[#F5F0E8] dark:from-[#1C1917] dark:to-[#292524]">
+      {/* Inyección de JSON-LD específico del municipio */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(municipalitySchema) }}
+      />
+
       <Navbar municipalities={municipalitiesArray} />
       
       <main id="main">
@@ -122,18 +144,18 @@ export default async function MunicipalityPage({
             <div className="max-w-3xl">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#14B8A6]/10 dark:bg-[#14B8A6]/20 px-3 py-1 text-xs md:text-sm font-semibold text-[#0F766E] dark:text-[#14B8A6]">
                 <MapPin className="h-4 w-4" aria-hidden="true" />
-                Municipio del Occidente Antioqueño
+                Guía Turística y Comercial del Occidente Antioqueño
               </div>
               
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading text-[#1C1917] dark:text-white tracking-tight">
-                Directorio y Guía en{" "}
+                Dónde Comer, Fincas y Servicios en{" "}
                 <span className="bg-linear-to-r from-[#14B8A6] to-[#0F766E] bg-clip-text text-transparent">
                   {muniName}
                 </span>
               </h1>
               
               <p className="mt-4 text-base md:text-lg text-[#44403C] dark:text-[#D6D3D1]">
-                Descubre las mejores hosterías, estaderos, discotecas, restaurantes, comercios y servicios disponibles en {muniName}. Contacta directamente por WhatsApp sin intermediarios.
+                Encuentra las mejores fincas para alquilar, restaurantes de comida típica, hosterías, comercios y servicios locales en {muniName}. Contacta directo por WhatsApp sin intermediarios.
               </p>
             </div>
           </div>
@@ -146,7 +168,7 @@ export default async function MunicipalityPage({
               <>
                 <div className="mb-6 flex items-center justify-between">
                   <p className="text-sm text-[#78716C] dark:text-[#A8A29E]">
-                    Mostrando resultados en <strong className="text-[#1C1917] dark:text-white">{muniName}</strong>
+                    Mostrando comercios y servicios recomendados en <strong className="text-[#1C1917] dark:text-white">{muniName}</strong>
                   </p>
                 </div>
 
@@ -169,10 +191,10 @@ export default async function MunicipalityPage({
               <div className="rounded-2xl border border-[#E7E5E4] dark:border-[#44403C] bg-white dark:bg-[#292524] p-8 md:p-12 text-center shadow-sm">
                 <Store className="mx-auto mb-4 h-12 w-12 text-[#14B8A6]" aria-hidden="true" />
                 <h2 className="text-xl font-semibold font-heading text-[#1C1917] dark:text-white">
-                  Aún no hay comercios registrados en {muniName}
+                  Aún no hay comercios o fincas registradas en {muniName}
                 </h2>
                 <p className="mt-2 text-sm text-[#78716C] dark:text-[#A8A29E] max-w-md mx-auto">
-                  ¿Tienes una hostería, estadero, discoteca, restaurante o prestas un servicio aquí? ¡Sé el primero en aparecer!
+                  ¿Ofreces alquiler de fincas, tienes un restaurante o prestas un servicio en {muniName}? Impulsa tu visibilidad digital y recibe clientes directo en tu WhatsApp.
                 </p>
                 <Button size="lg" className="mt-6 bg-[#14B8A6] hover:bg-[#0F766E] text-white" asChild>
                   <Link href="/dashboard">

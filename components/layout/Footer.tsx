@@ -105,6 +105,11 @@ export function Footer() {
                   Categorías
                 </Link>
               </li>
+              <li>
+                <Link href="/preguntas-frecuentes" className="text-sm text-[#78716C] dark:text-[#A8A29E] hover:text-[#14B8A6] transition-colors">
+                  Preguntas Frecuentes
+                </Link>
+              </li>
             </ul>
           </div>
 

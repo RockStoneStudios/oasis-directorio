@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const rawUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
   const baseUrl = rawUrl.replace(/\/+$/, "");
 
-  console.log('🚀 [Sitemap Oasis] Generando mapa de sitio...');
+  console.log('🚀 [Sitemap Ooasys] Generando mapa de sitio...');
 
   // 3. FECHAS REALES Y RUTAS ESTÁTICAS
   const staticRoutes = [
@@ -28,11 +28,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { route: '/categorias', lastModified: '2026-07-24', changeFrequency: 'monthly' as const, priority: 0.8 },
     { route: '/estereo', lastModified: '2026-07-30', changeFrequency: 'monthly' as const, priority: 0.9 },
     { route: '/incendios', lastModified: '2026-07-29', changeFrequency: 'daily' as const, priority: 0.9 },
+    // ✅ RUTA DE PREGUNTAS FRECUENTES (FAQ)
+    { route: '/preguntas-frecuentes', lastModified: '2026-09-01', changeFrequency: 'monthly' as const, priority: 0.8 },
     // ✅ RUTA DE LA VIRGEN MORENA
     { route: '/virgen-morena-sopetran-programacion-2026', lastModified: '2026-07-31', changeFrequency: 'weekly' as const, priority: 1.0 },
     // ✅ RUTA DE OLAYA
     { route: '/fiestas-olaya-2026', lastModified: '2026-08-07', changeFrequency: 'weekly' as const, priority: 1.0 },
-    // ✅ 🆕 RUTA DE LA FERIA DEL TAMARINDO (Agregada aquí)
+    // ✅ RUTA DE LA FERIA DEL TAMARINDO
     { route: '/feria-del-tamarindo-2026', lastModified: '2026-08-12', changeFrequency: 'weekly' as const, priority: 1.0 },
   ].map((page) => ({
     url: `${baseUrl}${page.route}`,
@@ -46,7 +48,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let municipalityRoutes: MetadataRoute.Sitemap = [];
 
   // 4. PROMESAS EN PARALELO Y SEGUROS
-  console.log('🔍 [Sitemap Oasis] Consultando datos dinámicos a Sanity...');
+  console.log('🔍 [Sitemap Ooasys] Consultando datos dinámicos a Sanity...');
 
   const [
     businessResult,
@@ -61,22 +63,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // --- Procesamiento de Negocios ---
   if (businessResult.status === "fulfilled") {
     const businessData = businessResult.value;
-    console.log(`✅ [Sitemap Oasis] Se encontraron ${businessData.length} negocios.`);
+    console.log(`✅ [Sitemap Ooasys] Se encontraron ${businessData.length} negocios.`);
     businessRoutes = businessData.map((item) => ({
       url: `${baseUrl}/business/${safeSlug(item.slug)}`,
-      // Si no hay updatedAt, mejor no enviar fecha (undefined) a enviar una falsa
       lastModified: item.updatedAt ? new Date(item.updatedAt) : undefined,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }));
   } else {
-    console.error('❌ [Sitemap Oasis] Error consultando negocios en Sanity:', businessResult.reason);
+    console.error('❌ [Sitemap Ooasys] Error consultando negocios en Sanity:', businessResult.reason);
   }
 
   // --- Procesamiento de Categorías ---
   if (categoryResult.status === "fulfilled") {
     const categoryData = categoryResult.value;
-    console.log(`✅ [Sitemap Oasis] Se encontraron ${categoryData.length} categorías.`);
+    console.log(`✅ [Sitemap Ooasys] Se encontraron ${categoryData.length} categorías.`);
     categoryRoutes = categoryData.map((item) => ({
       url: `${baseUrl}/categorias/${safeSlug(item.slug)}`,
       lastModified: item.updatedAt ? new Date(item.updatedAt) : undefined,
@@ -84,13 +85,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }));
   } else {
-    console.error('❌ [Sitemap Oasis] Error consultando categorías en Sanity:', categoryResult.reason);
+    console.error('❌ [Sitemap Ooasys] Error consultando categorías en Sanity:', categoryResult.reason);
   }
 
   // --- Procesamiento de Municipios ---
   if (municipalityResult.status === "fulfilled") {
     const municipalityData = municipalityResult.value;
-    console.log(`✅ [Sitemap Oasis] Se encontraron ${municipalityData.length} municipios.`);
+    console.log(`✅ [Sitemap Ooasys] Se encontraron ${municipalityData.length} municipios.`);
     municipalityRoutes = municipalityData.map((item) => ({
       url: `${baseUrl}/municipios/${safeSlug(item.slug)}`,
       lastModified: item.updatedAt ? new Date(item.updatedAt) : undefined,
@@ -98,7 +99,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
   } else {
-    console.error('❌ [Sitemap Oasis] Error consultando municipios en Sanity:', municipalityResult.reason);
+    console.error('❌ [Sitemap Ooasys] Error consultando municipios en Sanity:', municipalityResult.reason);
   }
 
   const allRoutes = [
@@ -108,13 +109,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...municipalityRoutes
   ];
 
-  // 5. LIMPIEZA: Elimina posibles duplicados (por si hay algún error en Sanity)
+  // 5. LIMPIEZA: Elimina posibles duplicados
   const uniqueRoutes = [...new Map(allRoutes.map((r) => [r.url, r])).values()];
 
-  // 6. ORDENAMIENTO: Un XML ordenado es sinónimo de calidad técnica
+  // 6. ORDENAMIENTO: Un XML ordenado
   uniqueRoutes.sort((a, b) => a.url.localeCompare(b.url));
 
-  console.log(`✨ [Sitemap Oasis] Proceso finalizado. Total URLs generadas: ${uniqueRoutes.length}`);
+  console.log(`✨ [Sitemap Ooasys] Proceso finalizado. Total URLs generadas: ${uniqueRoutes.length}`);
 
   return uniqueRoutes;
 }

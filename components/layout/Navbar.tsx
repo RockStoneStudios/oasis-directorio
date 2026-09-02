@@ -24,7 +24,8 @@ import {
   Sun,
   ChevronDown,
   AlertTriangleIcon,
-  Cross
+  Cross,
+  HelpCircle
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -353,6 +354,14 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     
                       <AlertTriangleIcon className="h-5 w-5" />
                       Incendios
+                    </Link>
+                    <Link
+                      href="/preguntas-frecuentes"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"
+                    >
+                      <HelpCircle className="h-5 w-5" />
+                      Preguntas Frecuentes
                     </Link>
 
                     <div className="h-px bg-[#E7E5E4] dark:bg-[#44403C] my-2" />

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { client } from "@/lib/sanity/client";
 import { CATEGORIES_WITH_COUNTS_QUERY, CATEGORIES_LIST_QUERY } from "@/lib/sanity/queries";
-import { Store } from "lucide-react";
+import { Store, HelpCircle } from "lucide-react";
 import { CategoryGrid } from "@/components/category/CategoryGrid";
 import { ClientBackButton } from "@/components/ui/ClientBackButton";
 
@@ -9,9 +9,25 @@ import { ClientBackButton } from "@/components/ui/ClientBackButton";
 export const revalidate = 60;
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
+// Preguntas frecuentes generales del directorio para Rich Snippets
+const GENERAL_FAQS = [
+  {
+    q: "¿Qué tipo de comercios y servicios puedo encontrar en Ooasys?",
+    a: "En Ooasys encuentras un directorio verificado que abarca restaurantes, hoteles, fincas de recreo, licoreras, droguerías, barberías, agroinsumos, mototaxis y servicios técnicos en el Occidente Antioqueño."
+  },
+  {
+    q: "¿Qué municipios del Occidente Antioqueño cubre la plataforma?",
+    a: "Cubrimos de manera directa los municipios de Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya."
+  },
+  {
+    q: "¿Cómo puedo registrar mi negocio en el directorio de Ooasys?",
+    a: "Puedes registrar tu establecimiento accediendo a nuestra sección de registro en el menú o pie de página. Contamos con planes adaptados a todo tipo de comercios."
+  }
+];
+
 // 🚀 METADATOS ULTRA OPTIMIZADOS PARA EL OCCIDENTE ANTIOQUEÑO (SEO 10/10)
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "Directorio de Categorías en el Occidente Antioqueño | Oasis";
+  const title = "Directorio de Categorías en el Occidente Antioqueño | Ooasys";
   const description =
     "Explora los comercios, servicios y sitios turísticos del Occidente Antioqueño. Encuentra restaurantes, hoteles, fincas de recreo, agroinsumos y transporte en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya.";
 
@@ -31,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "fincas de recreo San Jerónimo",
       "hoteles con piscina Sopetrán",
       "guía turística Santa Fe de Antioquia",
-      "directorio empresarial Oasis"
+      "directorio empresarial Ooasys"
     ],
     viewport: {
       width: "device-width",
@@ -46,10 +62,10 @@ export async function generateMetadata(): Promise<Metadata> {
       date: false,
       url: false,
     },
-    applicationName: "Oasis",
+    applicationName: "Ooasys",
     appleWebApp: {
       capable: true,
-      title: "Oasis Direct",
+      title: "Ooasys Direct",
       statusBarStyle: "black-translucent",
     },
     alternates: {
@@ -75,14 +91,14 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       url: `${baseUrl}/categorias`,
       type: "website",
-      siteName: "Oasis",
+      siteName: "Ooasys",
       locale: "es_CO",
       images: [
         {
           url: `${baseUrl}/og-categories.png`,
           width: 1200,
           height: 630,
-          alt: "Directorio General de Categorías en el Occidente Antioqueño - Oasis",
+          alt: "Directorio General de Categorías en el Occidente Antioqueño - Ooasys",
         },
       ],
     },
@@ -107,7 +123,7 @@ export default async function CategoriasPage() {
     "@context": "https://schema.org",
     "@type": "Guide",
     "@id": `${baseUrl}/categorias#guide`,
-    "name": "Guía Comercial y Turística del Occidente Antioqueño - Oasis",
+    "name": "Guía Comercial y Turística del Occidente Antioqueño - Ooasys",
     "description":
       "Clasificación oficial de establecimientos comerciales, gastronómicos, hospedajes y servicios en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya.",
     "url": `${baseUrl}/categorias`,
@@ -152,6 +168,20 @@ export default async function CategoriasPage() {
     ],
   };
 
+  // 🚀 SCHEMA 3: PREGUNTAS FRECUENTES (FAQ PAGE)
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": GENERAL_FAQS.map((faq) => ({
+      "@type": "Question",
+      "name": faq.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.a,
+      },
+    })),
+  };
+
   return (
     <div className="bg-linear-to-b from-accent/10 via-background to-background min-h-screen relative">
       {/* Inyección Semántica en el Head para los robots de Google */}
@@ -164,6 +194,11 @@ export default async function CategoriasPage() {
         id="breadcrumb-main-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        id="faq-general-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       {/* Hero Header Atractivo y Regional */}
@@ -211,6 +246,24 @@ export default async function CategoriasPage() {
           initialCategories={categoriesData || []} 
           categoriesWithSubs={categoriesWithSubsData || []} 
         />
+
+        {/* 🚀 Sección Visual de Preguntas Frecuentes */}
+        <section className="mt-16 pt-10 border-t border-border/60">
+          <div className="flex items-center gap-2 mb-6">
+            <HelpCircle className="h-5 w-5 text-primary" />
+            <h2 className="text-xl font-bold tracking-tight text-foreground font-heading">
+              Preguntas Frecuentes sobre el Directorio
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {GENERAL_FAQS.map((faq, idx) => (
+              <div key={idx} className="p-5 rounded-2xl bg-card border border-border/50 shadow-sm">
+                <h3 className="font-semibold text-foreground text-sm mb-2">{faq.q}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
