@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HelpCircle, ArrowRight, PhoneCall, Store, MessageCircle } from "lucide-react";
+import { HelpCircle, ShieldCheck, Store, MessageCircle } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { sanityFetch } from "@/lib/sanity/live";
@@ -11,90 +11,113 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 const CONTACT_WHATSAPP = "https://wa.me/573206209817?text=Hola,%20quiero%20publicar%20mi%20negocio%20en%20Ooasys";
 
 // ============================================================
-// METADATOS SEO OPTIMIZADOS CON INTENCIÓN DE BÚSQUEDA REAL
+// METADATOS SEO OPTIMIZADOS CON INTENCIÓN DE BÚSQUEDA Y AUTORIDAD
 // ============================================================
 export const metadata: Metadata = {
-  title: "Preguntas Frecuentes | Fincas, Comidas Rápidas, Restaurantes y Turismo en Occidente Antioqueño",
-  description: "Resuelve tus dudas sobre alquiler de fincas, comidas rápidas a domicilio, restaurantes, postres y snacks en Sopetrán, San Jerónimo y Santa Fe de Antioquia. ¡Publica tu negocio por WhatsApp!",
+  title: "Preguntas Frecuentes | Fincas, Glamping, Restaurantes 100% Seguros | Ooasys",
+  description: "Resuelve tus dudas sobre alquiler de fincas 100% confiables, zonas de glamping, restaurantes y domicilios en Sopetrán, San Jerónimo y Santa Fe de Antioquia. Evita estafas reservando con comercios verificados.",
   alternates: {
     canonical: `${APP_URL}/preguntas-frecuentes`,
   },
+  other: {
+    "geo.region": "CO-ANT",
+    "geo.placename": "Occidente Antioqueño, Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina, Olaya",
+    "geo.position": "6.500893;-75.742225",
+    "ICBM": "6.500893, -75.742225",
+  },
   openGraph: {
-    title: "Preguntas Frecuentes sobre el Occidente Antioqueño | Ooasys",
-    description: "Todo lo que necesitas saber sobre hospedaje, comidas rápidas, gastronomía y comercios en Sopetrán, San Jerónimo y Santa Fe de Antioquia.",
+    title: "Preguntas Frecuentes | Fincas y Glamping Confiables en Occidente Antioqueño",
+    description: "Encuentra fincas, glamping y gastronomía sin intermediarios ni estafas. Negocios y hospedajes 100% verificados en Sopetrán, San Jerónimo y Santa Fe de Antioquia.",
     url: `${APP_URL}/preguntas-frecuentes`,
     siteName: "Ooasys",
     locale: "es_CO",
     type: "website",
-    images: [{ url: `${APP_URL}/ooasys-banner.jpeg`, width: 1200, height: 630 }],
+    images: [{ url: `${APP_URL}/ooasys-banner.jpeg`, width: 1200, height: 630, alt: "Fincas y Glamping Confiables en Occidente Antioqueño" }],
   },
 };
 
 // ============================================================
-// DATOS DE LAS PREGUNTAS (ENFOCADAS EN ANSWER THE PUBLIC)
+// DATOS DE PREGUNTAS (SEO + CONFIANZA Y ANTI-ESTAFAS)
 // ============================================================
 const FAQS = [
   {
-    category: "Turismo y Alquiler de Fincas",
+    category: "Turismo, Fincas y Glamping Seguro",
     questions: [
       {
-        q: "¿Cómo alquilar fincas en Sopetrán o San Jerónimo sin intermediarios?",
-        a: "En Ooasys puedes explorar el catálogo de fincas para alquilar en el Occidente Antioqueño y contactar directamente al propietario o administrador a través de su número de WhatsApp oficial, evitando comisiones o intermediarios."
+        q: "¿Es seguro alquilar fincas y glamping en Ooasys? ¿Cómo se evitan las estafas?",
+        a: "Sí, todos los negocios de alquiler de fincas, glampings y hospedajes en Ooasys son 100% confiables. Verificamos la legitimidad de cada establecimiento e información de contacto directamente en la región para garantizar que reservas con propietarios o administradores reales, protegiendo tu dinero y evitando fraudes."
       },
       {
-        q: "¿Dónde encontrar fincas baratas o para grupos en el Occidente Antioqueño?",
-        a: "En nuestra sección de municipios y categorías puedes filtrar por tipo de hospedaje en municipios como Sopetrán, San Jerónimo, Santa Fe de Antioquia, Olaya y Liborina para comparar opciones según tu presupuesto."
+        q: "¿Cómo alquilar fincas o glamping en Sopetrán o San Jerónimo sin intermediarios?",
+        a: "En Ooasys accedes directamente al número oficial de WhatsApp de cada finca o espacio de glamping. Puedes consultar disponibilidad, pedir fotos reales y cotizar sin pagar tarifas extra por intermediarios."
+      },
+      {
+        q: "¿Dónde encontrar glamping y fincas baratas o para grupos en el Occidente Antioqueño?",
+        a: "En nuestra plataforma puedes filtrar hospedajes por municipio (Sopetrán, San Jerónimo, Santa Fe de Antioquia, Olaya y Liborina) para comparar opciones de glamping romántico o fincas de recreo para grupos familiares ajustadas a tu presupuesto."
       }
     ]
   },
   {
-    category: "Gastronomía, Comidas Rápidas y Antojos",
+    category: "Gastronomía, Comidas Rápidas y Domicilios",
     questions: [
       {
-        q: "¿Dónde pedir comidas rápidas a domicilio, postres o snacks en Sopetrán y municipios cercanos?",
-        a: "En Ooasys encuentras una sección dedicada a restaurantes, locales de comidas rápidas a domicilio (hamburguesas, pizzas, perros calientes), reposterías con postres artesanales, heladerías , snacks y antojos directo a WhatsApp para tus domicilios."
+        q: "¿Dónde pedir comidas rápidas, postres o antojos a domicilio?",
+        a: "En Ooasys encuentras restaurantes, reposterías y locales de comidas rápidas (hamburguesas, pizzas, perros calientes) con atención directa por WhatsApp para coordinar tus domicilios rápido en Sopetrán y zonas vecinas."
       },
       {
         q: "¿Dónde comer los mejores platos típicos en Sopetrán y Santa Fe de Antioquia?",
-        a: "En nuestro directorio encuentras restaurantes, estaderos, picaderos y fondas tradicionales con su ubicación exacta, menú recomendado y enlace directo para pedir a domicilio o hacer reservas."
+        a: "Explora nuestra lista de restaurantes, estaderos tradicionales y fondas típicas con su ubicación en mapa, menús y contacto directo para reservas o consultas."
       },
       {
-        q: "¿Hay opciones de restaurantes con piscina o para pasar el día en San Jerónimo?",
-        a: "Sí, muchos establecimientos y estaderos registrados ofrecen servicio de día de sol, restaurante, barra de snacks y áreas recreativas. Puedes consultar los detalles directamente en la ficha del comercio."
+        q: "¿Hay opciones de restaurantes con piscina o día de sol en San Jerónimo?",
+        a: "Sí, contamos con comercios verificados que ofrecen pasadías, áreas recreativas, piscinas y barra de snacks. Consulta los servicios detallados en la ficha de cada negocio."
       }
     ]
   },
   {
-    category: "Para Negocios y Comerciantes",
+    category: "Para Negocios y Comerciantes Locales",
     questions: [
       {
-        q: "¿Cómo puedo publicar mi finca, restaurante o negocio en Ooasys?",
-        a: "Es muy sencillo. Escríbenos directamente a nuestro WhatsApp oficial al 3206209817. Allí te solicitaremos los datos e información de tu negocio (fotos, ubicación, menú o catálogo) para realizar la publicación en la plataforma."
+        q: "¿Cómo puedo publicar mi finca, glamping, restaurante o negocio en Ooasys?",
+        a: "Es muy sencillo. Escríbenos directamente por WhatsApp al 320 620 9817. Validaremos los datos de tu comercio (fotos, ubicación, catálogo) para verificar tu propiedad y realizar la publicación oficial."
       },
       {
-        q: "¿Qué beneficios tiene registrar mi comercio rural en la plataforma?",
-        a: "Aumentas la visibilidad digital de tu negocio en Google sin necesidad de tener un sitio web propio, recibes tráfico de clientes calificados interesados en el Occidente Antioqueño y recibes contactos directamente a tu WhatsApp."
+        q: "¿Qué beneficios tiene registrar mi comercio rural o turístico en la plataforma?",
+        a: "Posicionas tu negocio en las primeras búsquedas de Google en el Occidente Antioqueño, ganas un sello de confianza para tus clientes al certificar tu canal directo y recibes cotizaciones directamente en tu WhatsApp."
       }
     ]
   }
 ];
 
 // ============================================================
-// SCHEMA JSON-LD STRUCTURAL DATA
+// SCHEMA JSON-LD STRUCTURAL DATA CON AUTORIDAD GEOGRÁFICA
 // ============================================================
 const faqSchema = {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": FAQS.flatMap((cat) =>
-    cat.questions.map((faq) => ({
-      "@type": "Question",
-      "name": faq.q,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": faq.a,
-      },
-    }))
-  ),
+  "@graph": [
+    {
+      "@type": "FAQPage",
+      "@id": `${APP_URL}/preguntas-frecuentes#faq`,
+      "areaServed": [
+        "Occidente Antioqueño",
+        "Sopetrán",
+        "San Jerónimo",
+        "Santa Fe de Antioquia",
+        "Liborina",
+        "Olaya"
+      ],
+      "mainEntity": FAQS.flatMap((cat) =>
+        cat.questions.map((faq) => ({
+          "@type": "Question",
+          "name": faq.q,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.a,
+          },
+        }))
+      )
+    }
+  ]
 };
 
 export default async function FAQPage() {
@@ -116,7 +139,7 @@ export default async function FAQPage() {
           <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#14B8A6]/10 dark:bg-[#14B8A6]/20 px-3 py-1 text-xs md:text-sm font-semibold text-[#0F766E] dark:text-[#14B8A6]">
               <HelpCircle className="h-4 w-4" aria-hidden="true" />
-              Centro de Ayuda y Preguntas Frecuentes
+              Centro de Ayuda, Confianza y Preguntas Frecuentes
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading text-[#1C1917] dark:text-white tracking-tight">
               Preguntas Frecuentes sobre{" "}
@@ -125,8 +148,16 @@ export default async function FAQPage() {
               </span>
             </h1>
             <p className="mt-4 text-base md:text-lg text-[#44403C] dark:text-[#D6D3D1]">
-              Resuelve tus dudas sobre fincas para alquilar, comidas rápidas a domicilio, restaurantes, postres, snacks y cómo registrar tu negocio.
+              Resuelve tus dudas sobre fincas, glamping 100% confiable, domicilios, restaurantes y cómo registrar tu negocio en el directorio líder del Occidente Antioqueño.
             </p>
+
+            {/* Banner de Garantía y Anti-Estafas */}
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-500/20 p-4 text-emerald-900 dark:text-emerald-200 text-sm md:text-base font-medium">
+              <ShieldCheck className="h-6 w-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span>
+                <strong>Reservas 100% Seguras:</strong> Todos los establecimientos de fincas y glamping en Ooasys son verificados de primera mano para evitar estafas y cobros de intermediarios.
+              </span>
+            </div>
           </div>
         </header>
 
@@ -160,10 +191,10 @@ export default async function FAQPage() {
             <div className="rounded-2xl border border-[#14B8A6]/30 bg-linear-to-r from-[#14B8A6]/10 to-transparent p-8 text-center mt-12">
               <Store className="mx-auto mb-3 h-10 w-10 text-[#14B8A6]" />
               <h2 className="text-xl font-bold text-[#1C1917] dark:text-white">
-                ¿Tienes un comercio, restaurante o finca en el Occidente Antioqueño?
+                ¿Tienes un comercio, restaurante, glamping o finca en el Occidente Antioqueño?
               </h2>
               <p className="mt-2 text-sm text-[#44403C] dark:text-[#D6D3D1] max-w-xl mx-auto">
-                Aumenta tu visibilidad digital. Escríbenos al <strong>320 620 9817</strong> y publicamos tu negocio para que recibas clientes directo en tu WhatsApp.
+                Certifica la autenticidad de tu establecimiento y aumenta tus reservas. Escríbenos al <strong>320 620 9817</strong> para publicar tu negocio de forma segura.
               </p>
               <Button size="lg" className="mt-6 bg-[#25D366] hover:bg-[#128C7E] text-white font-semibold" asChild>
                 <a href={CONTACT_WHATSAPP} target="_blank" rel="noopener noreferrer">
