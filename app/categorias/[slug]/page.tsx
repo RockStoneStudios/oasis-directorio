@@ -37,7 +37,7 @@ const MUNICIPIOS = [
 ];
 
 // ============================================================================
-// 🎯 KEYWORDS ADAPTADAS PARA LOS 5 MUNICIPIOS
+// 🎯 KEYWORDS ADAPTADAS Y OPTIMIZADAS POR CATEGORÍA
 // ============================================================================
 function getKeywordsByCategory(categoryName: string, slug: string): string[] {
   const cat = categoryName || "";
@@ -115,11 +115,25 @@ function getKeywordsByCategory(categoryName: string, slug: string): string[] {
       "charcos y ríos en occidente antioqueño", "cabalgatas Santa Fe de Antioquia"
     );
   }
-  // 11. INMOBILIARIA Y HOSPEDAJE
-  else if (cat.includes("Inmobiliaria") || cat.includes("Arriendo") || cat.includes("Venta") || cat.includes("Finca") || cat.includes("Hotel")) {
+  // 11. INMOBILIARIA, HOSPEDAJE, FINCAS Y GLAMPING
+  else if (
+    cat.includes("Alojamiento") || 
+    cat.includes("bienes raíces") || 
+    cat.includes("Finca") || 
+    cat.includes("Glamping") || 
+    cat.includes("Inmobiliaria") || 
+    cat.includes("Arriendo")
+  ) {
     keywords.push(
-      "fincas de recreo Sopetrán", "fincas en arriendo San Jerónimo", "hoteles en Santa Fe de Antioquia", "casas en venta Liborina", "lotes en Olaya",
-      "inmobiliarias occidente antioqueño", "fincas con piscina San Jerónimo", "arriendo de fincas Santa Fe de Antioquia"
+      "alquiler de fincas en San Jerónimo", "fincas en arriendo Sopetrán", "alquiler de fincas en Santa Fe de Antioquia",
+      "fincas con piscina privada en San Jerónimo", "fincas económicas Santa Fe de Antioquia", "fincas de recreo Liborina",
+      "alquiler de fincas en Olaya", "fincas para eventos Occidente Antioqueño", "fincas baratas en San Jerónimo",
+      "glamping en San Jerónimo", "glamping en Santa Fe de Antioquia", "glamping con jacuzzi Sopetrán",
+      "cabañas boutique Occidente Antioqueño", "glamping romántico San Jerónimo", "glamping económico Santa Fe de Antioquia",
+      "glamping Liborina", "glamping cerca a Medellín",
+      "alquiler de fincas seguro sin estafas", "fincas verificadas Occidente Antioqueño", "reserva directa fincas San Jerónimo",
+      "lotes en venta San Jerónimo", "fincas en venta Sopetrán", "inmobiliarias en Santa Fe de Antioquia",
+      "casas campestres en arriendo Occidente Antioqueño"
     );
   }
   // 12. AGROINSUMOS Y ALIMENTOS ANIMALES
@@ -160,7 +174,7 @@ function getKeywordsByCategory(categoryName: string, slug: string): string[] {
 }
 
 // ============================================================================
-// 🎯 DESCRIPCIONES DE ALTO CTR ADAPTADAS A LOS 5 MUNICIPIOS
+// 🎯 DESCRIPCIONES DE ALTO CTR ADAPTADAS
 // ============================================================================
 function buildCategoryDescription(categoryName: string, count: number): string {
   const cat = categoryName || "";
@@ -195,8 +209,14 @@ function buildCategoryDescription(categoryName: string, count: number): string {
   if (cat.includes("Turismo") || cat.includes("Viajes") || cat.includes("Aventura")) {
     return `🚵 Planes turísticos, cuatrimotos y aventura en Sopetrán, San Jerónimo, Santa Fe, Liborina y Olaya. 🌲 Explora los mejores destinos del Occidente Antioqueño. 🔥`;
   }
-  if (cat.includes("Inmobiliaria") || cat.includes("Finca") || cat.includes("Arriendo")) {
-    return `🏊‍♂️ Alquiler de fincas, hoteles y venta de propiedades en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya. 🏠 Trato directo sin intermediarios.`;
+  if (
+    cat.includes("Alojamiento") || 
+    cat.includes("bienes raíces") || 
+    cat.includes("Finca") || 
+    cat.includes("Glamping") ||
+    cat.includes("Inmobiliaria")
+  ) {
+    return `🏡 Alquiler de fincas, glamping y hospedajes verificados en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya (${count} opciones). 🏊‍♂️ Jacuzzi, piscina y reserva 100% segura sin intermediarios.`;
   }
   if (cat.includes("Agroinsumos") || cat.includes("Agricola") || cat.includes("Concentrado")) {
     return `🌱 Agroinsumos y concentrados en Sopetrán, San Jerónimo, Santa Fe, Liborina y Olaya. 🐔 Fertilizantes, semillas y alimento para mascotas y ganado en el Occidente Antioqueño.`;
@@ -211,8 +231,35 @@ function buildCategoryDescription(categoryName: string, count: number): string {
   return `📍 Encuentra ${categoryName} en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya (${count} opciones verificadas). 📞 Teléfonos, WhatsApp y ubicación exacta en Ooasys.`;
 }
 
-// Generación de Preguntas Frecuentes específicas por categoría
+// ============================================================================
+// 🎯 PREGUNTAS FRECUENTES DINÁMICAS (SEO Y ANTI-ESTAFAS)
+// ============================================================================
 function getCategoryFaqs(categoryName: string) {
+  const cat = categoryName.toLowerCase();
+
+  if (
+    cat.includes("finca") || 
+    cat.includes("glamping") || 
+    cat.includes("alojamiento") || 
+    cat.includes("bienes raíces") ||
+    cat.includes("hospedaje")
+  ) {
+    return [
+      {
+        q: `¿Cómo alquilar una finca o glamping de forma segura en San Jerónimo, Sopetrán o Santa Fe?`,
+        a: `En Ooasys todos los alojamientos, fincas de recreo y glampings listados son negocios verificados localmente. Puedes contactar directamente al propietario o administrador vía WhatsApp, evitando intermediarios dudosos y riesgos de estafa.`
+      },
+      {
+        q: `¿Qué comodidades incluyen los alojamientos en el Occidente Antioqueño?`,
+        a: `La mayoría de opciones en San Jerónimo, Sopetrán y Santa Fe de Antioquia cuentan con piscina privada, jacuzzi, zonas verdes, aire acondicionado, parrilla BBQ y conectividad WiFi para trabajo remoto.`
+      },
+      {
+        q: `¿Hay disponibilidad de alquiler de fincas y glamping para fines de semana con puente festivo?`,
+        a: `Sí, pero debido a la alta demanda turística en la subregión, te recomendamos consultar la disponibilidad y reservar directamente con el anfitrión con 2 a 4 semanas de anticipación.`
+      }
+    ];
+  }
+
   return [
     {
       q: `¿Dónde encontrar establecimientos de ${categoryName} en el Occidente Antioqueño?`,

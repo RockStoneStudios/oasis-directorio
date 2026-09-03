@@ -9,33 +9,34 @@ import { ClientBackButton } from "@/components/ui/ClientBackButton";
 export const revalidate = 60;
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
-// Preguntas frecuentes generales del directorio para Rich Snippets
+// Preguntas frecuentes generales del directorio para Rich Snippets y Alta Conversión
 const GENERAL_FAQS = [
   {
     q: "¿Qué tipo de comercios y servicios puedo encontrar en Ooasys?",
-    a: "En Ooasys encuentras un directorio verificado que abarca restaurantes, hoteles, fincas de recreo, licoreras, droguerías, barberías, agroinsumos, mototaxis y servicios técnicos en el Occidente Antioqueño."
+    a: "En Ooasys encuentras un directorio verificado con opciones de restaurantes, alquiler de fincas de recreo, glamping, hoteles, licoreras, droguerías, barberías, agroinsumos, mototaxis y servicios técnicos en el Occidente Antioqueño."
   },
   {
     q: "¿Qué municipios del Occidente Antioqueño cubre la plataforma?",
-    a: "Cubrimos de manera directa los municipios de Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya."
+    a: "Cubrimos con información verificada los municipios de Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya."
   },
   {
-    q: "¿Cómo puedo registrar mi negocio en el directorio de Ooasys?",
-    a: "Puedes registrar tu establecimiento accediendo a nuestra sección de registro en el menú o pie de página. Contamos con planes adaptados a todo tipo de comercios."
+    q: "¿Es seguro reservar fincas, glampings o contratar servicios en Ooasys?",
+    a: "Sí. Ooasys valida la existencia de los negocios listados. Te conectamos directamente a través de WhatsApp o llamada telefónica con el propietario o administrador, evitando intermediarios dudosos y reduciendo el riesgo de estafas."
   }
 ];
 
-// 🚀 METADATOS ULTRA OPTIMIZADOS PARA EL OCCIDENTE ANTIOQUEÑO (SEO 10/10)
+// 🚀 METADATOS ULTRA OPTIMIZADOS PARA EL OCCIDENTE ANTIOQUEÑO (SEO & CTR)
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "Directorio de Categorías en el Occidente Antioqueño | Ooasys";
+  const title = "✅ Directorio de Categorías en el Occidente Antioqueño | Ooasys";
   const description =
-    "Explora los comercios, servicios y sitios turísticos del Occidente Antioqueño. Encuentra restaurantes, hoteles, fincas de recreo, agroinsumos y transporte en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya.";
+    "Explora negocios y servicios verificados en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya. Encuentra fincas de recreo, glamping, restaurantes, transporte y más.";
 
   return {
     metadataBase: new URL(baseUrl),
     title,
     description,
     keywords: [
+      // Búsquedas generales
       "directorio comercial occidente antioqueño",
       "negocios en Sopetrán",
       "servicios en San Jerónimo",
@@ -43,11 +44,17 @@ export async function generateMetadata(): Promise<Metadata> {
       "turismo Liborina",
       "negocios en Olaya",
       "categorías de negocios Antioquia",
+      "directorio empresarial Ooasys",
+
+      // Intenciones transaccionales de alto valor
+      "alquiler de fincas en San Jerónimo",
+      "fincas de recreo Sopetrán",
+      "glamping en Santa Fe de Antioquia",
       "dónde comer occidente antioqueño",
-      "fincas de recreo San Jerónimo",
-      "hoteles con piscina Sopetrán",
-      "guía turística Santa Fe de Antioquia",
-      "directorio empresarial Ooasys"
+      "restaurantes con piscina San Jerónimo",
+      "hoteles en Santa Fe de Antioquia",
+      "domicilios y mototaxis Sopetrán",
+      "servicios técnicos en San Jerónimo"
     ],
     viewport: {
       width: "device-width",
@@ -85,6 +92,10 @@ export async function generateMetadata(): Promise<Metadata> {
         "max-snippet": 200,
         "max-video-preview": -1,
       },
+    },
+    other: {
+      "geo.region": "CO-ANT",
+      "geo.placename": "Occidente Antioqueño",
     },
     openGraph: {
       title,
@@ -125,7 +136,7 @@ export default async function CategoriasPage() {
     "@id": `${baseUrl}/categorias#guide`,
     "name": "Guía Comercial y Turística del Occidente Antioqueño - Ooasys",
     "description":
-      "Clasificación oficial de establecimientos comerciales, gastronómicos, hospedajes y servicios en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya.",
+      "Clasificación oficial de establecimientos comerciales, gastronómicos, hospedajes, fincas de recreo y servicios en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya.",
     "url": `${baseUrl}/categorias`,
     "inLanguage": "es-CO",
     "areaServed": [
@@ -233,7 +244,7 @@ export default async function CategoriasPage() {
               Explora por <span className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent">Categorías</span>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-              ¿Buscas dónde comer, un hotel con piscina o un servicio confiable en el Occidente Antioqueño? Selecciona un sector y descubre locales recomendados en Sopetrán, San Jerónimo, Santa Fe, Liborina y Olaya.
+              ¿Buscas dónde comer, alquilar una finca de recreo sin estafas o un servicio confiable en el Occidente Antioqueño? Selecciona un sector y contacta directamente a locales verificados en Sopetrán, San Jerónimo, Santa Fe, Liborina y Olaya.
             </p>
           </div>
 

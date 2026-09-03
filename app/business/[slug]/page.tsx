@@ -69,7 +69,7 @@ const AMENITY_MAP: Record<string, { label: string; icon: React.ReactNode; classN
   },
 };
 
-// 🚀 GENERACIÓN DE METADATOS OPTIMIZADA
+// 🚀 GENERACIÓN DE METADATOS OPTIMIZADA PARA SEO
 export async function generateMetadata({
   params,
 }: BusinessDetailPageProps): Promise<Metadata> {
@@ -78,7 +78,7 @@ export async function generateMetadata({
 
   if (!business) {
     return {
-      title: "Establecimiento no encontrado | Oasis",
+      title: "Establecimiento no encontrado | Ooasys",
       robots: { index: false, follow: false },
     };
   }
@@ -86,28 +86,42 @@ export async function generateMetadata({
   const businessName = business.name;
   const category = business.category?.name || "Comercio";
   const municipality = business.municipality?.name || "Occidente Antioqueño";
-  const description = business.description 
-    ? `${business.description.slice(0, 140)}...`
-    : `Encuentra información de contacto, dirección, horarios y opiniones de ${businessName} en ${municipality}.`;
+  
+  // Detección de nichos estratégicos (Fincas, Alojamiento, Real Estate)
+  const categorySlug = getSlugValue(business.category?.slug)?.toLowerCase() || "";
+  const isRealEstate = categorySlug.includes("bienes-raices") || categorySlug.includes("inmobiliaria") || categorySlug.includes("finca");
+  const isAccommodation = categorySlug.includes("alojamiento") || categorySlug.includes("hotel") || categorySlug.includes("hospedaje") || categorySlug.includes("finca-campestre");
 
+  let seoTitle = `${businessName} - ${category} en ${municipality} | Ooasys`;
+  let seoDescription = business.description 
+    ? `${business.description.slice(0, 140)}...`
+    : `Información de contacto, ubicación, horarios y opiniones de ${businessName} en ${municipality}.`;
+
+  // Keywords base por zona
   const keywords = [
     businessName,
     `${businessName} ${municipality}`,
     `${category} en ${municipality}`,
     `contacto ${businessName}`,
     `teléfono ${businessName}`,
-    `horarios ${businessName}`,
+    `ubicación ${businessName}`,
     `${category} en Sopetrán`,
     `${category} en San Jerónimo`,
     `${category} en Santa Fe de Antioquia`,
-    `${category} en Liborina`,
-    `${category} en Olaya`,
-    "directorio comercial oasis",
-    "guía turística occidente antioqueño"
+    "directorio comercial ooasys",
+    "turismo occidente antioqueño"
   ];
 
-  const seoTitle = `${businessName} - ${category} en ${municipality} | Oasis`;
-  const seoDescription = `${businessName} en ${municipality}. ${description} Ubicación, WhatsApp ${business.whatsapp || business.phone || ""}, horarios y mapa.`;
+  // Optimización específica de copys y keywords para Fincas / Alojamiento / Bienes Raíces
+  if (isAccommodation) {
+    seoTitle = `${businessName} - Finca en Alquiler y Alojamiento en ${municipality} | Ooasys`;
+    seoDescription = `Reserva o alquila ${businessName} en ${municipality}. Alojamiento, descanso, piscina y descanso en el Occidente Antioqueño. Contacto directo por WhatsApp.`;
+    keywords.push(`alquiler de fincas en ${municipality}`, `fincas de recreo ${municipality}`, `hospedaje en ${municipality}`, `fincas con piscina ${municipality}`);
+  } else if (isRealEstate) {
+    seoTitle = `${businessName} - Bienes Raíces y Fincas en Venta/Arriendo en ${municipality} | Ooasys`;
+    seoDescription = `Encuentra propiedades, casas, lotes y fincas con ${businessName} en ${municipality}. Asesoría inmobiliaria en el Occidente Antioqueño.`;
+    keywords.push(`bienes raices ${municipality}`, `venta de fincas en ${municipality}`, `lotes en venta ${municipality}`, `inmobiliarias en ${municipality}`);
+  }
 
   const imageUrl = business.gallery?.[0]?.asset?.url 
     || business.logo?.asset?.url 
@@ -118,7 +132,7 @@ export async function generateMetadata({
     title: seoTitle,
     description: seoDescription,
     keywords,
-    authors: [{ name: "Oasis", url: baseUrl }],
+    authors: [{ name: "Ooasys", url: baseUrl }],
     alternates: {
       canonical: `${baseUrl}/business/${slug}`,
       languages: {
@@ -134,18 +148,18 @@ export async function generateMetadata({
         follow: true,
         "max-video-preview": -1,
         "max-image-preview": "large",
-        "max-snippet": 200,
+        "max-snippet": -1,
       },
     },
     other: {
       "geo.region": "CO-ANT",
-      "geo.placename": business.municipality?.name || "Occidente Antioqueño",
+      "geo.placename": municipality,
     },
     openGraph: {
       title: seoTitle,
       description: seoDescription,
       url: `${baseUrl}/business/${slug}`,
-      siteName: "Oasis",
+      siteName: "Ooasys",
       locale: "es_CO",
       type: "website",
       images: [
@@ -177,6 +191,12 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
   const categorySlug = getSlugValue(business.category?.slug);
   const municipalitySlug = getSlugValue(business.municipality?.slug);
 
+  // Detección de Schema según tipo de negocio
+  const isRealEstate = categorySlug.includes("bienes-raices") || categorySlug.includes("inmobiliaria");
+  const isAccommodation = categorySlug.includes("alojamiento") || categorySlug.includes("hotel") || categorySlug.includes("hospedaje") || categorySlug.includes("finca");
+  
+  const schemaType = isAccommodation ? "LodgingBusiness" : isRealEstate ? "RealEstateAgent" : "LocalBusiness";
+
   // Datos relacionados
   const { businesses: related } = await getBusinesses({ 
     category: categorySlug, 
@@ -187,16 +207,16 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
 
   // Link de WhatsApp
   const whatsappUrl = business.whatsapp 
-    ? generateWhatsAppUrl(business.whatsapp.replace(/\D/g, ""), `Hola, vi ${business.name} en Oasis.`) 
+    ? generateWhatsAppUrl(business.whatsapp.replace(/\D/g, ""), `Hola, vi ${business.name} en Ooasys.`) 
     : null;
 
   // Enlaces sociales para el Schema sameAs
   const socialLinks = [business.facebook, business.instagram].filter(Boolean);
 
-  // 🚀 SCHEMA 1: LOCAL BUSINESS COMPLETO ENRIQUECIDO
+  // 🚀 SCHEMA 1: LOCAL BUSINESS / LODGING / REAL ESTATE DINÁMICO
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": schemaType,
     "@id": `${baseUrl}/business/${slug}#business`,
     "name": business.name,
     "description": business.description || `Información de contacto de ${business.name}`,
@@ -283,8 +303,8 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
       />
       
       {/* Header & Hero Section */}
-      <div className="relative pt-8 sm:pt-12 pb-12 sm:pb-20">
-        <div className="container px-4 sm:px-6">
+      <div className="relative pt-8 sm:pt-12 pb-8 sm:pb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Breadcrumbs Visibles para Navegación y SEO Semántico */}
           <nav aria-label="Breadcrumb" className="mb-6 text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-2 items-center">
@@ -329,12 +349,12 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
         </div>
       </div>
 
-      {/* Main Grid */}
-      <main className="container px-4 sm:px-6 pb-12 sm:pb-20">
-        <div className="grid gap-6 sm:gap-8 md:gap-10 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px]">
+      {/* Main Grid Optimizado para pantallas pequeñas y grandes */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10">
           
-          {/* Columna Izquierda */}
-          <div className="space-y-6 sm:space-y-8 md:space-y-10">
+          {/* Columna Izquierda (Galería, Descripción, Servicios, Mapa) */}
+          <div className="lg:col-span-7 xl:col-span-8 space-y-6 sm:space-y-8 md:space-y-10">
             <ImageGallery images={business.gallery || []} title={business.name} />
             
             <section className="bg-[#e0e5ec] dark:bg-[#151a20] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-[12px_12px_24px_#aab1bc,-12px_-12px_24px_#ffffff] dark:shadow-[12px_12px_24px_#05070a,-12px_-12px_24px_#25303a]">
@@ -347,7 +367,7 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
             </section>
 
             {business.amenities && business.amenities.length > 0 && (
-              <section>
+              <section className="bg-[#e0e5ec] dark:bg-[#151a20] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-[12px_12px_24px_#aab1bc,-12px_-12px_24px_#ffffff] dark:shadow-[12px_12px_24px_#05070a,-12px_-12px_24px_#25303a]">
                 <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-gray-800 dark:text-white">
                   Servicios e Instalaciones
                 </h3>
@@ -374,12 +394,14 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
             )}
           </div>
 
-          {/* Sidebar */}
-          <aside className="space-y-6 sm:space-y-8">
-            <BusinessHours 
-              hours={business.hours ?? []} 
-              isAlwaysOpen={business.hours?.some((h: any) => h.isOpen === true && !h.day)} 
-            />
+          {/* Sidebar Lateral */}
+          <aside className="lg:col-span-5 xl:col-span-4 space-y-6 sm:space-y-8">
+            <div className="sticky top-6">
+              <BusinessHours 
+                hours={business.hours ?? []} 
+                isAlwaysOpen={business.hours?.some((h: any) => h.isOpen === true && !h.day)} 
+              />
+            </div>
           </aside>
         </div>
 
@@ -398,7 +420,7 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
         )}
       </main>
 
-      {/* Botones Flotantes de Contacto Directo */}
+      {/* Botones Flotantes de Contacto Directo RESTAURADOS */}
       <div className="fixed right-2 sm:right-3 top-1/2 -translate-y-1/2 z-50">
         <div className="flex flex-col gap-3">
           {whatsappUrl && (

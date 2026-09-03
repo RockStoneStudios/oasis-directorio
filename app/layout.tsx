@@ -27,9 +27,9 @@ export const viewport: Viewport = {
 // CIUDADES COBERTERA
 // ============================================================
 const CITIES = [
-  { name: "Sopetrán", lat: "6.500893", lng: "-75.742225", description: "Municipio del Occidente Antioqueño, conocido por sus fincas de alquiler, restaurantes y turismo de descanso." },
-  { name: "Santa Fe de Antioquia", lat: "6.556944", lng: "-75.827778", description: "Ciudad colonial patrimonio de Colombia, destino gastronómico, hotelero y cultural." },
-  { name: "San Jerónimo", lat: "6.442222", lng: "-75.726944", description: "Centro turístico y de alquiler de fincas de recreo en el Occidente Antioqueño." },
+  { name: "Sopetrán", lat: "6.500893", lng: "-75.742225", description: "Municipio del Occidente Antioqueño, conocido por sus fincas de alquiler, glamping, restaurantes y turismo de descanso." },
+  { name: "Santa Fe de Antioquia", lat: "6.556944", lng: "-75.827778", description: "Ciudad colonial patrimonio de Colombia, destino gastronómico, hotelero, glamping y cultural." },
+  { name: "San Jerónimo", lat: "6.442222", lng: "-75.726944", description: "Centro turístico y de alquiler de fincas de recreo y glampings en el Occidente Antioqueño." },
   { name: "Liborina", lat: "6.677778", lng: "-75.812222", description: "Municipio del Occidente Antioqueño famoso por su tradición cafetera, paisajes y turismo ecológico." },
   { name: "Olaya", lat: "6.627778", lng: "-75.812500", description: "Tradicional municipio antioqueño en las riberas del Río Cauca con destinos turísticos poco conocidos." }
 ];
@@ -39,10 +39,10 @@ const CITIES = [
 // ============================================================
 export const metadata: Metadata = {
   title: {
-    default: "Ooasys | Fincas, Restaurantes y Directorio del Occidente Antioqueño",
+    default: "Ooasys | Fincas, Glamping, Restaurantes y Directorio del Occidente Antioqueño",
     template: "%s | Ooasys",
   },
-  description: "Descubre el Occidente Antioqueño en Ooasys: fincas para alquilar, restaurantes en Sopetrán, hospedajes en San Jerónimo y comercios en Santa Fe de Antioquia. ¡Conecta por WhatsApp!",
+  description: "Descubre el Occidente Antioqueño en Ooasys: fincas para alquilar, glamping, restaurantes en Sopetrán, hospedajes en San Jerónimo y comercios en Santa Fe de Antioquia. ¡Conecta por WhatsApp!",
   authors: [{ name: "Ooasys", url: APP_URL }],
   metadataBase: new URL(APP_URL),
   category: "Business Directory",
@@ -64,8 +64,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_CO",
     siteName: "Ooasys",
-    title: "Ooasys | Fincas, Restaurantes y Guía del Occidente Antioqueño",
-    description: "Encuentra fincas para alquilar, los mejores restaurantes donde comer en Sopetrán y potencia la visibilidad digital de tu negocio rural.",
+    title: "Ooasys | Fincas, Glamping, Restaurantes y Guía del Occidente Antioqueño",
+    description: "Encuentra fincas para alquilar, glampings exclusivos, los mejores restaurantes donde comer en Sopetrán y potencia la visibilidad digital de tu negocio rural.",
     images: [
       {
         url: `${APP_URL}/ooasys-banner.jpeg`,
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Ooasys | Directorio y Guía Turística del Occidente Antioqueño",
-    description: "Explora fincas para alquilar, gastronomía típica y comercios locales con conexión directa por WhatsApp.",
+    description: "Explora fincas para alquilar, zonas de glamping, gastronomía típica y comercios locales con conexión directa por WhatsApp.",
     images: [`${APP_URL}/ooasys-banner.jpeg`],
     creator: "@ooasys",
   },
@@ -145,7 +145,7 @@ const unifiedGraphSchema = {
           "name": "¿Qué puedo encontrar en la plataforma Ooasys?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "En Ooasys puedes encontrar fincas para alquilar, donde comer en Sopetrán, hoteles, restaurantes y negocios locales del Occidente Antioqueño con contacto directo por WhatsApp."
+            "text": "En Ooasys puedes encontrar fincas para alquilar, opciones de glamping, dónde comer en Sopetrán, hoteles, restaurantes y negocios locales del Occidente Antioqueño con contacto directo por WhatsApp."
           }
         },
         {
@@ -158,10 +158,10 @@ const unifiedGraphSchema = {
         },
         {
           "@type": "Question",
-          "name": "¿Cómo registrar mi negocio o finca en el directorio de Ooasys?",
+          "name": "¿Cómo registrar mi negocio, finca o glamping en el directorio de Ooasys?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Puedes registrar tu comercio o finca de alquiler en Ooasys para mejorar la visibilidad digital de tu negocio rural en Antioquia y recibir clientes directamente a tu WhatsApp."
+            "text": "Puedes registrar tu comercio, glamping o finca de alquiler en Ooasys para mejorar la visibilidad digital de tu negocio rural en Antioquia y recibir clientes directamente a tu WhatsApp."
           }
         }
       ]
