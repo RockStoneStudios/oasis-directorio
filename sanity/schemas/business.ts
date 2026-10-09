@@ -1,83 +1,113 @@
 // schemas/business.ts
 
-import { title } from "process";
 export const business = {
   name: 'business',
-  title: 'Business',
+  title: 'Negocio',
   type: 'document',
+  groups: [
+    { name: 'main', title: 'Información', default: true },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
-    { name: 'name', type: 'string', title: 'Business Name', validation: (Rule: any) => Rule.required() },
-    { name: 'slug', type: 'slug', title: 'Slug', options: { source: 'name' } },
-    { name: 'logo', type: 'image', title: 'Business Logo' },
-    { name: 'gallery', type: 'array', title: 'Gallery Images', of: [{ type: 'image' }] },
-    { name: 'description', type: 'text', title: 'Description' },
+    { name: 'name', type: 'string', title: 'Nombre del negocio', group: 'main', validation: (Rule: any) => Rule.required() },
+    { name: 'slug', type: 'slug', title: 'Slug (URL)', group: 'main', options: { source: 'name' } },
+    { name: 'logo', type: 'image', title: 'Logo del negocio', group: 'main' },
+    { name: 'gallery', type: 'array', title: 'Galería de imágenes', group: 'main', of: [{ type: 'image' }] },
+    { name: 'description', type: 'text', title: 'Descripción', group: 'main' },
+
+    // 👇 SEO 👇
+    {
+      name: 'seoTitle',
+      type: 'string',
+      title: 'Título SEO',
+      group: 'seo',
+      description: 'Máximo 60 caracteres. Ej: El Caserón – Hamburguesas y Chuzos en Sopetrán',
+      validation: (Rule: any) =>
+        Rule.max(60).warning('Google corta el título a unos 60 caracteres'),
+    },
+    {
+      name: 'seoDescription',
+      type: 'text',
+      title: 'Descripción SEO',
+      group: 'seo',
+      rows: 3,
+      description:
+        'Entre 120 y 155 caracteres. Diga qué venden, dónde están y un dato diferenciador (domicilios, parqueadero, horario). Es el texto que se ve en Google.',
+      validation: (Rule: any) =>
+        Rule.min(120).max(155).warning('Lo ideal es entre 120 y 155 caracteres'),
+    },
+
     {
       name: 'status',
       type: 'string',
-      title: 'Current Status',
+      title: 'Estado actual',
+      group: 'main',
       options: {
         list: [
-          { title: 'Open', value: 'open' },
-          { title: 'Closed', value: 'closed' },
-          { title: 'Temporarily Closed', value: 'temporarily_closed' },
-          { title: 'Always Open', value: 'alwaysopen' }
+          { title: 'Abierto', value: 'open' },
+          { title: 'Cerrado', value: 'closed' },
+          { title: 'Cerrado temporalmente', value: 'temporarily_closed' },
+          { title: 'Abierto 24 horas', value: 'alwaysopen' },
         ],
       },
     },
-    { name: 'hours', type: 'array', title: 'Opening Hours', of: [{ type: 'businessHours' }] },
-    
-    // Contact
-    { name: 'whatsapp', type: 'string', title: 'WhatsApp Number' },
-    { name: 'phone', type: 'string', title: 'Phone Number' },
-    { name: 'facebook', type: 'url', title: 'Facebook URL' },
-    { name: 'instagram', type: 'url', title: 'Instagram URL' },
-    { name: 'tiktok', type: 'url', title: 'TikTok URL' },
-    { name: 'website', type: 'url', title: 'Website URL' },
+    { name: 'hours', type: 'array', title: 'Horarios de atención', group: 'main', of: [{ type: 'businessHours' }] },
 
-    // Location
-    { name: 'municipality', type: 'reference', title: 'Municipality', to: [{ type: 'municipality' }] },
-    { name: 'address', type: 'address', title: 'Full Address' },
-    { name: 'location', type: 'geopoint', title: 'Map Location' },
+    // Contacto
+    { name: 'whatsapp', type: 'string', title: 'Número de WhatsApp', group: 'main' },
+    { name: 'phone', type: 'string', title: 'Teléfono', group: 'main' },
+    { name: 'facebook', type: 'url', title: 'URL de Facebook', group: 'main' },
+    { name: 'instagram', type: 'url', title: 'URL de Instagram', group: 'main' },
+    { name: 'tiktok', type: 'url', title: 'URL de TikTok', group: 'main' },
+    { name: 'website', type: 'url', title: 'Sitio web', group: 'main' },
 
-    // Classification
-    { name: 'category', type: 'reference', title: 'Main Category', to: [{ type: 'category' }] },
-    { 
-      name: 'subcategories', 
-      type: 'array', 
-      title: 'Subcategories', 
-      of: [{ type: 'reference', to: [{ type: 'subcategory' }] }] 
+    // Ubicación
+    { name: 'municipality', type: 'reference', title: 'Municipio', group: 'main', to: [{ type: 'municipality' }] },
+    { name: 'address', type: 'address', title: 'Dirección completa', group: 'main' },
+    { name: 'location', type: 'geopoint', title: 'Ubicación en el mapa', group: 'main' },
+
+    // Clasificación
+    { name: 'category', type: 'reference', title: 'Categoría principal', group: 'main', to: [{ type: 'category' }] },
+    {
+      name: 'subcategories',
+      type: 'array',
+      title: 'Subcategorías',
+      group: 'main',
+      of: [{ type: 'reference', to: [{ type: 'subcategory' }] }],
     },
 
-    // 👇 SECCIÓN DE AMENITIES PARA EL TURISTA 👇
+    // 👇 COMODIDADES PARA EL TURISTA 👇
     {
       name: 'amenities',
-      title: 'Comodidades para el Turista',
-      description: 'Selecciona las características y servicios clave que ofrece este negocio al visitante.',
+      title: 'Comodidades para el turista',
+      group: 'main',
+      description: 'Seleccione las características y servicios clave que ofrece este negocio al visitante.',
       type: 'array',
       of: [{ type: 'string' }],
       options: {
         layout: 'grid',
         list: [
           { title: '🐾 Pet Friendly', value: 'pet_friendly' },
-          { title: '❄️ Aire Acondicionado / Ventilador', value: 'air_conditioning' },
-          { title: '📶 Wi-Fi Gratis', value: 'free_wifi' },
-          { title: '💻 Espacio de Trabajo (Coworking)', value: 'coworking' },
-          { title: '🔌 Tomacorrientes Accesibles', value: 'power_outlets' },
-          { title: '🚗 Parqueadero Privado / Propio', value: 'private_parking' },
-          { title: '🏊‍♂️ Acceso a Piscina / Pasadía', value: 'pool_access' },
-          { title: '💧 Tanque / Reserva', value: 'water_backup' },
+          { title: '❄️ Aire acondicionado / Ventilador', value: 'air_conditioning' },
+          { title: '📶 Wi-Fi gratis', value: 'free_wifi' },
+          { title: '💻 Espacio de trabajo (Coworking)', value: 'coworking' },
+          { title: '🔌 Tomacorrientes accesibles', value: 'power_outlets' },
+          { title: '🚗 Parqueadero privado / propio', value: 'private_parking' },
+          { title: '🏊‍♂️ Acceso a piscina / Pasadía', value: 'pool_access' },
+          { title: '💧 Tanque / Reserva de agua', value: 'water_backup' },
         ],
       },
     },
 
-    // Metadata
-    { name: 'rating', type: 'number', title: 'Rating', validation: (Rule: any) => Rule.min(0).max(5) },
-    { name: 'isFeatured', type: 'boolean', title: 'Is Featured Business?', initialValue: false },
+    // Metadatos
+    { name: 'rating', type: 'number', title: 'Calificación', group: 'main', validation: (Rule: any) => Rule.min(0).max(5) },
+    { name: 'isFeatured', type: 'boolean', title: '¿Negocio destacado?', group: 'main', initialValue: false },
 
-    { 
-      name: 'createdAt', 
-      type: 'datetime', 
-      title: 'Fecha de Registro',
+    {
+      name: 'createdAt',
+      type: 'datetime',
+      title: 'Fecha de registro',
+      group: 'main',
       initialValue: () => new Date().toISOString(),
     },
   ],

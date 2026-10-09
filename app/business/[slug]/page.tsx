@@ -1,4 +1,5 @@
-import { AirVent, Briefcase, Car, CheckCircle2, Globe, MapPin, Phone, Plug, Store, Waves, Wifi } from "lucide-react";
+import { cache } from "react";
+import { AirVent, Briefcase, Car, CheckCircle2, MapPin, Phone, Plug, Waves, Wifi } from "lucide-react";
 import { SiFacebook, SiInstagram, SiWhatsapp } from "react-icons/si";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -25,56 +26,72 @@ interface BusinessDetailPageProps {
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
+// Evita consultar Sanity dos veces (metadata + página)
+const getBusiness = cache((slug: string) => getBusinessBySlug(slug));
+
 // Mapeo de Amenidades
 const AMENITY_MAP: Record<string, { label: string; icon: React.ReactNode; className: string }> = {
-  pet_friendly: { 
-    label: "🐾 Pet Friendly", 
-    icon: <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4" />, 
-    className: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20" 
+  pet_friendly: {
+    label: "🐾 Pet Friendly",
+    icon: <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4" />,
+    className: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
   },
-  air_conditioning: { 
-    label: "Aire Acondicionado", 
-    icon: <AirVent className="h-3 w-3 sm:h-4 sm:w-4" />, 
-    className: "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/20" 
+  air_conditioning: {
+    label: "Aire Acondicionado",
+    icon: <AirVent className="h-3 w-3 sm:h-4 sm:w-4" />,
+    className: "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/20",
   },
-  free_wifi: { 
-    label: "Wi-Fi Gratis", 
-    icon: <Wifi className="h-3 w-3 sm:h-4 sm:w-4" />, 
-    className: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20" 
+  free_wifi: {
+    label: "Wi-Fi Gratis",
+    icon: <Wifi className="h-3 w-3 sm:h-4 sm:w-4" />,
+    className: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20",
   },
-  coworking: { 
-    label: "Coworking", 
-    icon: <Briefcase className="h-3 w-3 sm:h-4 sm:w-4" />, 
-    className: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20" 
+  coworking: {
+    label: "Coworking",
+    icon: <Briefcase className="h-3 w-3 sm:h-4 sm:w-4" />,
+    className: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
   },
-  power_outlets: { 
-    label: "Tomacorrientes", 
-    icon: <Plug className="h-3 w-3 sm:h-4 sm:w-4" />, 
-    className: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20" 
+  power_outlets: {
+    label: "Tomacorrientes",
+    icon: <Plug className="h-3 w-3 sm:h-4 sm:w-4" />,
+    className: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20",
   },
-  private_parking: { 
-    label: "Parqueadero", 
-    icon: <Car className="h-3 w-3 sm:h-4 sm:w-4" />, 
-    className: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20" 
+  private_parking: {
+    label: "Parqueadero",
+    icon: <Car className="h-3 w-3 sm:h-4 sm:w-4" />,
+    className: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20",
   },
-  pool_access: { 
-    label: "Piscina", 
-    icon: <Waves className="h-3 w-3 sm:h-4 sm:w-4" />, 
-    className: "bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/20" 
+  pool_access: {
+    label: "Piscina",
+    icon: <Waves className="h-3 w-3 sm:h-4 sm:w-4" />,
+    className: "bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/20",
   },
-  water_tank: { 
-    label: "Tanque Agua", 
-    icon: <Waves className="h-3 w-3 sm:h-4 sm:w-4" />, 
-    className: "bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/20" 
+  // Corregido: coincide con el valor 'water_backup' del schema de Sanity
+  water_backup: {
+    label: "Tanque de Agua",
+    icon: <Waves className="h-3 w-3 sm:h-4 sm:w-4" />,
+    className: "bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/20",
   },
 };
 
-// 🚀 GENERACIÓN DE METADATOS OPTIMIZADA PARA SEO
-export async function generateMetadata({
-  params,
-}: BusinessDetailPageProps): Promise<Metadata> {
+// Detección de nichos a partir del slug de la categoría
+function detectNiche(categorySlug: string) {
+  const slug = (categorySlug || "").toLowerCase();
+  const isAccommodation =
+    slug.includes("alojamiento") ||
+    slug.includes("hotel") ||
+    slug.includes("hospedaje") ||
+    slug.includes("finca");
+  const isRealEstate = !isAccommodation && (slug.includes("bienes-raices") || slug.includes("inmobiliaria"));
+  const isRestaurant =
+    slug.includes("donde-comer") || slug.includes("restaurante") || slug.includes("comida");
+  return { isAccommodation, isRealEstate, isRestaurant };
+}
+
+// 🚀 METADATOS SEO
+export async function generateMetadata({ params }: BusinessDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const business = await getBusinessBySlug(slug);
+  const business = await getBusiness(slug);
 
   if (!business) {
     return {
@@ -86,52 +103,35 @@ export async function generateMetadata({
   const businessName = business.name;
   const category = business.category?.name || "Comercio";
   const municipality = business.municipality?.name || "Occidente Antioqueño";
-  
-  // Detección de nichos estratégicos (Fincas, Alojamiento, Real Estate)
-  const categorySlug = getSlugValue(business.category?.slug)?.toLowerCase() || "";
-  const isRealEstate = categorySlug.includes("bienes-raices") || categorySlug.includes("inmobiliaria") || categorySlug.includes("finca");
-  const isAccommodation = categorySlug.includes("alojamiento") || categorySlug.includes("hotel") || categorySlug.includes("hospedaje") || categorySlug.includes("finca-campestre");
+  const categorySlug = getSlugValue(business.category?.slug) || "";
+  const { isAccommodation, isRealEstate } = detectNiche(categorySlug);
 
-  let seoTitle = `${businessName} - ${category} en ${municipality} | Ooasys`;
-  let seoDescription = business.description 
-    ? `${business.description.slice(0, 140)}...`
-    : `Información de contacto, ubicación, horarios y opiniones de ${businessName} en ${municipality}.`;
+  // 1) Lo que escribas en Sanity manda. 2) Si está vacío, se usa un respaldo automático.
+  let fallbackTitle = `${businessName} – ${category} en ${municipality}`;
+  let fallbackDescription = `${businessName} en ${municipality}: dirección, teléfono, horarios y cómo llegar.${
+    business.rating ? ` Calificación ${business.rating}/5.` : ""
+  } Contacto directo por WhatsApp.`;
 
-  // Keywords base por zona
-  const keywords = [
-    businessName,
-    `${businessName} ${municipality}`,
-    `${category} en ${municipality}`,
-    `contacto ${businessName}`,
-    `teléfono ${businessName}`,
-    `ubicación ${businessName}`,
-    `${category} en Sopetrán`,
-    `${category} en San Jerónimo`,
-    `${category} en Santa Fe de Antioquia`,
-    "directorio comercial ooasys",
-    "turismo occidente antioqueño"
-  ];
-
-  // Optimización específica de copys y keywords para Fincas / Alojamiento / Bienes Raíces
   if (isAccommodation) {
-    seoTitle = `${businessName} - Finca en Alquiler y Alojamiento en ${municipality} | Ooasys`;
-    seoDescription = `Reserva o alquila ${businessName} en ${municipality}. Alojamiento, descanso, piscina y descanso en el Occidente Antioqueño. Contacto directo por WhatsApp.`;
-    keywords.push(`alquiler de fincas en ${municipality}`, `fincas de recreo ${municipality}`, `hospedaje en ${municipality}`, `fincas con piscina ${municipality}`);
+    fallbackTitle = `${businessName} – Alojamiento y Fincas en ${municipality}`;
+    fallbackDescription = `Reserva o alquila ${businessName} en ${municipality}. Alojamiento y descanso en el Occidente Antioqueño. Contacto directo por WhatsApp.`;
   } else if (isRealEstate) {
-    seoTitle = `${businessName} - Bienes Raíces y Fincas en Venta/Arriendo en ${municipality} | Ooasys`;
-    seoDescription = `Encuentra propiedades, casas, lotes y fincas con ${businessName} en ${municipality}. Asesoría inmobiliaria en el Occidente Antioqueño.`;
-    keywords.push(`bienes raices ${municipality}`, `venta de fincas en ${municipality}`, `lotes en venta ${municipality}`, `inmobiliarias en ${municipality}`);
+    fallbackTitle = `${businessName} – Bienes Raíces en ${municipality}`;
+    fallbackDescription = `Propiedades, casas, lotes y fincas con ${businessName} en ${municipality}. Asesoría inmobiliaria en el Occidente Antioqueño.`;
   }
 
-  const imageUrl = business.gallery?.[0]?.asset?.url 
-    || business.logo?.asset?.url 
-    || `${baseUrl}/og-categories.png`;
+  const seoTitle = business.seoTitle?.trim() || fallbackTitle;
+  const seoDescription = business.seoDescription?.trim() || fallbackDescription;
+
+  const ogSource = business.gallery?.[0]?.asset ? business.gallery[0] : business.logo?.asset ? business.logo : null;
+  const imageUrl = ogSource
+    ? urlFor(ogSource).width(1200).height(630).fit("crop").url()
+    : `${baseUrl}/og-categories.png`;
 
   return {
     metadataBase: new URL(baseUrl),
-    title: seoTitle,
+    title: { absolute: `${seoTitle} | Ooasys` },
     description: seoDescription,
-    keywords,
     authors: [{ name: "Ooasys", url: baseUrl }],
     alternates: {
       canonical: `${baseUrl}/business/${slug}`,
@@ -180,9 +180,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function BusinessDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BusinessDetailPage({ params }: BusinessDetailPageProps) {
   const { slug } = await params;
-  const business = await getBusinessBySlug(slug);
+  const business = await getBusiness(slug);
 
   if (!business) notFound();
 
@@ -191,106 +191,108 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
   const categorySlug = getSlugValue(business.category?.slug);
   const municipalitySlug = getSlugValue(business.municipality?.slug);
 
-  // Detección de Schema según tipo de negocio
-  const isRealEstate = categorySlug.includes("bienes-raices") || categorySlug.includes("inmobiliaria");
-  const isAccommodation = categorySlug.includes("alojamiento") || categorySlug.includes("hotel") || categorySlug.includes("hospedaje") || categorySlug.includes("finca");
-  
-  const schemaType = isAccommodation ? "LodgingBusiness" : isRealEstate ? "RealEstateAgent" : "LocalBusiness";
+  // Tipo de Schema según el negocio
+  const { isAccommodation, isRealEstate, isRestaurant } = detectNiche(categorySlug);
+  const schemaType = isAccommodation
+    ? "LodgingBusiness"
+    : isRealEstate
+    ? "RealEstateAgent"
+    : isRestaurant
+    ? "Restaurant"
+    : "LocalBusiness";
 
   // Datos relacionados
-  const { businesses: related } = await getBusinesses({ 
-    category: categorySlug, 
-    municipality: municipalitySlug, 
-    pageSize: 6 
+  const { businesses: related } = await getBusinesses({
+    category: categorySlug,
+    municipality: municipalitySlug,
+    pageSize: 6,
   });
   const relatedBusinesses = related.filter((item) => item._id !== business._id).slice(0, 4);
 
   // Link de WhatsApp
-  const whatsappUrl = business.whatsapp 
-    ? generateWhatsAppUrl(business.whatsapp.replace(/\D/g, ""), `Hola, vi ${business.name} en Ooasys.`) 
+  const whatsappUrl = business.whatsapp
+    ? generateWhatsAppUrl(business.whatsapp.replace(/\D/g, ""), `Hola, vi ${business.name} en Ooasys.`)
     : null;
 
-  // Enlaces sociales para el Schema sameAs
-  const socialLinks = [business.facebook, business.instagram].filter(Boolean);
+  // Enlaces sociales para sameAs
+  const socialLinks = [business.facebook, business.instagram, business.tiktok, business.website].filter(Boolean);
 
-  // 🚀 SCHEMA 1: LOCAL BUSINESS / LODGING / REAL ESTATE DINÁMICO
+  // Imágenes para el schema
+  const schemaImages: string[] = (business.gallery || [])
+    .filter((img: any) => img?.asset)
+    .map((img: any) => urlFor(img).width(1200).url());
+  if (schemaImages.length === 0 && business.logo?.asset) {
+    schemaImages.push(urlFor(business.logo).width(600).url());
+  }
+
+  const schemaDescription =
+    business.seoDescription?.trim() || business.description || `Información de contacto de ${business.name}`;
+
+  // 🚀 SCHEMA 1: negocio local (sin datos inventados)
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
     "@type": schemaType,
     "@id": `${baseUrl}/business/${slug}#business`,
-    "name": business.name,
-    "description": business.description || `Información de contacto de ${business.name}`,
-    "url": `${baseUrl}/business/${slug}`,
-    "telephone": business.phone || business.whatsapp || "",
-    "priceRange": "$$",
-    "image": business.gallery?.map((img: any) => img?.asset?.url).filter(Boolean) || [business.logo?.asset?.url],
-    "logo": business.logo?.asset?.url || "",
-    "sameAs": socialLinks,
-    "areaServed": {
+    name: business.name,
+    description: schemaDescription,
+    url: `${baseUrl}/business/${slug}`,
+    ...((business.phone || business.whatsapp) && { telephone: business.phone || business.whatsapp }),
+    ...(schemaImages.length > 0 && { image: schemaImages }),
+    ...(business.logo?.asset && { logo: urlFor(business.logo).width(300).height(300).url() }),
+    ...(socialLinks.length > 0 && { sameAs: socialLinks }),
+    areaServed: {
       "@type": "City",
-      "name": business.municipality?.name || "Occidente Antioqueño"
+      name: business.municipality?.name || "Occidente Antioqueño",
     },
-    ...(business.rating && {
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": business.rating,
-        "reviewCount": "1",
-        "bestRating": "5",
-        "worstRating": "1"
-      }
-    }),
-    "address": {
+    // Solo se muestra si algún día guardas reseñas reales (campo reviewCount en Sanity)
+    ...(typeof business.rating === "number" &&
+      typeof business.reviewCount === "number" &&
+      business.reviewCount > 0 && {
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: business.rating,
+          reviewCount: business.reviewCount,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      }),
+    address: {
       "@type": "PostalAddress",
-      "streetAddress": normalized.addressLabel || "Dirección comercial",
-      "addressLocality": business.municipality?.name || "Occidente Antioqueño",
-      "addressRegion": "Antioquia",
-      "addressCountry": "CO"
+      streetAddress: normalized.addressLabel || "Dirección comercial",
+      addressLocality: business.municipality?.name || "Occidente Antioqueño",
+      addressRegion: "Antioquia",
+      addressCountry: "CO",
     },
-    ...(business.location?.lat && business.location?.lng && {
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": business.location.lat,
-        "longitude": business.location.lng
-      }
-    })
+    ...(business.location?.lat &&
+      business.location?.lng && {
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: business.location.lat,
+          longitude: business.location.lng,
+        },
+      }),
   };
 
-  // 🚀 SCHEMA 2: MIGA DE PAN (BREADCRUMBS)
+  // 🚀 SCHEMA 2: migas de pan
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Categorías", item: `${baseUrl}/categorias` },
       {
         "@type": "ListItem",
-        "position": 1,
-        "name": "Inicio",
-        "item": baseUrl,
+        position: 3,
+        name: business.category?.name || "Comercio",
+        item: `${baseUrl}/categorias/${categorySlug}`,
       },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Categorías",
-        "item": `${baseUrl}/categorias`,
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": business.category?.name || "Comercio",
-        "item": `${baseUrl}/categorias/${categorySlug}`,
-      },
-      {
-        "@type": "ListItem",
-        "position": 4,
-        "name": business.name,
-        "item": `${baseUrl}/business/${slug}`,
-      }
-    ]
+      { "@type": "ListItem", position: 4, name: business.name, item: `${baseUrl}/business/${slug}` },
+    ],
   };
 
   return (
     <div className="min-h-screen bg-[#e0e5ec] dark:bg-[#0f1217] transition-colors duration-300 relative">
-      
-      {/* Schemas JSON-LD Inyectados */}
+      {/* Schemas JSON-LD */}
       <script
         id="business-jsonld"
         type="application/ld+json"
@@ -301,13 +303,14 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      
-      {/* Header & Hero Section */}
+
+      {/* Header & Hero */}
       <div className="relative pt-8 sm:pt-12 pb-8 sm:pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          {/* Breadcrumbs Visibles para Navegación y SEO Semántico */}
-          <nav aria-label="Breadcrumb" className="mb-6 text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-2 items-center">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-6 text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-2 items-center"
+          >
             <Link href="/" className="hover:underline">Inicio</Link>
             <span>/</span>
             <Link href="/categorias" className="hover:underline">Categorías</Link>
@@ -322,12 +325,12 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-center sm:items-start">
             <div className="relative h-28 w-28 sm:h-36 sm:w-36 md:h-40 md:w-40 overflow-hidden rounded-full border-4 border-[#e0e5ec] dark:border-[#0f1217] shadow-[10px_10px_20px_#aab1bc,-10px_-10px_20px_#ffffff] dark:shadow-[10px_10px_20px_#05070a,-10px_-10px_20px_#19212a] flex-shrink-0">
               {business.logo?.asset && (
-                <Image 
-                  src={urlFor(business.logo).width(300).height(300).url()} 
-                  alt={`Logo oficial de ${business.name}`} 
-                  fill 
+                <Image
+                  src={urlFor(business.logo).width(300).height(300).url()}
+                  alt={`Logo oficial de ${business.name}`}
+                  fill
                   priority
-                  className="object-cover" 
+                  className="object-cover"
                 />
               )}
             </div>
@@ -340,7 +343,7 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
                   <RatingStars rating={business.rating} />
                 </div>
                 <span className="flex items-center text-xs sm:text-sm">
-                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 shrink-0" /> 
+                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 shrink-0" />
                   <span className="break-words">{normalized.addressLabel}</span>
                 </span>
               </div>
@@ -349,20 +352,22 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
         </div>
       </div>
 
-      {/* Main Grid Optimizado para pantallas pequeñas y grandes */}
+      {/* Grid principal */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10">
-          
-          {/* Columna Izquierda (Galería, Descripción, Servicios, Mapa) */}
+          {/* Columna izquierda */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-6 sm:space-y-8 md:space-y-10">
             <ImageGallery images={business.gallery || []} title={business.name} />
-            
+
             <section className="bg-[#e0e5ec] dark:bg-[#151a20] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-[12px_12px_24px_#aab1bc,-12px_-12px_24px_#ffffff] dark:shadow-[12px_12px_24px_#05070a,-12px_-12px_24px_#25303a]">
               <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 dark:text-white">
                 Sobre {business.name} en {business.municipality?.name || "Occidente Antioqueño"}
               </h2>
               <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                {business.description || `Bienvenido a ${business.name}. Estamos ubicados en ${business.municipality?.name || "el Occidente Antioqueño"} para prestarte la mejor atención en ${business.category?.name || "nuestros servicios"}.`}
+                {business.description ||
+                  `Bienvenido a ${business.name}. Estamos ubicados en ${
+                    business.municipality?.name || "el Occidente Antioqueño"
+                  } para prestarte la mejor atención en ${business.category?.name || "nuestros servicios"}.`}
               </p>
             </section>
 
@@ -372,11 +377,14 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
                   Servicios e Instalaciones
                 </h3>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
-                  {business.amenities.map((slug: string) => {
-                    const amenity = AMENITY_MAP[slug];
+                  {business.amenities.map((amenitySlug: string) => {
+                    const amenity = AMENITY_MAP[amenitySlug];
                     if (!amenity) return null;
                     return (
-                      <Badge key={slug} className={`${amenity.className} px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm border`}>
+                      <Badge
+                        key={amenitySlug}
+                        className={`${amenity.className} px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm border`}
+                      >
                         {amenity.icon}
                         <span className="ml-1.5 sm:ml-2">{amenity.label}</span>
                       </Badge>
@@ -394,18 +402,18 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
             )}
           </div>
 
-          {/* Sidebar Lateral */}
+          {/* Sidebar */}
           <aside className="lg:col-span-5 xl:col-span-4 space-y-6 sm:space-y-8">
             <div className="sticky top-6">
-              <BusinessHours 
-                hours={business.hours ?? []} 
-                isAlwaysOpen={business.hours?.some((h: any) => h.isOpen === true && !h.day)} 
+              <BusinessHours
+                hours={business.hours ?? []}
+                isAlwaysOpen={business.hours?.some((h: any) => h.isOpen === true && !h.day)}
               />
             </div>
           </aside>
         </div>
 
-        {/* Sección de Negocios Relacionados */}
+        {/* Negocios relacionados */}
         {relatedBusinesses.length > 0 && (
           <section className="mt-12 sm:mt-16 md:mt-20">
             <h3 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-800 dark:text-white">
@@ -420,7 +428,7 @@ export default async function BusinessDetailPage({ params }: { params: Promise<{
         )}
       </main>
 
-      {/* Botones Flotantes de Contacto Directo RESTAURADOS */}
+      {/* Botones flotantes de contacto */}
       <div className="fixed right-2 sm:right-3 top-1/2 -translate-y-1/2 z-50">
         <div className="flex flex-col gap-3">
           {whatsappUrl && (

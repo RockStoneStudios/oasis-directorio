@@ -63,6 +63,9 @@ export interface BusinessDetail extends BusinessCardData {
   facebook?: string | null;
   instagram?: string | null;
   website?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  reviewCount?: number | null;
 }
 
 export interface BusinessFilters {

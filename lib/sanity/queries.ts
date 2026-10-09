@@ -94,6 +94,8 @@ export const BUSINESS_DETAIL_QUERY = defineQuery(/* groq */ `
     "logo": logo { ${imageFragment} },
     "gallery": gallery[] { ${imageFragment} },
     description,
+    seoTitle,
+    seoDescription,
     status,
     hours,
     whatsapp,
@@ -110,6 +112,7 @@ export const BUSINESS_DETAIL_QUERY = defineQuery(/* groq */ `
     subcategories[]->{ _id, name, "slug": slug },
     rating,
     isFeatured,
+    reviewCount,
     createdAt
   }
 `);
