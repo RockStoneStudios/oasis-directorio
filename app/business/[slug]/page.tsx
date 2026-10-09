@@ -359,17 +359,36 @@ export default async function BusinessDetailPage({ params }: BusinessDetailPageP
           <div className="lg:col-span-7 xl:col-span-8 space-y-6 sm:space-y-8 md:space-y-10">
             <ImageGallery images={business.gallery || []} title={business.name} />
 
-            <section className="bg-[#e0e5ec] dark:bg-[#151a20] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-[12px_12px_24px_#aab1bc,-12px_-12px_24px_#ffffff] dark:shadow-[12px_12px_24px_#05070a,-12px_-12px_24px_#25303a]">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 dark:text-white">
-                Sobre {business.name} en {business.municipality?.name || "Occidente Antioqueño"}
-              </h2>
-              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                {business.description ||
-                  `Bienvenido a ${business.name}. Estamos ubicados en ${
-                    business.municipality?.name || "el Occidente Antioqueño"
-                  } para prestarte la mejor atención en ${business.category?.name || "nuestros servicios"}.`}
-              </p>
-            </section>
+           <section className="bg-[#e0e5ec] dark:bg-[#151a20] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-[12px_12px_24px_#aab1bc,-12px_-12px_24px_#ffffff] dark:shadow-[12px_12px_24px_#05070a,-12px_-12px_24px_#25303a]">
+  <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 dark:text-white">
+    Sobre {business.name} en {business.municipality?.name || "Occidente Antioqueño"}
+  </h2>
+  <div className="text-base sm:text-lg text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+    {business.description
+      ? business.description.split('\n').map((line, i) => {
+          const trimmed = line.trim();
+          if (trimmed.startsWith('- ')) {
+            return (
+              <div key={i} className="flex gap-2 ml-2 my-1">
+                <span>•</span>
+                <span>{trimmed.substring(2)}</span>
+              </div>
+            );
+          }
+          if (trimmed === '') {
+            return <div key={i} className="h-3" />;
+          }
+          // Si detecta ¿QUÉ OFRECE? lo pone en negrita
+          if (trimmed.startsWith('¿') && trimmed.endsWith('?')) {
+            return <p key={i} className="font-bold mt-4 mb-2 text-gray-800 dark:text-white">{trimmed}</p>;
+          }
+          return <p key={i} className="mb-2">{trimmed}</p>;
+        })
+      : `Bienvenido a ${business.name}. Estamos ubicados en ${
+          business.municipality?.name || "el Occidente Antioqueño"
+        } para prestarte la mejor atención en ${business.category?.name || "nuestros servicios"}.`}
+  </div>
+</section>
 
             {business.amenities && business.amenities.length > 0 && (
               <section className="bg-[#e0e5ec] dark:bg-[#151a20] rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 shadow-[12px_12px_24px_#aab1bc,-12px_-12px_24px_#ffffff] dark:shadow-[12px_12px_24px_#05070a,-12px_-12px_24px_#25303a]">
