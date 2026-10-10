@@ -13,9 +13,10 @@ import type { BusinessCardData } from "@/types/business";
 
 interface BusinessCardProps {
   business: BusinessCardData;
+  showDescription?: boolean; // Opción A: Prop opcional
 }
 
-export function BusinessCard({ business }: BusinessCardProps) {
+export function BusinessCard({ business, showDescription = true }: BusinessCardProps) {
   const href = getBusinessHref(business);
   const categorySlug = getSlugValue(business.category?.slug);
   const municipalitySlug = getSlugValue(business.municipality?.slug);
@@ -24,7 +25,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
     <Link href={href} className="group block">
       <article className="h-full overflow-hidden rounded-lg border-1 border-black/40 dark:border-white/40 bg-card text-card-foreground shadow-[0_8px_20px_-4px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.02)] dark:shadow-[0_8px_20px_-4px_rgba(0,0,0,0.4),0_2px_4px_-2px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-2 hover:border-black/60 dark:hover:border-white/60 hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.15),0_8px_10px_-6px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_20px_30px_-8px_rgba(0,0,0,0.6),0_8px_10px_-6px_rgba(0,0,0,0.3)]">
         
-        {/* LOGO - Versión mejorada sin distorsión */}
+        {/* LOGO */}
         <div className="relative aspect-video bg-muted/30 flex items-center justify-center">
           {business.logo?.asset ? (
             <div className="relative w-full h-full p-4">
@@ -56,8 +57,8 @@ export function BusinessCard({ business }: BusinessCardProps) {
           </div>
         </div>
 
-        {/* CONTENIDO */}
-        <div className="space-y-2 p-3">
+        {/* CONTENIDO - Opción B: data-nosnippet cubriendo el bloque de texto y detalles */}
+        <div data-nosnippet className="space-y-2 p-3">
           <div className="space-y-1">
             <div className="flex items-start justify-between gap-2">
               <h3 className="line-clamp-2 text-sm font-bold font-heading">
@@ -67,8 +68,10 @@ export function BusinessCard({ business }: BusinessCardProps) {
                 <RatingStars rating={business.rating} showValue={false} />
               </div>
             </div>
-            {business.description && (
-              <p  data-nosnippet className="line-clamp-2 text-[11px] leading-relaxed text-gray-700 dark:text-gray-300">
+
+            {/* Opción A: Se muestra u oculta limpiamente según la prop */}
+            {showDescription && business.description && (
+              <p className="line-clamp-2 text-[11px] leading-relaxed text-gray-700 dark:text-gray-300">
                 {business.description}
               </p>
             )}

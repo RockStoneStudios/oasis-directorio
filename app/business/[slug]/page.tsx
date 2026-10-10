@@ -440,7 +440,7 @@ export default async function BusinessDetailPage({ params }: BusinessDetailPageP
             </h3>
             <div className="grid gap-4 sm:gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
               {relatedBusinesses.map((b) => (
-                <BusinessCard key={b._id} business={b} />
+                <BusinessCard key={b._id} business={b} showDescription={false} />
               ))}
             </div>
           </section>
