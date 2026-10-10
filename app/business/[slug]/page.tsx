@@ -434,7 +434,7 @@ export default async function BusinessDetailPage({ params }: BusinessDetailPageP
 
         {/* Negocios relacionados */}
         {relatedBusinesses.length > 0 && (
-          <section className="mt-12 sm:mt-16 md:mt-20">
+          <section data-nosnippet className="mt-12 sm:mt-16 md:mt-20">
             <h3 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-800 dark:text-white">
               Otros establecimientos recomendados en {business.municipality?.name || "la zona"}
             </h3>

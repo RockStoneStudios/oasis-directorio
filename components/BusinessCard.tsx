@@ -68,7 +68,7 @@ export function BusinessCard({ business }: BusinessCardProps) {
               </div>
             </div>
             {business.description && (
-              <p className="line-clamp-2 text-[11px] leading-relaxed text-gray-700 dark:text-gray-300">
+              <p  data-nosnippet className="line-clamp-2 text-[11px] leading-relaxed text-gray-700 dark:text-gray-300">
                 {business.description}
               </p>
             )}
