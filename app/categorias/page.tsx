@@ -5,270 +5,204 @@ import { Store, HelpCircle } from "lucide-react";
 import { CategoryGrid } from "@/components/category/CategoryGrid";
 import { ClientBackButton } from "@/components/ui/ClientBackButton";
 
-// Revalida los datos de Sanity automáticamente cada 60 segundos
 export const revalidate = 60;
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
-// Preguntas frecuentes generales del directorio para Rich Snippets y Alta Conversión
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
+const url = `${baseUrl}/categorias`;
+
+const MUNICIPIOS = ["Sopetrán", "San Jerónimo", "Santa Fe de Antioquia", "Liborina", "Olaya"];
+const MUNICIPIOS_TEXT = "Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya";
+
+// Las FAQ visibles y las del schema salen de la misma fuente (Google lo exige)
 const GENERAL_FAQS = [
   {
     q: "¿Qué tipo de comercios y servicios puedo encontrar en Ooasys?",
-    a: "En Ooasys encuentras un directorio verificado con opciones de restaurantes, alquiler de fincas de recreo, glamping, hoteles, licoreras, droguerías, barberías, agroinsumos, mototaxis y servicios técnicos en el Occidente Antioqueño."
+    a: "Encuentras restaurantes, alquiler de fincas de recreo, glamping, hoteles, licoreras, droguerías, barberías, agroinsumos, mototaxis y servicios técnicos en el Occidente Antioqueño.",
   },
   {
     q: "¿Qué municipios del Occidente Antioqueño cubre la plataforma?",
-    a: "Cubrimos con información verificada los municipios de Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya."
+    a: `Actualmente listamos negocios de ${MUNICIPIOS_TEXT}.`,
   },
   {
-    q: "¿Es seguro reservar fincas, glampings o contratar servicios en Ooasys?",
-    a: "Sí. Ooasys valida la existencia de los negocios listados. Te conectamos directamente a través de WhatsApp o llamada telefónica con el propietario o administrador, evitando intermediarios dudosos y reduciendo el riesgo de estafas."
-  }
+    q: "¿Cómo contacto a un negocio o reservo una finca o glamping?",
+    a: "Desde la ficha de cada negocio puedes escribirle por WhatsApp o llamarlo directamente, sin intermediarios. Antes de pagar, confirma disponibilidad y datos del propietario o administrador.",
+  },
 ];
 
-// 🚀 METADATOS ULTRA OPTIMIZADOS PARA EL OCCIDENTE ANTIOQUEÑO (SEO & CTR)
-export async function generateMetadata(): Promise<Metadata> {
-  const title = "✅ Directorio de Categorías en el Occidente Antioqueño | Ooasys";
-  const description =
-    "Explora negocios y servicios verificados en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya. Encuentra fincas de recreo, glamping, restaurantes, transporte y más.";
+// ============================================================================
+// Metadatos (objeto estático: no necesita async)
+// ============================================================================
+const title = "Categorías de negocios en el Occidente Antioqueño | Ooasys";
+const description = `Explora negocios y servicios en ${MUNICIPIOS_TEXT}: fincas, glamping, restaurantes, transporte y más.`;
 
-  return {
-    metadataBase: new URL(baseUrl),
-    title,
-    description,
-    keywords: [
-      // Búsquedas generales
-      "directorio comercial occidente antioqueño",
-      "negocios en Sopetrán",
-      "servicios en San Jerónimo",
-      "comercio Santa Fe de Antioquia",
-      "turismo Liborina",
-      "negocios en Olaya",
-      "categorías de negocios Antioquia",
-      "directorio empresarial Ooasys",
-
-      // Intenciones transaccionales de alto valor
-      "alquiler de fincas en San Jerónimo",
-      "fincas de recreo Sopetrán",
-      "glamping en Santa Fe de Antioquia",
-      "dónde comer occidente antioqueño",
-      "restaurantes con piscina San Jerónimo",
-      "hoteles en Santa Fe de Antioquia",
-      "domicilios y mototaxis Sopetrán",
-      "servicios técnicos en San Jerónimo"
-    ],
-    viewport: {
-      width: "device-width",
-      initialScale: 1,
-      maximumScale: 5,
-      userScalable: true,
-    },
-    formatDetection: {
-      telephone: true,
-      email: true,
-      address: true,
-      date: false,
-      url: false,
-    },
-    applicationName: "Ooasys",
-    appleWebApp: {
-      capable: true,
-      title: "Ooasys Direct",
-      statusBarStyle: "black-translucent",
-    },
-    alternates: {
-      canonical: `${baseUrl}/categorias`,
-      languages: {
-        "es-CO": `${baseUrl}/categorias`,
-        es: `${baseUrl}/categorias`,
-      },
-    },
-    robots: {
+export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
+  title: { absolute: title },
+  description,
+  applicationName: "Ooasys",
+  alternates: {
+    canonical: url,
+    languages: { "es-CO": url, es: url },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
       index: true,
       follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-image-preview": "large",
-        "max-snippet": 200,
-        "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  other: {
+    "geo.region": "CO-ANT",
+    "geo.placename": "Occidente Antioqueño",
+  },
+  openGraph: {
+    title,
+    description,
+    url,
+    type: "website",
+    siteName: "Ooasys",
+    locale: "es_CO",
+    images: [
+      {
+        url: `${baseUrl}/og-categories.png`,
+        width: 1200,
+        height: 630,
+        alt: "Categorías de negocios en el Occidente Antioqueño - Ooasys",
       },
-    },
-    other: {
-      "geo.region": "CO-ANT",
-      "geo.placename": "Occidente Antioqueño",
-    },
-    openGraph: {
-      title,
-      description,
-      url: `${baseUrl}/categorias`,
-      type: "website",
-      siteName: "Ooasys",
-      locale: "es_CO",
-      images: [
-        {
-          url: `${baseUrl}/og-categories.png`,
-          width: 1200,
-          height: 630,
-          alt: "Directorio General de Categorías en el Occidente Antioqueño - Ooasys",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [`${baseUrl}/og-categories.png`],
-    },
-  };
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: [`${baseUrl}/og-categories.png`],
+  },
+};
+
+// Evita que un "<" dentro de los datos rompa el <script> del JSON-LD
+function toJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
 export default async function CategoriasPage() {
-  // Peticiones en paralelo directo en el servidor (Carga instantánea)
   const [categoriesData, categoriesWithSubsData] = await Promise.all([
     client.fetch(CATEGORIES_WITH_COUNTS_QUERY),
     client.fetch(CATEGORIES_LIST_QUERY),
   ]);
 
-  // 🚀 SCHEMA 1: GUÍA DE BÚSQUEDA Y COLECCIÓN
-  const guideJsonLd = {
+  // Solo categorías con slug válido (antes se generaban URLs vacías)
+  const validCategories = (categoriesData || []).filter((cat: any) => cat?.slug?.current);
+
+  // Schema 1: colección de categorías (tipo reconocido por Google; "Guide" no lo es)
+  const collectionJsonLd = {
     "@context": "https://schema.org",
-    "@type": "Guide",
-    "@id": `${baseUrl}/categorias#guide`,
-    "name": "Guía Comercial y Turística del Occidente Antioqueño - Ooasys",
-    "description":
-      "Clasificación oficial de establecimientos comerciales, gastronómicos, hospedajes, fincas de recreo y servicios en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya.",
-    "url": `${baseUrl}/categorias`,
-    "inLanguage": "es-CO",
-    "areaServed": [
-      { "@type": "City", "name": "Sopetrán" },
-      { "@type": "City", "name": "San Jerónimo" },
-      { "@type": "City", "name": "Santa Fe de Antioquia" },
-      { "@type": "City", "name": "Liborina" },
-      { "@type": "City", "name": "Olaya" },
-      { "@type": "AdministrativeArea", "name": "Occidente Antioqueño" }
+    "@type": "CollectionPage",
+    "@id": `${url}#webpage`,
+    name: "Categorías de negocios en el Occidente Antioqueño",
+    description,
+    url,
+    inLanguage: "es-CO",
+    areaServed: [
+      ...MUNICIPIOS.map((name) => ({ "@type": "City", name })),
+      { "@type": "AdministrativeArea", name: "Occidente Antioqueño" },
     ],
-    "mainEntity": {
+    mainEntity: {
       "@type": "ItemList",
-      "numberOfItems": categoriesData?.length || 0,
-      "itemListElement": (categoriesData || []).map((cat: any, index: number) => ({
+      numberOfItems: validCategories.length,
+      itemListElement: validCategories.map((cat: any, index: number) => ({
         "@type": "ListItem",
-        "position": index + 1,
-        "name": `${cat.name} en el Occidente Antioqueño`,
-        "url": `${baseUrl}/categorias/${cat.slug?.current || ""}`
-      }))
-    }
+        position: index + 1,
+        name: cat.name,
+        url: `${baseUrl}/categorias/${cat.slug.current}`,
+      })),
+    },
   };
 
-  // 🚀 SCHEMA 2: MIGA DE PAN (BREADCRUMB LIST)
+  // Schema 2: migas de pan
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Inicio",
-        "item": baseUrl,
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Categorías",
-        "item": `${baseUrl}/categorias`,
-      },
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Categorías", item: url },
     ],
   };
 
-  // 🚀 SCHEMA 3: PREGUNTAS FRECUENTES (FAQ PAGE)
+  // Schema 3: preguntas frecuentes
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": GENERAL_FAQS.map((faq) => ({
+    mainEntity: GENERAL_FAQS.map((faq) => ({
       "@type": "Question",
-      "name": faq.q,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": faq.a,
-      },
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
     })),
   };
 
   return (
     <div className="bg-linear-to-b from-accent/10 via-background to-background min-h-screen relative">
-      {/* Inyección Semántica en el Head para los robots de Google */}
-      <script
-        id="guide-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(guideJsonLd) }}
-      />
-      <script
-        id="breadcrumb-main-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-      <script
-        id="faq-general-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+      <script id="categories-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(collectionJsonLd) }} />
+      <script id="breadcrumb-main-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }} />
+      <script id="faq-general-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(faqJsonLd) }} />
 
-      {/* Hero Header Atractivo y Regional */}
       <header className="relative overflow-hidden border-b border-border/40 bg-background/60 backdrop-blur-md py-12 md:py-16">
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]" />
-        
+
         <div className="container mx-auto px-4">
-          
-          {/* 👑 Top Bar del Header: Distribución limpia de 3 columnas para el botón y el icono */}
           <div className="grid grid-cols-3 items-center mb-6 w-full max-w-2xl mx-auto">
-            {/* Columna Izquierda: Espacio exacto controlado para el botón de regreso */}
             <div className="flex items-center justify-start">
               <div className="w-10 h-10 shrink-0">
                 <ClientBackButton />
               </div>
             </div>
 
-            {/* Columna Central: Icono de la Tienda perfectamente alineado */}
             <div className="flex items-center justify-center">
               <div className="h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary shadow-sm flex">
                 <Store className="h-5 w-5" aria-hidden="true" />
               </div>
             </div>
 
-            {/* Columna Derecha: Bloque espaciador para equilibrar el centrado exacto */}
-            <div className="w-10 h-10 pointer-events-none invisible justify-self-end" />
+            <div className="w-10 h-10 pointer-events-none invisible justify-self-end" aria-hidden="true" />
           </div>
 
-          {/* Textos del Hero */}
           <div className="text-center">
+            {/* H1 con la keyword principal de la página */}
             <h1 className="text-4xl font-extrabold tracking-tight font-heading sm:text-5xl md:text-6xl text-foreground">
-              Explora por <span className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent">Categorías</span>
+              <span className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                Categorías de negocios
+              </span>{" "}
+              <span className="block text-2xl sm:text-3xl md:text-4xl font-bold mt-2">
+                en el Occidente Antioqueño
+              </span>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-              ¿Buscas dónde comer, alquilar una finca de recreo sin estafas o un servicio confiable en el Occidente Antioqueño? Selecciona un sector y contacta directamente a locales verificados en Sopetrán, San Jerónimo, Santa Fe, Liborina y Olaya.
+              ¿Buscas dónde comer, alquilar una finca de recreo o contratar un servicio en el Occidente Antioqueño?
+              Elige una categoría y contacta directamente a los negocios de {MUNICIPIOS_TEXT}.
             </p>
           </div>
-
         </div>
       </header>
 
-      {/* Grilla interactiva del lado del cliente */}
       <main className="container mx-auto px-4 py-10 md:py-14">
-        <CategoryGrid 
-          initialCategories={categoriesData || []} 
-          categoriesWithSubs={categoriesWithSubsData || []} 
+        <CategoryGrid
+          initialCategories={categoriesData || []}
+          categoriesWithSubs={categoriesWithSubsData || []}
         />
 
-        {/* 🚀 Sección Visual de Preguntas Frecuentes */}
         <section className="mt-16 pt-10 border-t border-border/60">
           <div className="flex items-center gap-2 mb-6">
-            <HelpCircle className="h-5 w-5 text-primary" />
+            <HelpCircle className="h-5 w-5 text-primary" aria-hidden="true" />
             <h2 className="text-xl font-bold tracking-tight text-foreground font-heading">
-              Preguntas Frecuentes sobre el Directorio
+              Preguntas frecuentes sobre el directorio
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {GENERAL_FAQS.map((faq, idx) => (
-              <div key={idx} className="p-5 rounded-2xl bg-card border border-border/50 shadow-sm">
+            {GENERAL_FAQS.map((faq) => (
+              <div key={faq.q} className="p-5 rounded-2xl bg-card border border-border/50 shadow-sm">
                 <h3 className="font-semibold text-foreground text-sm mb-2">{faq.q}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">{faq.a}</p>
               </div>
