@@ -416,7 +416,8 @@ export default async function BusinessDetailPage({ params }: BusinessDetailPageP
             {business.location && (
               <section className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-[8px_8px_16px_#aab1bc,-8px_-8px_16px_#ffffff] dark:shadow-[8px_8px_16px_#05070a,-8px_-8px_16px_#25303a]">
                 <h3 className="sr-only">Ubicación exacta en el mapa</h3>
-                <Map location={business.location} title={business.name} address={formatAddress(business.address)} />
+                <Map business={business} location={business.location} title={business.name} address={formatAddress(business.address)} />
+
               </section>
             )}
           </div>
