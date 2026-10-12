@@ -8,9 +8,8 @@ import {municipality} from './schemas/municipality';
 import {atm} from './schemas/atm';
 import {news} from './schemas/news';
 import {businessHours,address} from './schemas/objects'
-
-
+import {mapMarker} from './schemas/mapMarker'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [business,category,subcategory,newsCategory,news,event,municipality,atm,businessHours,address],
+  types: [business,category,subcategory,newsCategory,news,event,municipality,atm,businessHours,address,mapMarker],
 };

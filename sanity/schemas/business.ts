@@ -7,6 +7,7 @@ export const business = {
   groups: [
     { name: 'main', title: 'Información', default: true },
     { name: 'seo', title: 'SEO' },
+    { name: 'map', title: '🗺️ Mapa 3D' },
   ],
   fields: [
     { name: 'name', type: 'string', title: 'Nombre del negocio', group: 'main', validation: (Rule: any) => Rule.required() },
@@ -88,15 +89,24 @@ export const business = {
         layout: 'grid',
         list: [
           { title: '🐾 Pet Friendly', value: 'pet_friendly' },
-          { title: '❄️ Aire acondicionado / Ventilador', value: 'air_conditioning' },
+          { title: '❄ Aire acondicionado / Ventilador', value: 'air_conditioning' },
           { title: '📶 Wi-Fi gratis', value: 'free_wifi' },
           { title: '💻 Espacio de trabajo (Coworking)', value: 'coworking' },
           { title: '🔌 Tomacorrientes accesibles', value: 'power_outlets' },
           { title: '🚗 Parqueadero privado / propio', value: 'private_parking' },
-          { title: '🏊‍♂️ Acceso a piscina / Pasadía', value: 'pool_access' },
+          { title: '🏊♂ Acceso a piscina / Pasadía', value: 'pool_access' },
           { title: '💧 Tanque / Reserva de agua', value: 'water_backup' },
         ],
       },
+    },
+
+    // 👇 MAPA 3D - ESTO ES LO NUEVO PARA HOTELES, FARMACIAS, DISCOTECAS 👇
+    {
+      name: 'marker',
+      title: 'Marcador 3D del Mapa',
+      type: 'mapMarker',
+      group: 'map',
+      description: 'Configura el ícono 3D que se ve en el mapa. Si no subes GLB, se usa el ícono 2D.'
     },
 
     // Metadatos

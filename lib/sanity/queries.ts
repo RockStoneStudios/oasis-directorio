@@ -20,6 +20,23 @@ const addressFragment = /* groq */ `
   directionDetails
 `;
 
+const mapMarkerFragment = /* groq */ `
+  marker {
+    businessType,
+    scale,
+    animation,
+    "icon2d": icon2d { ${imageFragment} },
+    "model3d": model3d {
+      asset->{
+        _id,
+        url,
+        size,
+        mimeType
+      }
+    }
+  }
+`;
+
 // ============================================
 // BÚSQUEDAS DE NEGOCIOS (BUSINESS)
 // ============================================
@@ -35,6 +52,8 @@ export const FEATURED_BUSINESSES_QUERY = defineQuery(/* groq */ `
     status,
     rating,
     address { ${addressFragment} },
+    location,
+    ${mapMarkerFragment},
     amenities,
     municipality->{ _id, name, "slug": slug },
     category->{ _id, name, "slug": slug, icon },
@@ -76,6 +95,7 @@ export const BUSINESS_SEARCH_QUERY = defineQuery(/* groq */ `
     rating,
     address { ${addressFragment} },
     location,
+    ${mapMarkerFragment},
     amenities,
     municipality->{ _id, name, "slug": slug },
     category->{ _id, name, "slug": slug, icon },
@@ -106,6 +126,7 @@ export const BUSINESS_DETAIL_QUERY = defineQuery(/* groq */ `
     website,
     address { ${addressFragment} },
     location,
+    ${mapMarkerFragment},
     amenities,
     municipality->{ _id, name, "slug": slug },
     category->{ _id, name, "slug": slug, icon },
@@ -127,7 +148,7 @@ export const CATEGORIES_LIST_QUERY = defineQuery(/* groq */ `
     name,
     "slug": slug,
     icon,
-    "subcategories": *[_type == "subcategory" && parentCategory._ref == ^._id] | order(name asc) {
+    "subcategories": *[_type == "category" && parentCategory._ref == ^._id] | order(name asc) {
       _id,
       name,
       "slug": slug
@@ -258,6 +279,8 @@ export const CLASSIC_DIRECTORY_BY_LETTER_QUERY = defineQuery(/* groq */ `
     status,
     rating,
     address { ${addressFragment} },
+    location,
+    ${mapMarkerFragment},
     amenities,
     municipality->{ _id, name, "slug": slug },
     category->{ _id, name, "slug": slug, icon },

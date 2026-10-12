@@ -33,7 +33,7 @@ export function Map({ location, title = "Ubicacion", address }: MapProps) {
     if (!map || hasAnimated.current) return;
     hasAnimated.current = true;
 
-    const SCALE = 1.5; // 50% más altos
+    const SCALE = 1.7; // 50% más altos
 
     // Fondo oscuro
     if (resolvedTheme === "dark") {
