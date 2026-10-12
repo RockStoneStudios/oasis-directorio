@@ -8,6 +8,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import type { GeoPoint } from "@/types";
 import { useTheme } from "next-themes";
 import gsap from "gsap";
+import { urlFor } from "@/lib/sanity/image";
 
 interface MapMarkerData {
   businessType?: string;
@@ -19,17 +20,16 @@ interface MapMarkerData {
 
 interface BusinessForMap {
   name?: string;
-  location?: GeoPoint;
-  marker?: MapMarkerData | null;
+  location?: any;
+  marker?: any;
 }
 
 interface MapProps {
-  location?: GeoPoint | null;
-  business?: BusinessForMap | null;
+  location?: any;
+  business?: any; // <-- ponle any, no BusinessForMap
   title?: string;
   address?: string;
 }
-
 export function Map({ location, business, title = "Ubicación", address }: MapProps) {
   const { resolvedTheme } = useTheme();
   const mapRef = useRef<MapRef>(null);
@@ -37,14 +37,13 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
   const rotateRef = useRef<number>(0);
   const isInteracting = useRef(false);
 
-  // Fix para geopoint de Sanity que a veces viene como lat/lng o latitude/longitude
   const rawLoc = business?.location || location;
   const finalLocation = rawLoc? {
     lat: (rawLoc as any).lat?? (rawLoc as any).latitude?? 6.501,
     lng: (rawLoc as any).lng?? (rawLoc as any).long?? (rawLoc as any).longitude?? -75.742,
   } : null;
 
-  const marker = business?.marker;
+  const marker = (business as any)?.marker;
 
   const [viewState, setViewState] = useState({
     longitude: finalLocation?.lng?? -75.742,
@@ -54,14 +53,9 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
     bearing: -10,
   });
 
-  // Actualiza el viewState si cambia la ubicación de Sanity
   useEffect(() => {
     if (finalLocation?.lat && finalLocation?.lng) {
-      setViewState(v => ({
-       ...v,
-        longitude: finalLocation.lng,
-        latitude: finalLocation.lat,
-      }));
+      setViewState(v => ({...v, longitude: finalLocation.lng, latitude: finalLocation.lat }));
     }
   }, [finalLocation?.lat, finalLocation?.lng]);
 
@@ -81,35 +75,18 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
     if (rotateRef.current) cancelAnimationFrame(rotateRef.current);
   }, []);
 
-  useEffect(() => {
-    return () => stopDroneRotation();
-  }, [stopDroneRotation]);
+  useEffect(() => { return () => stopDroneRotation(); }, [stopDroneRotation]);
 
   const onMapLoad = useCallback(() => {
     const map = mapRef.current?.getMap();
     if (!map || hasAnimated.current) return;
     hasAnimated.current = true;
-
     const SCALE = 1.7;
-
-    if (resolvedTheme === "dark") {
-      if (map.getLayer("background")) {
-        map.setPaintProperty("background", "background-color", "#0a0a0a");
-      }
-      if (map.getLayer("water")) {
-        map.setPaintProperty("water", "fill-color", "#0a1428");
-      }
-    }
-
     map.setPaintProperty("3d-buildings", "fill-extrusion-height", 0);
     map.setPaintProperty("3d-buildings", "fill-extrusion-base", 0);
-
     const anim = { p: 0 };
     gsap.to(anim, {
-      p: 1,
-      duration: 2.2,
-      ease: "power4.out",
-      delay: 0.3,
+      p: 1, duration: 2.2, ease: "power4.out", delay: 0.3,
       onUpdate: () => {
         map.setPaintProperty("3d-buildings", "fill-extrusion-height", ["*", ["get", "height"], anim.p * SCALE] as any);
         map.setPaintProperty("3d-buildings", "fill-extrusion-base", ["*", ["get", "min_height"], anim.p * SCALE] as any);
@@ -120,7 +97,6 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
         startDroneRotation();
       },
     });
-
     map.on('mousedown', () => { isInteracting.current = true; stopDroneRotation(); });
     map.on('mouseup', () => { isInteracting.current = false; startDroneRotation(); });
     map.on('dragstart', () => { isInteracting.current = true; stopDroneRotation(); });
@@ -128,15 +104,22 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
   }, [resolvedTheme, startDroneRotation, stopDroneRotation]);
 
   if (!finalLocation?.lat ||!finalLocation?.lng) {
-    return (
-      <div className="flex h-80 items-center justify-center rounded-2xl border border-border/50 bg-muted text-muted-foreground">
-        Ubicación no disponible
-      </div>
-    );
+    return <div className="flex h-80 items-center justify-center rounded-2xl border bg-muted">Ubicación no disponible</div>;
   }
 
   const currentMapStyle = resolvedTheme === "dark"? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v12";
-  const icon2dUrl = marker?.icon2d?.asset?.url?? null;
+
+  // FIX DEFINITIVO DEL ICONO
+  let icon2dUrl = null;
+  try {
+    if (marker?.icon2d?.asset?.url) icon2dUrl = marker.icon2d.asset.url;
+    else if (marker?.icon2d) icon2dUrl = urlFor(marker.icon2d).width(128).height(128).url();
+  } catch (e) {
+    icon2dUrl = marker?.icon2d?.asset?.url || null;
+  }
+
+  console.log("🐟 MARKER DEBUG:", marker, "iconUrl:", icon2dUrl);
+
   const scale = marker?.scale || 1.8;
   const animation = marker?.animation || 'float';
 
@@ -147,22 +130,6 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
       case 'rotate': return 'animate-[spin_4s_linear_infinite]';
       default: return '';
     }
-  };
-
-  const handleMarkerClick = () => {
-    const map = mapRef.current?.getMap();
-    if (!map) return;
-    isInteracting.current = true;
-    stopDroneRotation();
-    map.flyTo({
-      center: [finalLocation.lng, finalLocation.lat],
-      zoom: 18,
-      pitch: 70,
-      bearing: 20,
-      duration: 1800,
-      essential: true,
-    });
-    setTimeout(() => { isInteracting.current = false; startDroneRotation(); }, 2000);
   };
 
   return (
@@ -176,8 +143,6 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
           </div>
         </div>
       </div>
-
-      {/* ACA ESTABA EL ERROR - AHORA CON ALTURA FIJA INLINE */}
       <div className="w-full relative" style={{ height: '420px' }}>
         <MapGL
           ref={mapRef}
@@ -189,7 +154,6 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
           onLoad={onMapLoad}
         >
           <NavigationControl position="top-right" />
-
           <Layer
             id="3d-buildings"
             source="composite"
@@ -203,16 +167,10 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
               "fill-extrusion-opacity": resolvedTheme === "dark"? 0.79 : 0.6,
             }}
           />
-
           <Marker longitude={finalLocation.lng} latitude={finalLocation.lat} anchor="bottom">
-            <div onClick={handleMarkerClick} className="cursor-pointer select-none" style={{ transform: `scale(${scale})` }}>
+            <div className="cursor-pointer select-none" style={{ transform: `scale(${scale})` }}>
               {icon2dUrl? (
-                <img
-                  src={icon2dUrl}
-                  alt={title}
-                  className={`w-16 h-16 object-contain drop-shadow-xl ${getAnimationClass()}`}
-                  style={{ transformOrigin: 'bottom center' }}
-                />
+                <img src={icon2dUrl} alt={title} className={`w-16 h-16 object-contain drop-shadow-xl ${getAnimationClass()}`} style={{ transformOrigin: 'bottom center' }} />
               ) : (
                 <MapPin className={`h-10 w-10 fill-primary text-primary-foreground drop-shadow-xl ${getAnimationClass()}`} />
               )}
@@ -220,16 +178,9 @@ export function Map({ location, business, title = "Ubicación", address }: MapPr
             </div>
           </Marker>
         </MapGL>
-
         <style jsx>{`
-          @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(-2deg); }
-            50% { transform: translateY(-10px) rotate(2deg); }
-          }
-          @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-          }
+          @keyframes float { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-10px) rotate(2deg)} }
+          @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
         `}</style>
       </div>
     </section>
