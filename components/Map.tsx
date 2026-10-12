@@ -21,7 +21,7 @@ export function Map({ location, title = "Ubicacion", address }: MapProps) {
   const hasAnimated = useRef(false);
 
   const [viewState, setViewState] = useState({
-    longitude: location?.lng?? -75.742, // Sopetrán
+    longitude: location?.lng?? -75.742,
     latitude: location?.lat?? 6.501,
     zoom: 16.5,
     pitch: 52,
@@ -33,7 +33,9 @@ export function Map({ location, title = "Ubicacion", address }: MapProps) {
     if (!map || hasAnimated.current) return;
     hasAnimated.current = true;
 
-    // 1. Fondo y agua en oscuro (tu código)
+    const SCALE = 1.5; // 50% más altos
+
+    // Fondo oscuro
     if (resolvedTheme === "dark") {
       if (map.getLayer("background")) {
         map.setPaintProperty("background", "background-color", "#0a0a0a");
@@ -43,37 +45,43 @@ export function Map({ location, title = "Ubicacion", address }: MapProps) {
       }
     }
 
-    // 2. INICIO: edificios en 0
+    // Inicio en 0
     map.setPaintProperty("3d-buildings", "fill-extrusion-height", 0);
+    map.setPaintProperty("3d-buildings", "fill-extrusion-base", 0);
 
-    // 3. ANIMACIÓN: Sopetrán crece
-    const animObj = { h: 0 };
-    gsap.to(animObj, {
-      h: 1,
+    // Animación Sopetrán crece 1.5x
+    const anim = { p: 0 };
+    gsap.to(anim, {
+      p: 1,
       duration: 2.2,
       ease: "power4.out",
       delay: 0.3,
       onUpdate: () => {
-        // Esta fórmula hace que la altura real sea: height * progreso
         map.setPaintProperty("3d-buildings", "fill-extrusion-height", [
-          "interpolate",
-          ["linear"],
-          ["*", animObj.h, 1],
-          0, 0,
-          1, ["get", "height"]
+          "*",
+          ["get", "height"],
+          anim.p * SCALE,
         ] as any);
-      }
-    });
 
-    // 4. BONUS: Vuelo cinematográfico leve
-    gsap.to(viewState, {
-      bearing: 15,
-      pitch: 62,
-      duration: 4,
-      ease: "power1.inOut",
-      onUpdate: () => setViewState(v => ({...v, bearing: viewState.bearing, pitch: viewState.pitch }))
+        map.setPaintProperty("3d-buildings", "fill-extrusion-base", [
+          "*",
+          ["get", "min_height"],
+          anim.p * SCALE,
+        ] as any);
+      },
+      onComplete: () => {
+        map.setPaintProperty("3d-buildings", "fill-extrusion-height", [
+          "*",
+          ["get", "height"],
+          SCALE,
+        ] as any);
+        map.setPaintProperty("3d-buildings", "fill-extrusion-base", [
+          "*",
+          ["get", "min_height"],
+          SCALE,
+        ] as any);
+      },
     });
-
   }, [resolvedTheme]);
 
   if (!location?.lat ||!location?.lng) {
@@ -84,9 +92,10 @@ export function Map({ location, title = "Ubicacion", address }: MapProps) {
     );
   }
 
-  const currentMapStyle = resolvedTheme === "dark"
-   ? "mapbox://styles/mapbox/dark-v11"
-    : "mapbox://styles/mapbox/streets-v12";
+  const currentMapStyle =
+    resolvedTheme === "dark"
+     ? "mapbox://styles/mapbox/dark-v11"
+      : "mapbox://styles/mapbox/streets-v12";
 
   return (
     <section className="overflow-hidden rounded-2xl border border-border/50 bg-background shadow-warm">
@@ -109,33 +118,44 @@ export function Map({ location, title = "Ubicacion", address }: MapProps) {
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
           onLoad={onMapLoad}
         >
-          {/* Fuente DEM necesaria para terrain */}
-          <Source id="mapbox-dem" type="raster-dem" url="mapbox://mapbox.mapbox-terrain-dem-v1" tileSize={512} maxzoom={14} />
+          <Source
+            id="mapbox-dem"
+            type="raster-dem"
+            url="mapbox://mapbox.mapbox-terrain-dem-v1"
+            tileSize={512}
+            maxzoom={14}
+          />
 
           <NavigationControl position="top-right" />
 
           {resolvedTheme === "dark" && (
-            <Layer id="dark-overlay" type="background" paint={{ 'background-color': '#000000', 'background-opacity': 0.35 }} />
+            <Layer
+              id="dark-overlay"
+              type="background"
+              paint={{
+                "background-color": "#000000",
+                "background-opacity": 0.35,
+              }}
+            />
           )}
 
           <Layer
             id="3d-buildings"
             source="composite"
             source-layer="building"
-            filter={['==', 'extrude', 'true']}
+            filter={["==", "extrude", "true"]}
             type="fill-extrusion"
             paint={{
-              'fill-extrusion-color': resolvedTheme === "dark"? "#ffffff" : "#aaa",
-              'fill-extrusion-height': ['get', 'height'],
-              'fill-extrusion-base': ['get', 'min_height'],
-              'fill-extrusion-opacity': resolvedTheme === "dark"? 0.79 : 0.6
+              "fill-extrusion-color": resolvedTheme === "dark"? "#ffffff" : "#aaa",
+              "fill-extrusion-height": ["get", "height"],
+              "fill-extrusion-base": ["get", "min_height"],
+              "fill-extrusion-opacity": resolvedTheme === "dark"? 0.79 : 0.6,
             }}
           />
 
+          {/* PIN QUIETO - listo para tu icono personalizado */}
           <Marker longitude={location.lng} latitude={location.lat} anchor="bottom">
-            <div className="pin-ricuras">
-              <MapPin className="h-9 w-9 fill-primary text-primary-foreground drop-shadow-lg" />
-            </div>
+            <MapPin className="h-9 w-9 fill-primary text-primary-foreground drop-shadow-lg" />
           </Marker>
         </MapGL>
       </div>
