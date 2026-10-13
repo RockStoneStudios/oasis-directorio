@@ -21,17 +21,21 @@ const addressFragment = /* groq */ `
 `;
 
 const mapMarkerFragment = /* groq */ `
-  marker {
+  marker{
     businessType,
     scale,
     animation,
-    "icon2d": icon2d { ${imageFragment} },
-    "model3d": model3d {
+    icon2d{
       asset->{
         _id,
-        url,
-        size,
-        mimeType
+        url
+      },
+      alt
+    },
+    model3d{
+      asset->{
+        _id,
+        url
       }
     }
   }
