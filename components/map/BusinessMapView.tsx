@@ -19,7 +19,7 @@ interface BusinessWithPoint {
 }
 
 const PARQUES: Record<string, { lat: number; lng: number }> = {
-  sopetran: { lat: 6.5015, lng: -75.7405 }, // Parque Principal - TU FOTO
+  sopetran: { lat: 6.5028, lng: -75.7422  }, // Parque Principal - TU FOTO
   san_jeronimo: { lat: 6.443, lng: -75.732 },
   santa_fe: { lat: 6.5572, lng: -75.8274 },
   olaya: { lat: 6.6269, lng: -75.6843 },
@@ -77,10 +77,10 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
 
     map.flyTo({
       center: [center.lng, center.lat],
-      zoom: 16.8, // zoom cerrado como tu foto
+      zoom: 17, // zoom cerrado como tu foto
       pitch: 60, // ÁNGULO BAJO PARA QUE SE VEA EL 3D - ESTE ES EL SECRETO
       bearing: -15, // Leve giro a la izquierda
-      duration: 2800,
+      duration: 2700,
       essential: true,
     });
   }, [userLocation]);
