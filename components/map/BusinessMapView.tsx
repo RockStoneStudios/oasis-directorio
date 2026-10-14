@@ -77,8 +77,8 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
 
     map.flyTo({
       center: [center.lng, center.lat],
-      zoom: 17, // zoom cerrado como tu foto
-      pitch: 60, // ÁNGULO BAJO PARA QUE SE VEA EL 3D - ESTE ES EL SECRETO
+      zoom: 17.1, // zoom cerrado como tu foto
+      pitch: 61, // ÁNGULO BAJO PARA QUE SE VEA EL 3D - ESTE ES EL SECRETO
       bearing: -15, // Leve giro a la izquierda
       duration: 2700,
       essential: true,
@@ -146,7 +146,7 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
             >
               <div
                 className="group cursor-pointer flex flex-col items-center hover:z-50 transition-transform duration-300 hover:scale-[1.3] animate-[float_3s_ease-in-out_infinite]"
-                style={{ animationDelay: `${Math.random() * 3}s`, transform: `scale(${scale})` }}
+                style={{ animationDelay: `${Math.random() * 3}s`, transform: `scale(${scale * 1.04})` }}
               >
                 {iconUrl? (
                   <img
