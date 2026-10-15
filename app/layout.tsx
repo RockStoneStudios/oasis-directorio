@@ -1,27 +1,23 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist_Mono, Inter, Sora } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SanityLive } from "@/lib/sanity/live";
 import { ThemeProvider } from "@/components/theme-provider";
 //@ts-ignore
 import "./globals.css";
 
-// --- SOLO ESTO CAMBIA, PARA ARREGLAR EL ERROR DE TURBOPACK ---
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
-const plusJakarta = Plus_Jakarta_Sans({ 
-  variable: "--font-plus-jakarta", 
+const sora = Sora({ 
+  variable: "--font-sora", 
   subsets: ["latin"], 
   display: "swap",
-  // quitamos el weight array que rompe turbopack, si lo dejas te vuelve a salir el error
+  weight: ["500", "600", "700", "800"]
 });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
-// ============================================================
-// CONFIGURACIÓN DE VIEWPORT
-// ============================================================
 export const viewport: Viewport = {
   themeColor: "#0f172a",
   width: "device-width",
@@ -29,9 +25,6 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
-// ============================================================
-// CIUDADES COBERTURA
-// ============================================================
 const CITIES = [
   { name: "Sopetrán", lat: "6.500893", lng: "-75.742225", description: "Municipio del Occidente Antioqueño, conocido por sus fincas de alquiler, glamping, restaurantes y turismo de descanso." },
   { name: "Santa Fe de Antioquia", lat: "6.556944", lng: "-75.827778", description: "Ciudad colonial patrimonio de Colombia, destino gastronómico, hotelero, glamping y cultural." },
@@ -40,15 +33,12 @@ const CITIES = [
   { name: "Olaya", lat: "6.627778", lng: "-75.812500", description: "Tradicional municipio antioqueño en las riberas del Río Cauca con destinos turísticos poco conocidos." }
 ];
 
-// ============================================================
-// METADATA GLOBAL OPTIMIZADA (SEO MEJORADO)
-// ============================================================
 export const metadata: Metadata = {
   title: {
     default: "Ooasys | Fincas, Glamping, Restaurantes y Directorio del Occidente Antioqueño",
     template: "%s | Ooasys",
   },
-  description: "Descubre el Occidente Antioqueño en Ooasys: fincas para alquilar, glamping, restaurantes en Sopetrán, hospedajes en San Jerónimo y comercios en Santa Fe de Antioquia. ¡Conecta por 【entity-WhatsApp¦canonical_name=WhatsApp】!",
+  description: "Descubre el Occidente Antioqueño en Ooasys: fincas para alquilar, glamping, restaurantes en Sopetrán, hospedajes en San Jerónimo y comercios en Santa Fe de Antioquia. ¡Conecta por WhatsApp!",
   authors: [{ name: "Ooasys", url: APP_URL }],
   metadataBase: new URL(APP_URL),
   category: "Business Directory",
@@ -85,7 +75,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Ooasys | Directorio y Guía Turística del Occidente Antioqueño",
-    description: "Explora fincas para alquilar, zonas de glamping, gastronomía típica y comercios locales con conexión directa por 【entity-WhatsApp¦canonical_name=WhatsApp】.",
+    description: "Explora fincas para alquilar, zonas de glamping, gastronomía típica y comercios locales con conexión directa por WhatsApp.",
     images: [`${APP_URL}/ooasys-banner.jpeg`],
     creator: "@ooasys",
   },
@@ -104,9 +94,6 @@ export const metadata: Metadata = {
   },
 };
 
-// ============================================================
-// SCHEMA UNIFICADO CON @GRAPH
-// ============================================================
 const unifiedGraphSchema = {
   "@context": "https://schema.org",
   "@graph": [
@@ -151,7 +138,7 @@ const unifiedGraphSchema = {
           "name": "¿Qué puedo encontrar en la plataforma Ooasys?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "En Ooasys puedes encontrar fincas para alquilar, opciones de glamping, dónde comer en Sopetrán, hoteles, restaurantes y negocios locales del Occidente Antioqueño con contacto directo por 【entity-WhatsApp¦canonical_name=WhatsApp】."
+            "text": "En Ooasys puedes encontrar fincas para alquilar, opciones de glamping, dónde comer en Sopetrán, hoteles, restaurantes y negocios locales del Occidente Antioqueño con contacto directo por WhatsApp."
           }
         },
         {
@@ -167,7 +154,7 @@ const unifiedGraphSchema = {
           "name": "¿Cómo registrar mi negocio, finca o glamping en el directorio de Ooasys?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Puedes registrar tu comercio, glamping o finca de alquiler en Ooasys para mejorar la visibilidad digital de tu negocio rural en Antioquia y recibir clientes directamente a tu 【entity-WhatsApp¦canonical_name=WhatsApp】."
+            "text": "Puedes registrar tu comercio, glamping o finca de alquiler en Ooasys para mejorar la visibilidad digital de tu negocio rural en Antioquia y recibir clientes directamente a tu WhatsApp."
           }
         }
       ]
@@ -185,13 +172,10 @@ const unifiedGraphSchema = {
   ]
 };
 
-// ============================================================
-// COMPONENTE ROOT LAYOUT
-// ============================================================
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="es" suppressHydrationWarning className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable}`}>
+      <html lang="es" suppressHydrationWarning className={`${inter.variable} ${sora.variable} ${geistMono.variable}`}>
         <head>
           <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
           <link rel="preconnect" href="https://www.google.com" />
