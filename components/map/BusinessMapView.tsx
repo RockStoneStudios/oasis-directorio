@@ -19,7 +19,7 @@ interface BusinessWithPoint {
 }
 
 const PARQUES: Record<string, { lat: number; lng: number }> = {
-  sopetran: { lat: 6.5028, lng: -75.7422  }, // Parque Principal - TU FOTO
+  sopetran: { lat: 6.5025, lng: -75.74281  }, // Parque Principal - TU FOTO
   san_jeronimo: { lat: 6.443, lng: -75.732 },
   santa_fe: { lat: 6.5572, lng: -75.8274 },
   olaya: { lat: 6.6269, lng: -75.6843 },

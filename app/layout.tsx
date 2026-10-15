@@ -7,8 +7,14 @@ import { ThemeProvider } from "@/components/theme-provider";
 //@ts-ignore
 import "./globals.css";
 
+// --- SOLO ESTO CAMBIA, PARA ARREGLAR EL ERROR DE TURBOPACK ---
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
-const plusJakarta = Plus_Jakarta_Sans({ variable: "--font-plus-jakarta", subsets: ["latin"], display: "swap", weight: ["500", "600", "700", "800"] });
+const plusJakarta = Plus_Jakarta_Sans({ 
+  variable: "--font-plus-jakarta", 
+  subsets: ["latin"], 
+  display: "swap",
+  // quitamos el weight array que rompe turbopack, si lo dejas te vuelve a salir el error
+});
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
@@ -24,7 +30,7 @@ export const viewport: Viewport = {
 };
 
 // ============================================================
-// CIUDADES COBERTERA
+// CIUDADES COBERTURA
 // ============================================================
 const CITIES = [
   { name: "Sopetrán", lat: "6.500893", lng: "-75.742225", description: "Municipio del Occidente Antioqueño, conocido por sus fincas de alquiler, glamping, restaurantes y turismo de descanso." },
@@ -42,7 +48,7 @@ export const metadata: Metadata = {
     default: "Ooasys | Fincas, Glamping, Restaurantes y Directorio del Occidente Antioqueño",
     template: "%s | Ooasys",
   },
-  description: "Descubre el Occidente Antioqueño en Ooasys: fincas para alquilar, glamping, restaurantes en Sopetrán, hospedajes en San Jerónimo y comercios en Santa Fe de Antioquia. ¡Conecta por WhatsApp!",
+  description: "Descubre el Occidente Antioqueño en Ooasys: fincas para alquilar, glamping, restaurantes en Sopetrán, hospedajes en San Jerónimo y comercios en Santa Fe de Antioquia. ¡Conecta por 【entity-WhatsApp¦canonical_name=WhatsApp】!",
   authors: [{ name: "Ooasys", url: APP_URL }],
   metadataBase: new URL(APP_URL),
   category: "Business Directory",
@@ -79,7 +85,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Ooasys | Directorio y Guía Turística del Occidente Antioqueño",
-    description: "Explora fincas para alquilar, zonas de glamping, gastronomía típica y comercios locales con conexión directa por WhatsApp.",
+    description: "Explora fincas para alquilar, zonas de glamping, gastronomía típica y comercios locales con conexión directa por 【entity-WhatsApp¦canonical_name=WhatsApp】.",
     images: [`${APP_URL}/ooasys-banner.jpeg`],
     creator: "@ooasys",
   },
@@ -145,7 +151,7 @@ const unifiedGraphSchema = {
           "name": "¿Qué puedo encontrar en la plataforma Ooasys?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "En Ooasys puedes encontrar fincas para alquilar, opciones de glamping, dónde comer en Sopetrán, hoteles, restaurantes y negocios locales del Occidente Antioqueño con contacto directo por WhatsApp."
+            "text": "En Ooasys puedes encontrar fincas para alquilar, opciones de glamping, dónde comer en Sopetrán, hoteles, restaurantes y negocios locales del Occidente Antioqueño con contacto directo por 【entity-WhatsApp¦canonical_name=WhatsApp】."
           }
         },
         {
@@ -161,7 +167,7 @@ const unifiedGraphSchema = {
           "name": "¿Cómo registrar mi negocio, finca o glamping en el directorio de Ooasys?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Puedes registrar tu comercio, glamping o finca de alquiler en Ooasys para mejorar la visibilidad digital de tu negocio rural en Antioquia y recibir clientes directamente a tu WhatsApp."
+            "text": "Puedes registrar tu comercio, glamping o finca de alquiler en Ooasys para mejorar la visibilidad digital de tu negocio rural en Antioquia y recibir clientes directamente a tu 【entity-WhatsApp¦canonical_name=WhatsApp】."
           }
         }
       ]
@@ -185,13 +191,13 @@ const unifiedGraphSchema = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="es" suppressHydrationWarning>
+      <html lang="es" suppressHydrationWarning className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable}`}>
         <head>
           <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
           <link rel="preconnect" href="https://www.google.com" />
         </head>
         <body 
-          className={`${inter.variable} ${plusJakarta.variable} ${geistMono.variable} font-body antialiased`}
+          className={`font-body antialiased`}
           suppressHydrationWarning
         >
           <script
