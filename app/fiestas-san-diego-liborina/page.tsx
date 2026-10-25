@@ -217,7 +217,7 @@ export default async function FiestasSanDiegoPage() {
     },
     organizer: [
       { '@type': 'Organization', name: 'Parroquia de Liborina' },
-      { '@type': 'GovernmentOrganization', name: 'Alcaldía de Liborina' },
+      { '@type': 'GovernmentOrganization', name: 'Alcaldía de Liborina', url: 'https://www.liborina-antioquia.gov.co/' },
     ],
     offers: {
       '@type': 'Offer',
