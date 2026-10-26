@@ -7,9 +7,7 @@ import { BUSINESS_BY_SUBCATEGORY_QUERY } from "@/lib/sanity/queries";
 import { BusinessCard } from "@/components/BusinessCard";
 
 // Ruta: /categorias/[slug]/[municipio]
-// Ej: /categorias/licoreras/sopetran -> Licoreras en Sopetran
-//     /categorias/donde-comer/liborina -> Donde comer en Liborina
-//     /categorias/licoreras/santa-fe-de-antioquia -> Licoreras en Santa Fe de Antioquia
+// Ej: /categorias/transportes-and-encomiendas/sopetran -> Mototaxis en Sopetran
 
 interface Props {
   params: Promise<{ slug: string; municipio: string }>;
@@ -76,10 +74,11 @@ function detectNiche(c: string) {
   if (has("licorera","discoteca","rumba","bares")) return "nightlife";
   if (has("restaurante","comidas rapidas","comida","donde comer")) return "food";
   if (has("supermercado","tienda")) return "shopping";
-  if (has("mototaxi","domicilios","transporte")) return "transport";
+  if (has("mototaxi","domicilios","transporte","encomienda")) return "transport";
   if (has("farmacia","drogueria","salud")) return "health";
   return "general";
 }
+
 function buildDesc(categoryName:string, count:number, municipio:string) {
   const n = count>0 ? `${count} ` : "";
   const map: Record<string,string> = {
@@ -87,19 +86,42 @@ function buildDesc(categoryName:string, count:number, municipio:string) {
     nightlife: `${n}licoreras en ${municipio} con domicilio, horarios y WhatsApp directo.`,
     lodging: `${n}fincas y hospedaje en ${municipio} con piscina y BBQ. Reserva directa.`,
     beauty: `${n}barberias en ${municipio} con citas por WhatsApp.`,
-    transport: `${n}mototaxis y domicilios en ${municipio} 24h.`,
+    transport: `${n}mototaxis y domicilios en ${municipio} 24h. Servicio rapido por WhatsApp.`,
     health: `${n}farmacias en ${municipio} con domicilio.`,
     shopping: `${n}supermercados en ${municipio} con domicilio.`,
     general: `${n}${categoryName} en ${municipio}. Telefono y WhatsApp directo en Ooasys.`,
   };
   return stripHtmlAndTruncate(map[detectNiche(categoryName)] || map.general, 155);
 }
+
 function getFaqs(categoryName:string, municipio:string) {
+  if (detectNiche(categoryName) === "transport") {
+    return [
+      { q: `¿Donde encontrar mototaxi en ${municipio}?`, a: `En Ooasys listamos mototaxis, domicilios y encomiendas en ${municipio} con telefono y WhatsApp directo.` },
+      { q: `¿Cuánto vale un mototaxi en ${municipio}?`, a: `El precio depende de la distancia y si es dentro del pueblo o a una finca en ${municipio}. Escribele directo por WhatsApp al mototaxi en Ooasys y cotiza sin intermediarios.` },
+      { q: `¿Hay mototaxis 24 horas en ${municipio}?`, a: `Si, varios mototaxis y domicilios en ${municipio} trabajan 24h. Revisa en su ficha su horario y WhatsApp.` },
+    ];
+  }
   return [
     { q: `¿Donde encontrar ${categoryName} en ${municipio}?`, a: `En Ooasys listamos ${categoryName} en ${municipio} con telefono y WhatsApp directo.` },
-    { q: `¿Como contactar ${categoryName} en ${municipio}?`, a: "Usa el boton de WhatsApp en la ficha. Contacto directo, sin intermediarios." },
-    { q: `¿Hacen domicilio a fincas en ${municipio}?`, a: "Depende de cada negocio. Entra a su perfil y consultalo por WhatsApp." },
+    { q: `¿Como contactar ${categoryName} en ${municipio}?`, a: "Usa el boton de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Contacto directo, sin intermediarios." },
+    { q: `¿Hacen domicilio a fincas en ${municipio}?`, a: "Depende de cada negocio. Entra a su perfil y consultalo por 【entity-WhatsApp¦canonical_name=WhatsApp】." },
   ];
+}
+
+// ARREGLO MOTOTAXIS + MUNICIPIO
+function getSeoTitle(categoryName:string, municipio:string) {
+  if (detectNiche(categoryName) === "transport") {
+    return `Mototaxis en ${municipio} 24h con WhatsApp | Ooasys`;
+  }
+  return `${categoryName} en ${municipio} con WhatsApp | Ooasys`;
+}
+
+function getDisplayTitle(categoryName:string, municipio:string) {
+  if (detectNiche(categoryName) === "transport") {
+    return `Mototaxis, Domicilios y Encomiendas en ${municipio}`;
+  }
+  return `${categoryName} en ${municipio}`;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -108,7 +130,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const all = await getBusinessesBySlug(slug);
   const categoryName = resolveCategoryName(slug, all);
   const filtered = filterByMunicipio(all, municipio);
-  const title = `${categoryName} en ${nombreMunicipio} con WhatsApp | Ooasys`;
+  const title = getSeoTitle(categoryName, nombreMunicipio);
   const description = buildDesc(categoryName, filtered.length, nombreMunicipio);
   const url = `${baseUrl}/categorias/${slug}/${municipio}`;
   return {
@@ -130,10 +152,11 @@ export default async function MunicipioPage({ params }: Props) {
   const businesses = filterByMunicipio(all, municipio);
   const url = `${baseUrl}/categorias/${slug}/${municipio}`;
   const faqs = getFaqs(categoryName, nombreMunicipio);
+  const displayTitle = getDisplayTitle(categoryName, nombreMunicipio);
 
   const jsonLd = {
     "@context":"https://schema.org","@type":"CollectionPage","@id":`${url}#webpage`,
-    name:`${categoryName} en ${nombreMunicipio}`, description: buildDesc(categoryName, businesses.length, nombreMunicipio), url,
+    name:`${displayTitle}`, description: buildDesc(categoryName, businesses.length, nombreMunicipio), url,
     isPartOf:{"@type":"WebSite", name:"Ooasys", url: baseUrl},
     areaServed:{"@type":"City", name: nombreMunicipio},
     mainEntity:{"@type":"ItemList", numberOfItems: businesses.length, itemListElement: businesses.slice(0,10).map((b:any,i:number)=>({
@@ -143,8 +166,8 @@ export default async function MunicipioPage({ params }: Props) {
   const breadcrumb = {"@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[
     {"@type":"ListItem", position:1, name:"Inicio", item: baseUrl},
     {"@type":"ListItem", position:2, name:"Categorías", item:`${baseUrl}/categorias`},
-    {"@type":"ListItem", position:3, name:`${categoryName} en Occidente Antioqueño`, item:`${baseUrl}/categorias/${slug}`},
-    {"@type":"ListItem", position:4, name:`${categoryName} en ${nombreMunicipio}`, item: url},
+    {"@type":"ListItem", position:3, name:`${displayTitle} en Occidente Antioqueño`, item:`${baseUrl}/categorias/${slug}`},
+    {"@type":"ListItem", position:4, name:`${displayTitle}`, item: url},
   ]};
 
   return (
@@ -153,11 +176,15 @@ export default async function MunicipioPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html: toJsonLd(breadcrumb)}} />
       <div className="container mx-auto px-4 py-8">
         <Link href={`/categorias/${slug}`} className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-6">
-          <ArrowLeft className="h-4 w-4"/> Volver a {categoryName} en Occidente
+          <ArrowLeft className="h-4 w-4"/> Volver a {displayTitle} en Occidente
         </Link>
-        <h1 className="text-3xl font-extrabold md:text-4xl">{categoryName} en {nombreMunicipio} <span className="text-primary text-2xl block md:inline font-normal">con WhatsApp directo</span></h1>
+        <h1 className="text-3xl font-extrabold md:text-4xl">{displayTitle} <span className="text-primary text-2xl block md:inline font-normal">con WhatsApp directo</span></h1>
         <p className="mt-4 max-w-3xl text-foreground/80">
-          Encuentra <strong>{businesses.length} opciones de {categoryName.toLowerCase()} en {nombreMunicipio}</strong>. ¿Buscas cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Contacta directo por WhatsApp sin comisiones.
+          {detectNiche(categoryName) === "transport" ? (
+            <>Encuentra <strong>{businesses.length} mototaxis, domicilios y encomiendas en {nombreMunicipio}</strong>. ¿Buscas mototaxi cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Contacta directo por WhatsApp sin comisiones.</>
+          ) : (
+            <>Encuentra <strong>{businesses.length} opciones de {categoryName.toLowerCase()} en {nombreMunicipio}</strong>. ¿Buscas cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Contacta directo por WhatsApp sin comisiones.</>
+          )}
         </p>
         <div className="flex flex-wrap gap-2 mt-4">
           {MUNICIPIOS_LIST.map(m=>{
@@ -168,12 +195,12 @@ export default async function MunicipioPage({ params }: Props) {
         </div>
         <p className="text-muted-foreground mt-4 text-sm">{businesses.length} negocios verificados en {nombreMunicipio}.</p>
         {businesses.length===0 ? (
-          <div className="text-center py-20 border border-dashed rounded-3xl mt-6"><Store className="h-12 w-12 mx-auto opacity-30"/><p className="mt-4">Aun no hay {categoryName} en {nombreMunicipio}</p></div>
+          <div className="text-center py-20 border border-dashed rounded-3xl mt-6"><Store className="h-12 w-12 mx-auto opacity-30"/><p className="mt-4">Aun no hay {displayTitle} en {nombreMunicipio}</p></div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">{businesses.map((b:any)=><BusinessCard key={b._id} business={b}/>)}</div>
         )}
         <section className="mt-16 pt-10 border-t">
-          <h2 className="text-xl font-bold flex items-center gap-2"><HelpCircle className="h-5 w-5 text-primary"/> Preguntas frecuentes sobre {categoryName} en {nombreMunicipio}</h2>
+          <h2 className="text-xl font-bold flex items-center gap-2"><HelpCircle className="h-5 w-5 text-primary"/> Preguntas frecuentes sobre {displayTitle}</h2>
           <div className="grid md:grid-cols-3 gap-6 mt-6">{faqs.map((f,i)=><div key={i} className="p-5 rounded-2xl border"><h3 className="font-semibold text-sm">{f.q}</h3><p className="text-xs text-muted-foreground mt-2">{f.a}</p></div>)}</div>
         </section>
       </div>
