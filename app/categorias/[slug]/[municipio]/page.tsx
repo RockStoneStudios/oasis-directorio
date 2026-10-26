@@ -1,0 +1,182 @@
+import { cache } from "react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowLeft, Store, HelpCircle, MapPin } from "lucide-react";
+import { client } from "@/lib/sanity/client";
+import { BUSINESS_BY_SUBCATEGORY_QUERY } from "@/lib/sanity/queries";
+import { BusinessCard } from "@/components/BusinessCard";
+
+// Ruta: /categorias/[slug]/[municipio]
+// Ej: /categorias/licoreras/sopetran -> Licoreras en Sopetran
+//     /categorias/donde-comer/liborina -> Donde comer en Liborina
+//     /categorias/licoreras/santa-fe-de-antioquia -> Licoreras en Santa Fe de Antioquia
+
+interface Props {
+  params: Promise<{ slug: string; municipio: string }>;
+}
+
+export const revalidate = 3600;
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
+
+const MUNICIPIOS: Record<string, string> = {
+  "sopetran": "Sopetrán",
+  "san-jeronimo": "San Jerónimo",
+  "santa-fe-de-antioquia": "Santa Fe de Antioquia",
+  "liborina": "Liborina",
+  "olaya": "Olaya",
+};
+
+const MUNICIPIOS_LIST = ["Sopetrán", "San Jerónimo", "Santa Fe de Antioquia", "Liborina", "Olaya"];
+const MUNICIPIOS_SLUG: Record<string, string> = {
+  "Sopetrán": "sopetran",
+  "San Jerónimo": "san-jeronimo",
+  "Santa Fe de Antioquia": "santa-fe-de-antioquia",
+  "Liborina": "liborina",
+  "Olaya": "olaya",
+};
+
+function formatMunicipio(slug: string) {
+  return MUNICIPIOS[slug] || slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " ");
+}
+function formatSlugText(slug: string) {
+  return slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " ");
+}
+function normalize(t: string) { return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
+function stripHtmlAndTruncate(text: string, max: number) {
+  if (!text) return "";
+  const c = text.replace(/(<([^>]+)>)/gi,"").replace(/\s+/g," ").trim();
+  return c.length > max ? c.substring(0,max-3).trimEnd()+"..." : c;
+}
+function toJsonLd(d: unknown){ return JSON.stringify(d).replace(/</g,"\\u003c"); }
+function getSlugText(s:any){ return !s ? "" : typeof s==="object" ? s.current||"" : s; }
+
+const getBusinessesBySlug = cache(async (slug: string) => {
+  const result = await client.fetch(BUSINESS_BY_SUBCATEGORY_QUERY, { slug });
+  return (result ?? []) as any[];
+});
+
+function resolveCategoryName(slug: string, businesses: any[]): string {
+  const fallback = formatSlugText(slug);
+  if (!businesses.length) return fallback;
+  const first = businesses[0];
+  return first.category?.slug?.current === slug ? first.category.name : first.subcategory?.name || first.category?.name || fallback;
+}
+
+function filterByMunicipio(businesses: any[], municipioSlug: string) {
+  const nombre = formatMunicipio(municipioSlug);
+  const target = normalize(nombre);
+  return businesses.filter((b:any) => normalize(b.city || b.municipality?.name || "") === target);
+}
+
+function detectNiche(c: string) {
+  const n = normalize(c);
+  const has = (...w:string[]) => w.some(x=>n.includes(x));
+  if (has("alojamiento","finca","glamping","hotel","hospedaje")) return "lodging";
+  if (has("barberia","peluqueria","estetica")) return "beauty";
+  if (has("licorera","discoteca","rumba","bares")) return "nightlife";
+  if (has("restaurante","comidas rapidas","comida","donde comer")) return "food";
+  if (has("supermercado","tienda")) return "shopping";
+  if (has("mototaxi","domicilios","transporte")) return "transport";
+  if (has("farmacia","drogueria","salud")) return "health";
+  return "general";
+}
+function buildDesc(categoryName:string, count:number, municipio:string) {
+  const n = count>0 ? `${count} ` : "";
+  const map: Record<string,string> = {
+    food: `${n}restaurantes y donde comer en ${municipio} con domicilio a fincas y veredas. Menus y WhatsApp directo.`,
+    nightlife: `${n}licoreras en ${municipio} con domicilio, horarios y WhatsApp directo.`,
+    lodging: `${n}fincas y hospedaje en ${municipio} con piscina y BBQ. Reserva directa.`,
+    beauty: `${n}barberias en ${municipio} con citas por WhatsApp.`,
+    transport: `${n}mototaxis y domicilios en ${municipio} 24h.`,
+    health: `${n}farmacias en ${municipio} con domicilio.`,
+    shopping: `${n}supermercados en ${municipio} con domicilio.`,
+    general: `${n}${categoryName} en ${municipio}. Telefono y WhatsApp directo en Ooasys.`,
+  };
+  return stripHtmlAndTruncate(map[detectNiche(categoryName)] || map.general, 155);
+}
+function getFaqs(categoryName:string, municipio:string) {
+  return [
+    { q: `¿Donde encontrar ${categoryName} en ${municipio}?`, a: `En Ooasys listamos ${categoryName} en ${municipio} con telefono y WhatsApp directo.` },
+    { q: `¿Como contactar ${categoryName} en ${municipio}?`, a: "Usa el boton de WhatsApp en la ficha. Contacto directo, sin intermediarios." },
+    { q: `¿Hacen domicilio a fincas en ${municipio}?`, a: "Depende de cada negocio. Entra a su perfil y consultalo por WhatsApp." },
+  ];
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, municipio } = await params;
+  const nombreMunicipio = formatMunicipio(municipio);
+  const all = await getBusinessesBySlug(slug);
+  const categoryName = resolveCategoryName(slug, all);
+  const filtered = filterByMunicipio(all, municipio);
+  const title = `${categoryName} en ${nombreMunicipio} con WhatsApp | Ooasys`;
+  const description = buildDesc(categoryName, filtered.length, nombreMunicipio);
+  const url = `${baseUrl}/categorias/${slug}/${municipio}`;
+  return {
+    metadataBase: new URL(baseUrl),
+    title: { absolute: title },
+    description,
+    alternates: { canonical: url, languages: { "es-CO": url, es: url } },
+    robots: filtered.length===0 ? { index:false, follow:true } : { index:true, follow:true },
+    openGraph: { title, description, url, type:"website", siteName:"Ooasys", locale:"es_CO", images:[{url:`${baseUrl}/og-categories.png`, width:1200, height:630, alt:title}] },
+    twitter: { card:"summary_large_image", title, description, images:[`${baseUrl}/og-categories.png`] },
+  };
+}
+
+export default async function MunicipioPage({ params }: Props) {
+  const { slug, municipio } = await params;
+  const nombreMunicipio = formatMunicipio(municipio);
+  const all = await getBusinessesBySlug(slug);
+  const categoryName = resolveCategoryName(slug, all);
+  const businesses = filterByMunicipio(all, municipio);
+  const url = `${baseUrl}/categorias/${slug}/${municipio}`;
+  const faqs = getFaqs(categoryName, nombreMunicipio);
+
+  const jsonLd = {
+    "@context":"https://schema.org","@type":"CollectionPage","@id":`${url}#webpage`,
+    name:`${categoryName} en ${nombreMunicipio}`, description: buildDesc(categoryName, businesses.length, nombreMunicipio), url,
+    isPartOf:{"@type":"WebSite", name:"Ooasys", url: baseUrl},
+    areaServed:{"@type":"City", name: nombreMunicipio},
+    mainEntity:{"@type":"ItemList", numberOfItems: businesses.length, itemListElement: businesses.slice(0,10).map((b:any,i:number)=>({
+      "@type":"ListItem", position:i+1, item:{"@type":"LocalBusiness", name:b.name, url:`${baseUrl}/business/${getSlugText(b.slug)}`, address:{"@type":"PostalAddress", addressLocality: b.city || nombreMunicipio, addressRegion:"Antioquia", addressCountry:"CO"}}
+    }))}
+  };
+  const breadcrumb = {"@context":"https://schema.org","@type":"BreadcrumbList", itemListElement:[
+    {"@type":"ListItem", position:1, name:"Inicio", item: baseUrl},
+    {"@type":"ListItem", position:2, name:"Categorías", item:`${baseUrl}/categorias`},
+    {"@type":"ListItem", position:3, name:`${categoryName} en Occidente Antioqueño`, item:`${baseUrl}/categorias/${slug}`},
+    {"@type":"ListItem", position:4, name:`${categoryName} en ${nombreMunicipio}`, item: url},
+  ]};
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: toJsonLd(jsonLd)}} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html: toJsonLd(breadcrumb)}} />
+      <div className="container mx-auto px-4 py-8">
+        <Link href={`/categorias/${slug}`} className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-6">
+          <ArrowLeft className="h-4 w-4"/> Volver a {categoryName} en Occidente
+        </Link>
+        <h1 className="text-3xl font-extrabold md:text-4xl">{categoryName} en {nombreMunicipio} <span className="text-primary text-2xl block md:inline font-normal">con WhatsApp directo</span></h1>
+        <p className="mt-4 max-w-3xl text-foreground/80">
+          Encuentra <strong>{businesses.length} opciones de {categoryName.toLowerCase()} en {nombreMunicipio}</strong>. ¿Buscas cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Contacta directo por WhatsApp sin comisiones.
+        </p>
+        <div className="flex flex-wrap gap-2 mt-4">
+          {MUNICIPIOS_LIST.map(m=>{
+            const s = MUNICIPIOS_SLUG[m];
+            const active = s===municipio;
+            return <Link key={m} href={`/categorias/${slug}/${s}`} className={active ? "inline-flex items-center gap-1 text-xs bg-primary text-primary-foreground px-3 py-1.5 rounded-full" : "inline-flex items-center gap-1 text-xs border px-3 py-1.5 rounded-full"}><MapPin className="h-3 w-3"/> {m}</Link>
+          })}
+        </div>
+        <p className="text-muted-foreground mt-4 text-sm">{businesses.length} negocios verificados en {nombreMunicipio}.</p>
+        {businesses.length===0 ? (
+          <div className="text-center py-20 border border-dashed rounded-3xl mt-6"><Store className="h-12 w-12 mx-auto opacity-30"/><p className="mt-4">Aun no hay {categoryName} en {nombreMunicipio}</p></div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">{businesses.map((b:any)=><BusinessCard key={b._id} business={b}/>)}</div>
+        )}
+        <section className="mt-16 pt-10 border-t">
+          <h2 className="text-xl font-bold flex items-center gap-2"><HelpCircle className="h-5 w-5 text-primary"/> Preguntas frecuentes sobre {categoryName} en {nombreMunicipio}</h2>
+          <div className="grid md:grid-cols-3 gap-6 mt-6">{faqs.map((f,i)=><div key={i} className="p-5 rounded-2xl border"><h3 className="font-semibold text-sm">{f.q}</h3><p className="text-xs text-muted-foreground mt-2">{f.a}</p></div>)}</div>
+        </section>
+      </div>
+    </>
+  );
+}

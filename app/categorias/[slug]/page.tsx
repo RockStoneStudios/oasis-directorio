@@ -61,14 +61,10 @@ function resolveCategoryName(slug: string, businesses: any[]): string {
     : first.subcategory?.name || first.category?.name || fallback;
 }
 
+// CORREGIDO: Esta pagina es GENERAL del Occidente, no de un solo municipio.
+// Antes retornaba Sopetran porque era el que mas negocios tenia y por eso el titulo mentia.
 function getTopMunicipio(businesses: any[]): string {
-  if (!businesses.length) return "Sopetrán";
-  const count: Record<string, number> = {};
-  businesses.forEach((b: any) => {
-    const city = b.city || b.municipality?.name || "Sopetrán";
-    count[city] = (count[city] || 0) + 1;
-  });
-  return Object.entries(count).sort((a, b) => b[1] - a[1])[0]?.[0] || "Sopetrán";
+  return "Occidente Antioqueño";
 }
 
 type Niche =
@@ -98,21 +94,21 @@ function detectNiche(categoryName: string): Niche {
 function buildCategoryDescription(categoryName: string, count: number, topMunicipio: string): string {
   const n = count > 0 ? `${count} ` : "";
   const byNiche: Record<Niche, string> = {
-    food: `${n}restaurantes en ${topMunicipio} y Occidente Antioqueño con domicilio a fincas. Menus y WhatsApp directo.`,
+    food: `${n}restaurantes en ${topMunicipio} con domicilio a fincas. Menus y WhatsApp directo.`,
     nightlife: `${n}bares y discotecas en ${topMunicipio} con horarios y ubicacion. Contacto directo por WhatsApp.`,
     shopping: `${n}supermercados en ${topMunicipio} con domicilio a casas y fincas. Pide por WhatsApp.`,
-    beauty: `${n}barberias en ${topMunicipio} y Occidente. Cortes, barba y citas por WhatsApp.`,
+    beauty: `${n}barberias en ${topMunicipio}. Cortes, barba y citas por WhatsApp.`,
     transport: `${n}mototaxis y domicilios en ${topMunicipio} 24h. Servicio rapido por WhatsApp.`,
     moving: `${n}trasteos y mudanzas en ${topMunicipio}. Cotiza tu transporte de carga por WhatsApp.`,
     health: `${n}farmacias y droguerias en ${topMunicipio} con telefono y domicilio.`,
-    emergency: `Numeros de bomberos y policia en ${topMunicipio} y Occidente. Contacto directo 24h.`,
+    emergency: `Numeros de bomberos y policia en ${topMunicipio}. Contacto directo 24h.`,
     religion: `${n}parroquias en ${topMunicipio}. Horarios de misa y ubicacion.`,
     tourism: `${n}planes turisticos en ${topMunicipio}: cuatrimotos y aventura. Reserva directo.`,
     lodging: `${n}fincas y glampings en ${topMunicipio} con piscina y BBQ. Reserva directa por WhatsApp.`,
     agro: `${n}agroinsumos en ${topMunicipio}. Fertilizantes y concentrados con domicilio.`,
     internet: `${n}proveedores de internet en ${topMunicipio} para casas y fincas. Instalacion WiFi.`,
     services: `${n}servicios tecnicos en ${topMunicipio}: electricistas y plomeros. Cotiza por WhatsApp.`,
-    general: `${n}${categoryName} en ${topMunicipio} y Occidente. Telefono y WhatsApp directo en Ooasys.`,
+    general: `${n}${categoryName} en ${topMunicipio}. Telefono y WhatsApp directo en Ooasys.`,
   };
   return stripHtmlAndTruncate(byNiche[detectNiche(categoryName)], 155);
 }
@@ -126,7 +122,7 @@ function getCategoryFaqs(categoryName: string, topMunicipio: string) {
     ];
   }
   return [
-    { q: `¿Donde encontrar ${categoryName} en ${topMunicipio}?`, a: `En Ooasys listamos ${categoryName} en ${topMunicipio}, San Jeronimo y Santa Fe de Antioquia con telefono y WhatsApp directo.` },
+    { q: `¿Donde encontrar ${categoryName} en ${topMunicipio}?`, a: `En Ooasys listamos ${categoryName} en ${topMunicipio} con telefono y WhatsApp directo.` },
     { q: `¿Como contactar ${categoryName} en ${topMunicipio}?`, a: "Usa el boton de WhatsApp en la ficha. El contacto es directo con el negocio, sin intermediarios." },
     { q: `¿Hacen domicilio de ${categoryName} a fincas en ${topMunicipio}?`, a: "Depende de cada negocio. Entra a su perfil y consultalo por WhatsApp, muchos atienden veredas y fincas." },
   ];
@@ -139,6 +135,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const count = businesses.length;
   const topMunicipio = getTopMunicipio(businesses);
 
+  // CORREGIDO: titulo general, no dice Sopetran
   const title = `${categoryName} en ${topMunicipio} con WhatsApp y Domicilio | Ooasys`;
   const description = buildCategoryDescription(categoryName, count, topMunicipio);
   const url = `${baseUrl}/categorias/${slug}`;
@@ -259,7 +256,7 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
           <div className="mt-4 max-w-3xl">
             <p className="text-foreground/80 leading-relaxed">
               Encuentra <strong>{businesses.length} opciones de {title.toLowerCase()} en {topMunicipio}</strong> y todo el Occidente Antioqueño. 
-              ¿Buscas {title.toLowerCase()} cerca del parque de {topMunicipio}? ¿Con domicilio a fincas y veredas? 
+              ¿Buscas {title.toLowerCase()} cerca del parque de Sopetrán, San Jerónimo o Santa Fe de Antioquia? ¿Con domicilio a fincas y veredas? 
               Aquí los contactas directo por WhatsApp sin comisiones ni intermediarios. Revisa fotos, ubicación y horarios.
             </p>
             
@@ -269,7 +266,7 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
                 return (
                   <Link 
                     key={m} 
-                    href={`/business?municipality=${municipioSlug}&category=${slug}`}
+                    href={`/categorias/${slug}/${municipioSlug}`}
                     className="inline-flex items-center gap-1 text-xs border border-border bg-card hover:bg-accent px-3 py-1.5 rounded-full transition-colors"
                   >
                     <MapPin className="h-3 w-3" /> {m}
@@ -294,7 +291,7 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
               {MUNICIPIOS.map(m => {
                 const municipioSlug = MUNICIPIOS_SLUG[m];
                 return (
-                  <Link key={m} href={`/business?municipality=${municipioSlug}&category=${slug}`} className="text-xs underline">{m}</Link>
+                  <Link key={m} href={`/categorias/${slug}/${municipioSlug}`} className="text-xs underline">{m}</Link>
                 );
               })}
             </div>
