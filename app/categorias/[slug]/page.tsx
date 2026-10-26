@@ -61,8 +61,6 @@ function resolveCategoryName(slug: string, businesses: any[]): string {
     : first.subcategory?.name || first.category?.name || fallback;
 }
 
-// CORREGIDO: Esta pagina es GENERAL del Occidente, no de un solo municipio.
-// Antes retornaba Sopetran porque era el que mas negocios tenia y por eso el titulo mentia.
 function getTopMunicipio(businesses: any[]): string {
   return "Occidente Antioqueño";
 }
@@ -121,11 +119,33 @@ function getCategoryFaqs(categoryName: string, topMunicipio: string) {
       { q: "¿Con cuanto tiempo reservar en puente?", a: "En el Occidente Antioqueño se recomienda reservar con 2 a 4 semanas de anticipacion por la alta demanda." },
     ];
   }
+  if (detectNiche(categoryName) === "transport") {
+    return [
+      { q: `¿Donde encontrar mototaxi en ${topMunicipio}?`, a: `En Ooasys listamos mototaxis, domicilios y encomiendas en ${topMunicipio} con telefono y WhatsApp directo.` },
+      { q: `¿Cuánto vale un mototaxi en ${topMunicipio}?`, a: `El precio depende de la distancia y si es dentro del pueblo o a una finca. Escribele directo por WhatsApp al mototaxi en Ooasys y cotiza sin intermediarios.` },
+      { q: `¿Hay mototaxis 24 horas en ${topMunicipio}?`, a: `Si, varios mototaxis y domicilios en ${topMunicipio} trabajan 24h, sobre todo en Sopetran y San Jeronimo. Revisa en su ficha su horario y WhatsApp.` },
+    ];
+  }
   return [
     { q: `¿Donde encontrar ${categoryName} en ${topMunicipio}?`, a: `En Ooasys listamos ${categoryName} en ${topMunicipio} con telefono y WhatsApp directo.` },
     { q: `¿Como contactar ${categoryName} en ${topMunicipio}?`, a: "Usa el boton de WhatsApp en la ficha. El contacto es directo con el negocio, sin intermediarios." },
     { q: `¿Hacen domicilio de ${categoryName} a fincas en ${topMunicipio}?`, a: "Depende de cada negocio. Entra a su perfil y consultalo por WhatsApp, muchos atienden veredas y fincas." },
   ];
+}
+
+// ARREGLO MOTOTAXIS: Si la categoria es Transportes, el titulo SEO usa Mototaxis
+function getSeoTitle(categoryName: string, topMunicipio: string): string {
+  if (detectNiche(categoryName) === "transport") {
+    return `Mototaxis, Domicilios y Encomiendas en ${topMunicipio} | Ooasys`;
+  }
+  return `${categoryName} en ${topMunicipio} con WhatsApp y Domicilio | Ooasys`;
+}
+
+function getDisplayTitle(categoryName: string, topMunicipio: string): string {
+  if (detectNiche(categoryName) === "transport") {
+    return `Mototaxis, Domicilios y Encomiendas en ${topMunicipio}`;
+  }
+  return `${categoryName} en ${topMunicipio}`;
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
@@ -135,8 +155,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const count = businesses.length;
   const topMunicipio = getTopMunicipio(businesses);
 
-  // CORREGIDO: titulo general, no dice Sopetran
-  const title = `${categoryName} en ${topMunicipio} con WhatsApp y Domicilio | Ooasys`;
+  const title = getSeoTitle(categoryName, topMunicipio);
   const description = buildCategoryDescription(categoryName, count, topMunicipio);
   const url = `${baseUrl}/categorias/${slug}`;
 
@@ -174,12 +193,13 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
   const url = `${baseUrl}/categorias/${slug}`;
   const topMunicipio = getTopMunicipio(businesses);
   const categoryFaqs = getCategoryFaqs(title, topMunicipio);
+  const displayTitle = getDisplayTitle(title, topMunicipio);
 
   const collectionJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "@id": `${url}#webpage`,
-    name: `${title} en ${topMunicipio} - Occidente Antioqueño`,
+    name: `${displayTitle} - Occidente Antioqueño`,
     description: buildCategoryDescription(title, businesses.length, topMunicipio),
     url,
     inLanguage: "es-CO",
@@ -221,7 +241,7 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Inicio", item: baseUrl },
       { "@type": "ListItem", position: 2, name: "Categorías", item: `${baseUrl}/categorias` },
-      { "@type": "ListItem", position: 3, name: `${title} en ${topMunicipio}`, item: url },
+      { "@type": "ListItem", position: 3, name: `${displayTitle}`, item: url },
     ],
   };
 
@@ -249,15 +269,25 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
 
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight font-heading md:text-4xl text-foreground">
-            {title} en {topMunicipio}
+            {displayTitle}
             <span className="text-primary text-2xl md:text-3xl block md:inline font-normal font-sans"> con WhatsApp directo</span>
           </h1>
           
           <div className="mt-4 max-w-3xl">
             <p className="text-foreground/80 leading-relaxed">
-              Encuentra <strong>{businesses.length} opciones de {title.toLowerCase()} en {topMunicipio}</strong> y todo el Occidente Antioqueño. 
-              ¿Buscas {title.toLowerCase()} cerca del parque de Sopetrán, San Jerónimo o Santa Fe de Antioquia? ¿Con domicilio a fincas y veredas? 
-              Aquí los contactas directo por WhatsApp sin comisiones ni intermediarios. Revisa fotos, ubicación y horarios.
+              {detectNiche(title) === "transport" ? (
+                <>
+                  Encuentra <strong>{businesses.length} mototaxis, domicilios y encomiendas en {topMunicipio}</strong> y todo el Occidente Antioqueño.
+                  ¿Buscas mototaxi cerca del parque de Sopetrán, San Jerónimo o Santa Fe de Antioquia? ¿Con domicilio a fincas y veredas?
+                  Aquí los contactas directo por WhatsApp sin comisiones ni intermediarios. Revisa fotos, ubicación y horarios.
+                </>
+              ) : (
+                <>
+                  Encuentra <strong>{businesses.length} opciones de {title.toLowerCase()} en {topMunicipio}</strong> y todo el Occidente Antioqueño.
+                  ¿Buscas {title.toLowerCase()} cerca del parque de Sopetrán, San Jerónimo o Santa Fe de Antioquia? ¿Con domicilio a fincas y veredas?
+                  Aquí los contactas directo por WhatsApp sin comisiones ni intermediarios. Revisa fotos, ubicación y horarios.
+                </>
+              )}
             </p>
             
             <div className="flex flex-wrap gap-2 mt-4">
@@ -285,7 +315,7 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
         {businesses.length === 0 ? (
           <div className="text-center py-20 rounded-3xl border border-dashed border-border/50 bg-accent/10">
             <Store className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-30" aria-hidden="true" />
-            <p className="text-lg font-medium text-muted-foreground">Aún no hay negocios en &quot;{title}&quot; en {topMunicipio}</p>
+            <p className="text-lg font-medium text-muted-foreground">Aún no hay negocios en &quot;{displayTitle}&quot; en {topMunicipio}</p>
             <p className="text-sm text-muted-foreground mt-1">Prueba en otro municipio del Occidente</p>
             <div className="flex gap-2 justify-center mt-4">
               {MUNICIPIOS.map(m => {
@@ -307,7 +337,7 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
         <section className="mt-16 pt-10 border-t border-border/60">
           <div className="flex items-center gap-2 mb-6">
             <HelpCircle className="h-5 w-5 text-primary" aria-hidden="true" />
-            <h2 className="text-xl font-bold tracking-tight text-foreground font-heading">Preguntas frecuentes sobre {title} en {topMunicipio}</h2>
+            <h2 className="text-xl font-bold tracking-tight text-foreground font-heading">Preguntas frecuentes sobre {displayTitle}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {categoryFaqs.map((faq, idx) => (
