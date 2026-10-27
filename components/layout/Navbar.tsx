@@ -42,6 +42,7 @@ import {
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { urlFor } from "@/lib/sanity/image";
+import gsap from "gsap";
 
 interface Municipality {
   _id: string;
@@ -67,6 +68,9 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
+  // Refs para el pulso GSAP
+  const sanDiegoRef = useRef<HTMLAnchorElement>(null);
+  const sanJeronimoRef = useRef<HTMLAnchorElement>(null);
 
   const isAgent =
     user?.publicMetadata?.plan === "agent" ||
@@ -107,6 +111,37 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
       window.removeEventListener("storage", updateSelectedMunicipality);
     };
   }, [municipalities, pathname]);
+
+  // EFECTO PULSO GSAP PARA LAS FIESTAS
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Pulso San Diego - naranja
+    const tlDiego = gsap.to(sanDiegoRef.current, {
+      scale: 1.03,
+      boxShadow: "0 0 0 4px rgba(234,88,12,0.15), 0 0 20px rgba(234,88,12,0.25)",
+      duration: 0.9,
+      ease: "power1.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
+
+    // Pulso San Jerónimo - amarillo a verde
+    const tlJero = gsap.to(sanJeronimoRef.current, {
+      scale: 1.03,
+      boxShadow: "0 0 0 4px rgba(255,193,7,0.25), 0 0 20px rgba(27,94,32,0.35)",
+      duration: 0.9,
+      ease: "power1.inOut",
+      yoyo: true,
+      repeat: -1,
+      delay: 0.45,
+    });
+
+    return () => {
+      tlDiego?.kill();
+      tlJero?.kill();
+    };
+  }, [mounted, isOpen]);
 
   const updateSelectedMunicipality = () => {
     const currentSlug = pathname.split("/")[2];
@@ -345,20 +380,45 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     </SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col gap-2 mt-6">
-                    {/* <Link href="/clasico" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><List className="h-5 w-5" />De la A a la Z</Link> */}
                     <Link href="/categorias" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><Grid3x3 className="h-5 w-5" />Buscar por Categoría</Link>
                     <Link href="/mapa" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><MapPin className="h-5 w-5" />Cerca de mí</Link>
                     <Link href="/atm" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><BadgeDollarSign className="h-5 w-5" /> ¿Dónde retirar dinero?</Link>
                     <Link href="/estereo" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><RadioIcon className="h-5 w-5" /> Emisoras del occidente antioqueño</Link>
-<Link  href="/fiestas-san-diego-liborina" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#EA580C] hover:bg-[#EA580C]/10 transition-all"
->
-  <PartyPopper className="h-5 w-5 text-[#EA580C]" /> Fiestas de San Diego Liborina
-</Link>
-                    <Link href="/incendios" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all">
                     
-                      <AlertTriangleIcon className="h-5 w-5" />
-                      Incendios
+                    {/* FIESTAS SAN JERONIMO - PULSO VERDE / AMARILLO */}
+                    <Link
+                      ref={sanJeronimoRef}
+                      href="/fiestas-del-sol-san-jeronimo"
+                      onClick={() => setIsOpen(false)}
+                      className="relative flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl bg-gradient-to-r from-[#FFC107]/20 to-[#1B5E20]/10 border border-[#FFC107]/40 dark:border-[#1B5E20]/50 hover:from-[#FFC107]/30 hover:to-[#1B5E20]/20 transition-all will-change-transform"
+                    >
+                      <PartyPopper className="h-5 w-5 text-[#1B5E20] shrink-0" />
+                      <span className="bg-gradient-to-r from-[#B8860B] via-[#1B5E20] to-[#2E7D32] bg-clip-text text-transparent">
+                        Fiestas del Sol San Jerónimo
+                      </span>
+                      <span className="ml-auto flex h-2.5 w-2.5 relative shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFC107] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1B5E20]"></span>
+                      </span>
                     </Link>
+
+                    {/* FIESTAS SAN DIEGO - PULSO NARANJA */}
+                    <Link
+                      ref={sanDiegoRef}
+                      href="/fiestas-san-diego-liborina"
+                      onClick={() => setIsOpen(false)}
+                      className="relative flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl bg-[#EA580C]/10 border border-[#EA580C]/30 hover:bg-[#EA580C]/20 transition-all will-change-transform"
+                    >
+                      <PartyPopper className="h-5 w-5 text-[#EA580C] shrink-0" />
+                      <span className="text-[#EA580C]">
+                        Fiestas de San Diego Liborina
+                      </span>
+                      <span className="ml-auto flex h-2.5 w-2.5 relative shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EA580C] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#EA580C]"></span>
+                      </span>
+                    </Link>
+                   
                     <Link
                       href="/preguntas-frecuentes"
                       onClick={() => setIsOpen(false)}
