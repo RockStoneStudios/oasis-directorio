@@ -6,10 +6,6 @@ import { client } from "@/lib/sanity/client";
 import { BUSINESS_BY_SUBCATEGORY_QUERY } from "@/lib/sanity/queries";
 import { BusinessCard } from "@/components/BusinessCard";
 
-// Ruta: /categorias/[slug]/[municipio]
-// Ej: /categorias/restaurantes/sopetran -> Restaurantes en Sopetran
-//     /categorias/transportes-and-encomiendas/sopetran -> Mototaxis en Sopetran
-
 interface Props {
   params: Promise<{ slug: string; municipio: string }>;
 }
@@ -70,13 +66,13 @@ function filterByMunicipio(businesses: any[], municipioSlug: string) {
 function detectNiche(c: string) {
   const n = normalize(c);
   const has = (...w:string[]) => w.some(x=>n.includes(x));
-  if (has("alojamiento","finca","glamping","hotel","hospedaje")) return "lodging";
-  if (has("barberia","peluqueria","estetica")) return "beauty";
-  if (has("licorera","discoteca","rumba","bares")) return "nightlife";
+  if (has("alojamiento","finca","glamping","hotel","hospedaje","bienes raices","cabaña","cabanas")) return "lodging";
+  if (has("barberia","peluqueria","estetica","uñas","unas","spa","belleza")) return "beauty";
+  if (has("licorera","discoteca","rumba","bares","licor")) return "nightlife";
   if (has("restaurante","comidas rapidas","comida","donde comer")) return "food";
-  if (has("supermercado","tienda")) return "shopping";
+  if (has("supermercado","tienda","mercado","minimercado")) return "shopping";
   if (has("mototaxi","domicilios","transporte","encomienda")) return "transport";
-  if (has("farmacia","drogueria","salud")) return "health";
+  if (has("farmacia","drogueria","salud","dental","optica")) return "health";
   return "general";
 }
 
@@ -85,56 +81,88 @@ function buildDesc(categoryName:string, count:number, municipio:string) {
   const map: Record<string,string> = {
     food: `${n}restaurantes en ${municipio} con domicilio a fincas y veredas. Menus y WhatsApp directo.`,
     nightlife: `${n}licoreras en ${municipio} con domicilio, horarios y WhatsApp directo.`,
-    lodging: `${n}fincas y hospedaje en ${municipio} con piscina y BBQ. Reserva directa.`,
-    beauty: `${n}barberias en ${municipio} con citas por WhatsApp.`,
+    lodging: `${n}hoteles y hospedaje en ${municipio} con piscina, fincas y cabañas. Hoteles en ${municipio} con reserva directa por WhatsApp.`,
+    beauty: `${n}barberia y peluqueria en ${municipio} con citas por 【entity-WhatsApp¦canonical_name=WhatsApp】. Corte, uñas y estética.`,
     transport: `${n}mototaxis y domicilios en ${municipio} 24h. Servicio rapido por WhatsApp.`,
-    health: `${n}farmacias en ${municipio} con domicilio.`,
-    shopping: `${n}supermercados en ${municipio} con domicilio.`,
-    general: `${n}${categoryName} en ${municipio}. Telefono y WhatsApp directo en Ooasys.`,
+    health: `${n}farmacia y drogueria en ${municipio} con domicilio. Medicamentos por WhatsAp.`,
+    shopping: `${n}supermercados y tiendas en ${municipio} con domicilio a fincas y veredas.`,
+    general: `${n}${categoryName} en ${municipio} cerca del parque. Telefono y WhatsApp directo en Ooasys.`,
   };
   return stripHtmlAndTruncate(map[detectNiche(categoryName)] || map.general, 155);
 }
 
 function getFaqs(categoryName:string, municipio:string) {
-  if (detectNiche(categoryName) === "transport") {
+  const niche = detectNiche(categoryName);
+  if (niche === "transport") {
     return [
-      { q: `¿Donde encontrar mototaxi en ${municipio}?`, a: `En Ooasys listamos mototaxis, domicilios y encomiendas en ${municipio} con telefono y WhatsApp directo.` },
-      { q: `¿Cuánto vale un mototaxi en ${municipio}?`, a: `El precio depende de la distancia y si es dentro del pueblo o a una finca en ${municipio}. Escribele directo por WhatsApp al mototaxi en Ooasys y cotiza sin intermediarios.` },
-      { q: `¿Hay mototaxis 24 horas en ${municipio}?`, a: `Si, varios mototaxis y domicilios en ${municipio} trabajan 24h. Revisa en su ficha su horario y WhatsApp.` },
+      { q: `¿Donde encontrar mototaxi en ${municipio}?`, a: `En Ooasys listamos mototaxis, domicilios y encomiendas en ${municipio} con telefono y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo.` },
+      { q: `¿Cuánto vale un mototaxi en ${municipio}?`, a: `El precio depende de la distancia y si es dentro del pueblo o a una finca en ${municipio}. Escribele directo por 【entity-WhatsApp¦canonical_name=WhatsApp】 al mototaxi en Ooasys y cotiza sin intermediarios.` },
+      { q: `¿Hay mototaxis 24 horas en ${municipio}?`, a: `Si, varios mototaxis y domicilios en ${municipio} trabajan 24h. Revisa en su ficha su horario y 【entity-WhatsApp¦canonical_name=WhatsApp】.` },
     ];
   }
-  if (detectNiche(categoryName) === "food") {
+  if (niche === "food") {
     return [
-      { q: `¿Donde encontrar restaurantes en ${municipio}?`, a: `En Ooasys listamos ${municipio === "Liborina" ? "restaurantes en Liborina" : `restaurantes en ${municipio}`} con menu y WhatsApp directo, cerca del parque y con domicilio a fincas.` },
-      { q: `¿Qué restaurantes en ${municipio} tienen domicilio?`, a: `La mayoria de restaurantes en ${municipio} hacen domicilio a fincas y veredas. Entra a su ficha y escribeles por WhatsApp para pedir menu y precios.` },
-      { q: `¿Como contactar un restaurante en ${municipio}?`, a: "Usa el boton de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Contacto directo, sin intermediarios ni comisiones." },
+      { q: `¿Donde encontrar restaurantes en ${municipio}?`, a: `En Ooasys listamos ${municipio === "Liborina" ? "restaurantes en Liborina" : `restaurantes en ${municipio}`} con menu y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo, cerca del parque y con domicilio a fincas.` },
+      { q: `¿Qué restaurantes en ${municipio} tienen domicilio?`, a: `La mayoria de restaurantes en ${municipio} hacen domicilio a fincas y veredas. Entra a su ficha y escribeles por 【entity-WhatsApp¦canonical_name=WhatsApp】 para pedir menu y precios.` },
+      { q: `¿Como contactar un restaurante en ${municipio}?`, a: "Usa el boton de WhatsApp en la ficha. Contacto directo, sin intermediarios ni comisiones." },
+    ];
+  }
+  if (niche === "lodging") {
+    return [
+      { q: `¿Dónde encontrar hoteles en ${municipio}?`, a: `En Ooasys listamos hoteles y hospedaje en ${municipio} con piscina, fotos y WhatsApp directo, cerca del parque.` },
+      { q: `¿Hay hospedaje con piscina en ${municipio}?`, a: `Sí, la mayoría de hoteles y hospedaje en ${municipio} tienen piscina, BBQ y parqueadero. Revisa su ficha en Ooasys.` },
+      { q: `¿Cómo reservar un hotel en ${municipio}?`, a: "Usa el botón de WhatsApp en la ficha. Reserva directa sin intermediarios ni comisiones." },
+    ];
+  }
+  if (niche === "beauty") {
+    return [
+      { q: `¿Dónde encontrar barbería en ${municipio}?`, a: `En Ooasys listamos barbería y peluquería en ${municipio} con citas por WhatsApp.` },
+      { q: `¿Dónde hacer uñas en ${municipio}?`, a: `En Ooasys encuentras peluquerías y estética en ${municipio} con servicio de uñas y corte. Contacta por WhatsApp.` },
+      { q: `¿Cómo agendar en una barbería en ${municipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Agenda directa sin intermediarios." },
+    ];
+  }
+  if (niche === "health") {
+    return [
+      { q: `¿Dónde encontrar farmacia en ${municipio}?`, a: `En Ooasys listamos farmacia y droguería en ${municipio} con domicilio y WhatsApp directo.` },
+      { q: `¿Hay droguería con domicilio en ${municipio}?`, a: `Sí, varias droguerías en ${municipio} hacen domicilio a fincas y veredas. Escríbeles por WhatsApp.` },
+      { q: `¿Cómo pedir medicamentos en ${municipio}?`, a: "Usa el botón de WhatsApp en la ficha. Contacto directo." },
+    ];
+  }
+  if (niche === "shopping") {
+    return [
+      { q: `¿Dónde encontrar supermercado en ${municipio}?`, a: `En Ooasys listamos supermercados y tiendas en ${municipio} con domicilio y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo.` },
+      { q: `¿Qué tiendas en ${municipio} tienen domicilio?`, a: `La mayoría de supermercados y tiendas en ${municipio} hacen domicilio a fincas y veredas.` },
+      { q: `¿Cómo contactar un supermercado en ${municipio}?`, a: "Usa el botón de WhatsApp en la ficha. Contacto directo." },
     ];
   }
   return [
     { q: `¿Donde encontrar ${categoryName} en ${municipio}?`, a: `En Ooasys listamos ${categoryName} en ${municipio} con telefono y WhatsApp directo.` },
-    { q: `¿Como contactar ${categoryName} en ${municipio}?`, a: "Usa el boton de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Contacto directo, sin intermediarios." },
-    { q: `¿Hacen domicilio a fincas en ${municipio}?`, a: "Depende de cada negocio. Entra a su perfil y consultalo por 【entity-WhatsApp¦canonical_name=WhatsApp】." },
+    { q: `¿Como contactar ${categoryName} en ${municipio}?`, a: "Usa el boton de WhatsApp en la ficha. Contacto directo, sin intermediarios." },
+    { q: `¿Hacen domicilio a fincas en ${municipio}?`, a: "Depende de cada negocio. Entra a su perfil y consultalo por WhatsApp." },
   ];
 }
 
-// ARREGLO FINAL: MOTOTAXIS + RESTAURANTES + MUNICIPIO
 function getSeoTitle(categoryName:string, municipio:string) {
-  if (detectNiche(categoryName) === "transport") {
-    return `Mototaxis en ${municipio} 24h con WhatsApp | Ooasys`;
-  }
-  if (detectNiche(categoryName) === "food") {
-    return `Restaurantes en ${municipio} con Domicilio y WhatsApp | Ooasys`;
-  }
+  const niche = detectNiche(categoryName);
+  if (niche === "transport") return `Mototaxis en ${municipio} 24h con WhatsApp | Ooasys`;
+  if (niche === "food") return `Restaurantes en ${municipio} con Domicilio y WhatsApp | Ooasys`;
+  if (niche === "lodging") return `Hoteles y Hospedaje en ${municipio} con Piscina | Ooasys`;
+  if (niche === "beauty") return `Barbería y Peluquería en ${municipio} con WhatsApp | Ooasys`;
+  if (niche === "health") return `Farmacia y Droguería en ${municipio} con Domicilio | Ooasys`;
+  if (niche === "shopping") return `Supermercados y Tiendas en ${municipio} con Domicilio | Ooasys`;
+  if (niche === "nightlife") return `Licoreras en ${municipio} con Domicilio y WhatsApp | Ooasys`;
   return `${categoryName} en ${municipio} con WhatsApp | Ooasys`;
 }
 
 function getDisplayTitle(categoryName:string, municipio:string) {
-  if (detectNiche(categoryName) === "transport") {
-    return `Mototaxis, Domicilios y Encomiendas en ${municipio}`;
-  }
-  if (detectNiche(categoryName) === "food") {
-    return `Restaurantes en ${municipio}`;
-  }
+  const niche = detectNiche(categoryName);
+  if (niche === "transport") return `Mototaxis, Domicilios y Encomiendas en ${municipio}`;
+  if (niche === "food") return `Restaurantes en ${municipio}`;
+  if (niche === "lodging") return `Hoteles y Hospedaje en ${municipio}`;
+  if (niche === "beauty") return `Barbería y Peluquería en ${municipio}`;
+  if (niche === "health") return `Farmacia y Droguería en ${municipio}`;
+  if (niche === "shopping") return `Supermercados y Tiendas en ${municipio}`;
+  if (niche === "nightlife") return `Licoreras en ${municipio}`;
   return `${categoryName} en ${municipio}`;
 }
 
@@ -167,6 +195,7 @@ export default async function MunicipioPage({ params }: Props) {
   const url = `${baseUrl}/categorias/${slug}/${municipio}`;
   const faqs = getFaqs(categoryName, nombreMunicipio);
   const displayTitle = getDisplayTitle(categoryName, nombreMunicipio);
+  const niche = detectNiche(categoryName);
 
   const jsonLd = {
     "@context":"https://schema.org","@type":"CollectionPage","@id":`${url}#webpage`,
@@ -194,10 +223,18 @@ export default async function MunicipioPage({ params }: Props) {
         </Link>
         <h1 className="text-3xl font-extrabold md:text-4xl">{displayTitle} <span className="text-primary text-2xl block md:inline font-normal">con WhatsApp directo</span></h1>
         <p className="mt-4 max-w-3xl text-foreground/80">
-          {detectNiche(categoryName) === "transport" ? (
+          {niche === "transport" ? (
             <>Encuentra <strong>{businesses.length} mototaxis, domicilios y encomiendas en {nombreMunicipio}</strong>. ¿Buscas mototaxi cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Contacta directo por WhatsApp sin comisiones.</>
-          ) : detectNiche(categoryName) === "food" ? (
+          ) : niche === "food" ? (
             <>Encuentra <strong>{businesses.length} restaurantes en {nombreMunicipio}</strong>. ¿Buscas restaurante cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Mira menús y contacta directo por WhatsApp sin comisiones.</>
+          ) : niche === "lodging" ? (
+            <>Encuentra <strong>{businesses.length} hoteles y hospedaje en {nombreMunicipio}</strong>. ¿Buscas hotel en {nombreMunicipio} cerca del parque? ¿Hospedaje con piscina en {nombreMunicipio} para fin de semana? Mira fotos, ubicación y reserva directo por WhatsApp sin comisiones.</>
+          ) : niche === "beauty" ? (
+            <>Encuentra <strong>{businesses.length} barbería y peluquería en {nombreMunicipio}</strong>. ¿Buscas barbería cerca del parque de {nombreMunicipio}? ¿Peluquería y uñas en {nombreMunicipio}? Agenda directo por WhatsApp sin comisiones.</>
+          ) : niche === "health" ? (
+            <>Encuentra <strong>{businesses.length} farmacia y droguería en {nombreMunicipio}</strong>. ¿Buscas droguería cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Pide medicamentos directo por WhatsApp.</>
+          ) : niche === "shopping" ? (
+            <>Encuentra <strong>{businesses.length} supermercados y tiendas en {nombreMunicipio}</strong>. ¿Buscas supermercado cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Contacta directo por WhatsApp.</>
           ) : (
             <>Encuentra <strong>{businesses.length} opciones de {categoryName.toLowerCase()} en {nombreMunicipio}</strong>. ¿Buscas cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Contacta directo por WhatsApp sin comisiones.</>
           )}
