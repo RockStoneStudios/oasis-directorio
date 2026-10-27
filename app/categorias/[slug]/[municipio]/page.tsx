@@ -7,7 +7,8 @@ import { BUSINESS_BY_SUBCATEGORY_QUERY } from "@/lib/sanity/queries";
 import { BusinessCard } from "@/components/BusinessCard";
 
 // Ruta: /categorias/[slug]/[municipio]
-// Ej: /categorias/transportes-and-encomiendas/sopetran -> Mototaxis en Sopetran
+// Ej: /categorias/restaurantes/sopetran -> Restaurantes en Sopetran
+//     /categorias/transportes-and-encomiendas/sopetran -> Mototaxis en Sopetran
 
 interface Props {
   params: Promise<{ slug: string; municipio: string }>;
@@ -82,7 +83,7 @@ function detectNiche(c: string) {
 function buildDesc(categoryName:string, count:number, municipio:string) {
   const n = count>0 ? `${count} ` : "";
   const map: Record<string,string> = {
-    food: `${n}restaurantes y donde comer en ${municipio} con domicilio a fincas y veredas. Menus y WhatsApp directo.`,
+    food: `${n}restaurantes en ${municipio} con domicilio a fincas y veredas. Menus y WhatsApp directo.`,
     nightlife: `${n}licoreras en ${municipio} con domicilio, horarios y WhatsApp directo.`,
     lodging: `${n}fincas y hospedaje en ${municipio} con piscina y BBQ. Reserva directa.`,
     beauty: `${n}barberias en ${municipio} con citas por WhatsApp.`,
@@ -102,6 +103,13 @@ function getFaqs(categoryName:string, municipio:string) {
       { q: `¿Hay mototaxis 24 horas en ${municipio}?`, a: `Si, varios mototaxis y domicilios en ${municipio} trabajan 24h. Revisa en su ficha su horario y WhatsApp.` },
     ];
   }
+  if (detectNiche(categoryName) === "food") {
+    return [
+      { q: `¿Donde encontrar restaurantes en ${municipio}?`, a: `En Ooasys listamos ${municipio === "Liborina" ? "restaurantes en Liborina" : `restaurantes en ${municipio}`} con menu y WhatsApp directo, cerca del parque y con domicilio a fincas.` },
+      { q: `¿Qué restaurantes en ${municipio} tienen domicilio?`, a: `La mayoria de restaurantes en ${municipio} hacen domicilio a fincas y veredas. Entra a su ficha y escribeles por WhatsApp para pedir menu y precios.` },
+      { q: `¿Como contactar un restaurante en ${municipio}?`, a: "Usa el boton de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Contacto directo, sin intermediarios ni comisiones." },
+    ];
+  }
   return [
     { q: `¿Donde encontrar ${categoryName} en ${municipio}?`, a: `En Ooasys listamos ${categoryName} en ${municipio} con telefono y WhatsApp directo.` },
     { q: `¿Como contactar ${categoryName} en ${municipio}?`, a: "Usa el boton de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Contacto directo, sin intermediarios." },
@@ -109,10 +117,13 @@ function getFaqs(categoryName:string, municipio:string) {
   ];
 }
 
-// ARREGLO MOTOTAXIS + MUNICIPIO
+// ARREGLO FINAL: MOTOTAXIS + RESTAURANTES + MUNICIPIO
 function getSeoTitle(categoryName:string, municipio:string) {
   if (detectNiche(categoryName) === "transport") {
     return `Mototaxis en ${municipio} 24h con WhatsApp | Ooasys`;
+  }
+  if (detectNiche(categoryName) === "food") {
+    return `Restaurantes en ${municipio} con Domicilio y WhatsApp | Ooasys`;
   }
   return `${categoryName} en ${municipio} con WhatsApp | Ooasys`;
 }
@@ -120,6 +131,9 @@ function getSeoTitle(categoryName:string, municipio:string) {
 function getDisplayTitle(categoryName:string, municipio:string) {
   if (detectNiche(categoryName) === "transport") {
     return `Mototaxis, Domicilios y Encomiendas en ${municipio}`;
+  }
+  if (detectNiche(categoryName) === "food") {
+    return `Restaurantes en ${municipio}`;
   }
   return `${categoryName} en ${municipio}`;
 }
@@ -182,6 +196,8 @@ export default async function MunicipioPage({ params }: Props) {
         <p className="mt-4 max-w-3xl text-foreground/80">
           {detectNiche(categoryName) === "transport" ? (
             <>Encuentra <strong>{businesses.length} mototaxis, domicilios y encomiendas en {nombreMunicipio}</strong>. ¿Buscas mototaxi cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Contacta directo por WhatsApp sin comisiones.</>
+          ) : detectNiche(categoryName) === "food" ? (
+            <>Encuentra <strong>{businesses.length} restaurantes en {nombreMunicipio}</strong>. ¿Buscas restaurante cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Mira menús y contacta directo por WhatsApp sin comisiones.</>
           ) : (
             <>Encuentra <strong>{businesses.length} opciones de {categoryName.toLowerCase()} en {nombreMunicipio}</strong>. ¿Buscas cerca del parque de {nombreMunicipio}? ¿Con domicilio a fincas y veredas? Contacta directo por WhatsApp sin comisiones.</>
           )}
