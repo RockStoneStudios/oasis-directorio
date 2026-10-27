@@ -13,9 +13,12 @@ const ogImage = '/fiestas-sol.jpg';
 
 const WHATSAPP_URL = 'https://wa.me/573206209817?text=Hola%2C%20quiero%20inscribir%20mi%20negocio%20en%20Ooasys';
 const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=Parque+Principal+San+Jer%C3%B3nimo+Antioquia';
-const title = 'Fiestas del Sol y el Agroturismo 2026 | San Jerónimo, Antioquia';
+
+// 1. TÍTULO OPTIMIZADO (Más directo y competitivo)
+const title = 'Fiestas del Sol San Jerónimo 2026: Programación Oficial y Artistas';
+// 2. META DESCRIPTION CON "PROGRAMACIÓN" Y DATOS CLAVE
 const description =
-  'Programación Fiestas del Sol y el Agroturismo en San Jerónimo 2026: 13 al 15 de noviembre. Cabalgata del Sol, Festival de la Trova, Alex Manga, Luis Felipe González y más. Entrada libre.';
+  'Programación oficial de las Fiestas del Sol y el Agroturismo en San Jerónimo 2026. Consulta horarios, cabalgata, Festival de la Trova y artistas como Alex Manga. Entrada libre.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -39,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description:
-      'Vive las Fiestas del Sol y el Agroturismo del 13 al 15 de noviembre de 2026 en San Jerónimo. Cabalgata, trova, cafés especiales, mercados campesinos y grandes shows.',
+      'Vive las Fiestas del Sol y el Agroturismo del 13 al 15 de noviembre de 2026 en San Jerónimo. Consulta la programación completa, cabalgata, trova y conciertos.',
     url: pageUrl,
     siteName: 'Ooasys',
     type: 'website',
@@ -49,7 +52,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title,
-    description: 'Del 13 al 15 nov 2026: Cabalgata del Sol, Festival de la Trova y shows con Alex Manga y Luis Felipe González. Entrada libre.',
+    description: 'Del 13 al 15 nov 2026: Consulta la programación oficial, Cabalgata del Sol, Festival de la Trova y shows con Alex Manga y Luis Felipe González. Entrada libre.',
     images: [ogImage],
   },
 };
@@ -284,7 +287,7 @@ export default async function FiestasSanJeronimoPage() {
 
           <div className="grid lg:grid-cols-3 gap-6">
             {programa.map((dia) => (
-              <article key={`${dia.fecha}`} className="bg-white dark:bg-zinc-900 dark:border-zinc-800 rounded- overflow-hidden shadow-lg border border-zinc-100 flex flex-col">
+              <article key={`${dia.fecha}`} className="bg-white dark:bg-zinc-900 dark:border-zinc-800 rounded-3xl overflow-hidden shadow-lg border border-zinc-100 flex flex-col">
                 <div className={`${dia.color} text-white p-5 drop-shadow-sm`}>
                   <h3>
                     <span className="block text-2xl font-black leading-none mt-1 drop-shadow-md">{dia.dia === 'Viernes' ? 'VIERNES' : dia.dia === 'Sábado' ? 'SÁBADO' : 'DOMINGO'}</span>
@@ -319,7 +322,7 @@ export default async function FiestasSanJeronimoPage() {
 
         {/* CÓMO LLEGAR Y DÓNDE QUEDARSE */}
         <section className="max-w-7xl mx-auto px-4 pb-16 lg:pb-24">
-          <div className="bg-white dark:bg-zinc-900 dark:border-zinc-800 rounded- border border-zinc-100 shadow-lg p-6 md:p-10">
+          <div className="bg-white dark:bg-zinc-900 dark:border-zinc-800 rounded-3xl border border-zinc-100 shadow-lg p-6 md:p-10">
             <h2 className="text-3xl font-black tracking-tight">Cómo llegar y dónde quedarte</h2>
             <div className="mt-4 grid md:grid-cols-2 gap-8 text-zinc-700 dark:text-zinc-300 leading-relaxed">
               <div>
@@ -358,7 +361,7 @@ export default async function FiestasSanJeronimoPage() {
               </div>
             </div>
 
-            <div className="bg-white/10 rounded- p-8 border border-white/20">
+            <div className="bg-white/10 rounded-3xl p-8 border border-white/20">
               <h2 className="font-black text-xl">Preguntas frecuentes</h2>
               <dl className="mt-6 space-y-4 text-sm text-green-100">
                 {FAQS.map((faq) => (
