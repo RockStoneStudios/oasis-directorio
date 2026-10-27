@@ -15,7 +15,7 @@ function safeSlug(slug: string): string {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // 🛡️ Seguridad: Si la variable de entorno tiene una barra al final, la quitamos para evitar // o ///
+  // 🛡 Seguridad: Si la variable de entorno tiene una barra al final, la quitamos para evitar // o ///
   const rawUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
   const baseUrl = rawUrl.replace(/\/+$/, "");
 
@@ -30,12 +30,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { route: '/incendios', lastModified: '2026-07-29', changeFrequency: 'daily' as const, priority: 0.9 },
     // ✅ RUTA DE PREGUNTAS FRECUENTES (FAQ)
     { route: '/preguntas-frecuentes', lastModified: '2026-09-01', changeFrequency: 'monthly' as const, priority: 0.8 },
-    // ✅ RUTA DE LA VIRGEN MORENA
-    { route: '/virgen-morena-sopetran-programacion-2026', lastModified: '2026-07-31', changeFrequency: 'weekly' as const, priority: 1.0 },
-    // ✅ RUTA DE OLAYA
-    { route: '/fiestas-olaya-2026', lastModified: '2026-08-07', changeFrequency: 'weekly' as const, priority: 1.0 },
     // ✅ RUTA DE LA FERIA DEL TAMARINDO
     { route: '/feria-del-tamarindo-2026', lastModified: '2026-08-12', changeFrequency: 'weekly' as const, priority: 1.0 },
+    // ✅ FIESTAS SAN DIEGO LIBORINA
+    { route: '/fiestas-san-diego-liborina', lastModified: '2026-10-27', changeFrequency: 'weekly' as const, priority: 1.0 },
+    // ✅ FIESTAS DEL SOL SAN JERONIMO
+    { route: '/fiestas-del-sol-san-jeronimo', lastModified: '2026-10-27', changeFrequency: 'weekly' as const, priority: 1.0 },
   ].map((page) => ({
     url: `${baseUrl}${page.route}`,
     lastModified: new Date(page.lastModified),
