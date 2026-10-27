@@ -303,7 +303,7 @@ export default async function FiestasSanJeronimoPage() {
                           {ev.artistas && (
                             <ul className="mt-2 space-y-1">
                               {ev.artistas.map((a) => (
-                                <li key={a} className="text-sm font-semibold text-[#133613] leading-snug">- {a}</li>
+                                <li key={a} className="text-sm font-semibold text-[#082c08] leading-snug">- {a}</li>
                               ))}
                             </ul>
                           )}
