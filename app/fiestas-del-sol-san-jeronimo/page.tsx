@@ -120,7 +120,7 @@ const FAQS = [
   { q: '¿Cuándo son las Fiestas del Sol y el Agroturismo en San Jerónimo 2026?', a: 'Del viernes 13 al domingo 15 de noviembre de 2026 en el Parque Principal de San Jerónimo, Antioquia.' },
   { q: '¿Dónde queda San Jerónimo?', a: 'Es un municipio del Occidente de Antioquia, a 1 hora de Medellín, ideal para ir y volver el mismo día o quedarse en hoteles y hospedaje.' },
   { q: '¿Hay que pagar entrada a las Fiestas de San Jerónimo?', a: 'No. Todos los eventos de las Fiestas del Sol y el Agroturismo son de entrada libre.' },
-  { q: '¿Qué artistas vienen a las Fiestas de San Jerónimo 2026?', a: ' 【entity-Alex Manga¦canonical_name=Alex Manga】, Luis Felipe González, Junior Posada, Tropinova, Las Jefas del Despecho, Wilmer Saldarriaga, Andariego y más.' },
+  { q: '¿Qué artistas vienen a las Fiestas de San Jerónimo 2026?', a: ' Alex Manga, Luis Felipe González, Junior Posada, Tropinova, Las Jefas del Despecho, Wilmer Saldarriaga, Andariego y más.' },
   { q: '¿Dónde me quedo en San Jerónimo para las fiestas?', a: 'Puedes buscar hoteles, hospedaje y glamping en San Jerónimo en el directorio de Ooasys. Reserva con anticipación porque se llenan.' },
   { q: '¿Dónde se hace la Cabalgata del Sol?', a: 'El domingo 15 de noviembre a la 1:30 PM. Es el evento insignia de las Fiestas del Sol en San Jerónimo.' },
 ];
@@ -303,7 +303,7 @@ export default async function FiestasSanJeronimoPage() {
                           {ev.artistas && (
                             <ul className="mt-2 space-y-1">
                               {ev.artistas.map((a) => (
-                                <li key={a} className="text-sm font-medium text-[#1B3A1B] leading-snug">- {a}</li>
+                                <li key={a} className="text-sm font-semibold text-[#133613] leading-snug">- {a}</li>
                               ))}
                             </ul>
                           )}

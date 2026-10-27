@@ -393,7 +393,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                       className="relative flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl bg-gradient-to-r from-[#FFC107]/20 to-[#1B5E20]/10 border border-[#FFC107]/40 dark:border-[#1B5E20]/50 hover:from-[#FFC107]/30 hover:to-[#1B5E20]/20 transition-all will-change-transform"
                     >
                       <PartyPopper className="h-5 w-5 text-[#1B5E20] shrink-0" />
-                      <span className="bg-gradient-to-r from-[#B8860B] via-[#1B5E20] to-[#2E7D32] bg-clip-text text-transparent">
+                      <span className="bg-linear-to-r from-[#dfa514] via-[#1B5E20] to-[#2E7D32] bg-clip-text text-transparent">
                         Fiestas del Sol San Jerónimo
                       </span>
                       <span className="ml-auto flex h-2.5 w-2.5 relative shrink-0">
