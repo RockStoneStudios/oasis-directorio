@@ -32,7 +32,7 @@ const GENERAL_FAQS = [
   },
   {
     q: "¿Hacen domicilios a fincas y veredas?",
-    a: "Sí, la mayoría de restaurantes, supermercados y droguerías en el Occidente hacen domicilio a fincas. Confírmalo por 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha del negocio.",
+    a: "Sí, la mayoría de restaurantes, supermercados y droguerías en el Occidente hacen domicilio a fincas. Confírmalo por 【WhasApp】 en la ficha del negocio.",
   },
 ];
 
