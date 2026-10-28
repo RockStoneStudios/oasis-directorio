@@ -62,10 +62,12 @@ type Niche =
   | "lodging" | "food" | "beauty" | "nightlife" | "shopping" | "transport" | "moving"
   | "health" | "emergency" | "religion" | "tourism" | "agro" | "internet" | "services" | "desserts" | "general";
 
-function detectNiche(categoryName: string): Niche {
+function detectNiche(categoryName: string, slug?: string): Niche {
   const c = normalize(categoryName);
-  const has = (...words: string[]) => words.some((w) => c.includes(w));
-  if (has("heladeria", "helado", "postre", "dulce", "salpicon", "waffle", "wafle", "sandwich", "crepes", "malteada", "frappe", "dulceria")) return "desserts";
+  const s = normalize(slug || "");
+  const has = (...words: string[]) => words.some((w) => c.includes(w) || s.includes(w));
+  // 👈 ACÁ ESTÁ EL ARREGLO - Quieres Refrescarte = Helados
+  if (has("quieres refrescarte", "quieres-refrescarte", "refrescarte", "refrescar", "heladeria", "helado", "postre", "dulce", "salpicon", "waffle", "wafle", "sandwich", "crepes", "malteada", "frappe", "dulceria")) return "desserts";
   if (has("alojamiento", "bienes raices", "finca", "glamping", "inmobiliaria", "arriendo", "hospedaje", "hotel", "cabana", "cabaña")) return "lodging";
   if (has("barberia", "peluqueria", "estetica", "uñas", "unas", "spa", "belleza")) return "beauty";
   if (has("restaurante & bar", "discoteca", "licorera", "rumba") || /\bbares?\b/.test(c)) return "nightlife";
@@ -83,7 +85,7 @@ function detectNiche(categoryName: string): Niche {
   return "general";
 }
 
-function buildCategoryDescription(categoryName: string, count: number, topMunicipio: string): string {
+function buildCategoryDescription(categoryName: string, count: number, topMunicipio: string, slug?: string): string {
   const n = count > 0 ? `${count} ` : "";
   const byNiche: Record<Niche, string> = {
     food: `${n}restaurantes en ${topMunicipio} con domicilio a fincas. Menus y WhatsApp directo.`,
@@ -103,11 +105,11 @@ function buildCategoryDescription(categoryName: string, count: number, topMunici
     desserts: `${n}heladerias en ${topMunicipio} con helados, salpicones, wafles y sandwiches. Helado artesanal, salpicon de frutas, wafles con helado y sandwiches con domicilio a fincas por WhatsApp.`,
     general: `${n}${categoryName} en ${topMunicipio} cerca del parque. Telefono y WhatsApp directo en Ooasys.`,
   };
-  return stripHtmlAndTruncate(byNiche[detectNiche(categoryName)], 155);
+  return stripHtmlAndTruncate(byNiche[detectNiche(categoryName, slug)], 155);
 }
 
-function getCategoryFaqs(categoryName: string, topMunicipio: string) {
-  const niche = detectNiche(categoryName);
+function getCategoryFaqs(categoryName: string, topMunicipio: string, slug?: string) {
+  const niche = detectNiche(categoryName, slug);
   if (niche === "lodging") {
     return [
       { q: `¿Dónde encontrar hoteles en ${topMunicipio}?`, a: `En Ooasys listamos hoteles, hospedaje y glamping en ${topMunicipio} con piscina, fotos y WhatsApp directo, cerca del parque de Sopetrán, San Jerónimo y Santa Fe de Antioquia.` },
@@ -154,7 +156,7 @@ function getCategoryFaqs(categoryName: string, topMunicipio: string) {
     return [
       { q: `¿Qué hacer en ${topMunicipio}?`, a: `En Ooasys encuentras turismo y aventura en ${topMunicipio}: cuatrimotos, caminatas y planes turisticos.` },
       { q: `¿Dónde alquilar cuatrimotos en ${topMunicipio}?`, a: `En Ooasys listamos cuatrimotos y aventura en ${topMunicipio} con reserva por WhatsApp.` },
-      { q: `¿Cómo reservar un plan turistico en ${topMunicipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Reserva directa." },
+      { q: `¿Cómo reservar un plan turistico en ${topMunicipio}?`, a: "Usa el botón de WhatsApp en la ficha. Reserva directa." },
     ];
   }
   if (niche === "transport") {
@@ -171,13 +173,13 @@ function getCategoryFaqs(categoryName: string, topMunicipio: string) {
   ];
 }
 
-function getSeoTitle(categoryName: string, topMunicipio: string): string {
-  const niche = detectNiche(categoryName);
+function getSeoTitle(categoryName: string, topMunicipio: string, slug?: string): string {
+  const niche = detectNiche(categoryName, slug);
   if (niche === "desserts") return `Helados, Salpicones, Wafles y Sandwiches en ${topMunicipio} | Ooasys`;
   if (niche === "transport") return `Mototaxis, Domicilios y Encomiendas en ${topMunicipio} | Ooasys`;
   if (niche === "lodging") return `Hoteles, Hospedaje y Glamping en ${topMunicipio} con Piscina | Ooasys`;
-  if (niche === "food") return `Restaurantes en ${topMunicipio} con Domicilio y 【entity-WhatsApp¦canonical_name=WhatsApp】 | Ooasys`;
-  if (niche === "beauty") return `Barbería y Peluquería en ${topMunicipio} con 【entity-WhatsApp¦canonical_name=WhatsApp】 | Ooasys`;
+  if (niche === "food") return `Restaurantes en ${topMunicipio} con Domicilio y WhatsApp | Ooasys`;
+  if (niche === "beauty") return `Barbería y Peluquería en ${topMunicipio} con WhatsApp | Ooasys`;
   if (niche === "nightlife") return `Licoreras y Bares en ${topMunicipio} con Domicilio | Ooasys`;
   if (niche === "shopping") return `Supermercados y Tiendas en ${topMunicipio} con Domicilio | Ooasys`;
   if (niche === "health") return `Farmacia y Droguería en ${topMunicipio} con Domicilio | Ooasys`;
@@ -191,9 +193,10 @@ function getSeoTitle(categoryName: string, topMunicipio: string): string {
   return `${categoryName} en ${topMunicipio} con WhatsApp y Domicilio | Ooasys`;
 }
 
-function getDisplayTitle(categoryName: string, topMunicipio: string): string {
-  const niche = detectNiche(categoryName);
-  if (niche === "desserts") return `Heladerías y Postres en ${topMunicipio}`;
+function getDisplayTitle(categoryName: string, topMunicipio: string, slug?: string): string {
+  const niche = detectNiche(categoryName, slug);
+  // Mantenemos el nombre bonito en pantalla pero con SEO de helados
+  if (niche === "desserts") return `Quieres Refrescarte en ${topMunicipio}`;
   if (niche === "transport") return `Mototaxis, Domicilios y Encomiendas en ${topMunicipio}`;
   if (niche === "lodging") return `Hoteles, Hospedaje y Glamping en ${topMunicipio}`;
   if (niche === "food") return `Restaurantes en ${topMunicipio}`;
@@ -217,8 +220,8 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const categoryName = resolveCategoryName(slug, businesses);
   const count = businesses.length;
   const topMunicipio = getTopMunicipio(businesses);
-  const title = getSeoTitle(categoryName, topMunicipio);
-  const description = buildCategoryDescription(categoryName, count, topMunicipio);
+  const title = getSeoTitle(categoryName, topMunicipio, slug);
+  const description = buildCategoryDescription(categoryName, count, topMunicipio, slug);
   const url = `${baseUrl}/categorias/${slug}`;
   return {
     metadataBase: new URL(baseUrl),
@@ -239,16 +242,16 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
   const title = resolveCategoryName(slug, businesses);
   const url = `${baseUrl}/categorias/${slug}`;
   const topMunicipio = getTopMunicipio(businesses);
-  const categoryFaqs = getCategoryFaqs(title, topMunicipio);
-  const displayTitle = getDisplayTitle(title, topMunicipio);
-  const niche = detectNiche(title);
+  const categoryFaqs = getCategoryFaqs(title, topMunicipio, slug);
+  const displayTitle = getDisplayTitle(title, topMunicipio, slug);
+  const niche = detectNiche(title, slug);
 
   const collectionJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "@id": `${url}#webpage`,
     name: `${displayTitle} - Occidente Antioqueño`,
-    description: buildCategoryDescription(title, businesses.length, topMunicipio),
+    description: buildCategoryDescription(title, businesses.length, topMunicipio, slug),
     url,
     inLanguage: "es-CO",
     isPartOf: { "@type": "WebSite", name: "Ooasys", url: baseUrl },
