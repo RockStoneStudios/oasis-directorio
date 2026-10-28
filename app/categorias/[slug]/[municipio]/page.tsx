@@ -96,22 +96,22 @@ function detectNiche(c: string, slug?: string) {
 function buildDesc(categoryName:string, count:number, municipio:string, slug?:string) {
   const n = count>0 ? `${count} ` : "";
   const map: Record<string,string> = {
-    gifts: `${n}floristerias y boutiques en ${municipio} con rosas y arreglos florales. Detalles y regalos en ${municipio} por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    food: `${n}restaurantes, comidas rapidas y postres en ${municipio} con domicilio a fincas y veredas. Donde comer en ${municipio} por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    home: `${n}tiendas, supermercados y abarrotes en ${municipio} con mercado y productos para el hogar. Supermercado en ${municipio} con domicilio por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    health: `${n}farmacia, drogueria, odontologia, fisioterapia, gym y crossfit en ${municipio} con domicilio. Medicamentos y citas por 【entity-WhatsApp¦canonical_name=WhatsApp】 en ${municipio}.`,
-    financial: `${n}bancos, cajeros y retiro de plata en ${municipio}. Banco y cajero en ${municipio} con ubicacion y horarios por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    fashion: `${n}moda y estilo, ropa, tenis y joyeria oro 18k en ${municipio}. Almacen y joyeria en ${municipio} por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
+    gifts: `${n}floristerias y boutiques en ${municipio} con rosas y arreglos florales. Detalles y regalos en ${municipio} por WhatsApp.`,
+    food: `${n}restaurantes, comidas rapidas y postres en ${municipio} con domicilio a fincas y veredas. Donde comer en ${municipio} por WhatsApp.`,
+    home: `${n}tiendas, supermercados y abarrotes en ${municipio} con mercado y productos para el hogar. Supermercado en ${municipio} con domicilio por WhatsApp.`,
+    health: `${n}farmacia, drogueria, odontologia, fisioterapia, gym y crossfit en ${municipio} con domicilio. Medicamentos y citas por WhatsApp en ${municipio}.`,
+    financial: `${n}bancos, cajeros y retiro de plata en ${municipio}. Banco y cajero en ${municipio} con ubicacion y horarios por WhatsApp.`,
+    fashion: `${n}moda y estilo, ropa, tenis y joyeria oro 18k en ${municipio}. Almacen y joyeria en ${municipio} por WhatsApp.`,
     religion: `${n}parroquias e iglesias en ${municipio} con horarios de misa y servicios parroquiales. Parroquia en ${municipio}.`,
     emergency: `${n}bomberos y policia en ${municipio} para incendios, robos y peleas. Emergencia 24h en ${municipio} con contacto directo.`,
-    nightlife: `${n}licoreras en ${municipio} con domicilio, horarios y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo. Cerveza, aguardiente y ron en ${municipio}.`,
-    party: `${n}discotecas y bares en ${municipio} con farra y hora loca. Rumba en ${municipio} por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    adult: `${n}tatuajes y sex shop en ${municipio} con lubricantes, dildos, lenceria y accesorios. Tatuajes en ${municipio} por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    internet: `${n}reparacion y venta de celulares y computadores, venta de tecnologia y WiFi hasta 120 mb en ${municipio}. Instalacion WiFi urbana y rural para fincas por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    services: `${n}taller mecanico de motos y carros en ${municipio}, reparacion de neveras, estufas y aires, redes de gas y electricas. Cotiza por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    lodging: `${n}hoteles y hospedaje en ${municipio} con piscina, fincas y cabañas. Hoteles en ${municipio} con reserva directa por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    beauty: `${n}barberia y peluqueria en ${municipio} con citas por 【entity-WhatsApp¦canonical_name=WhatsApp】. Corte, uñas y estética.`,
-    transport: `${n}mototaxis y domicilios en ${municipio} 24h. Servicio rapido por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
+    nightlife: `${n}licoreras en ${municipio} con domicilio, horarios y WhatsApp directo. Cerveza, aguardiente y ron en ${municipio}.`,
+    party: `${n}discotecas y bares en ${municipio} con farra y hora loca. Rumba en ${municipio} por WhatsApp.`,
+    adult: `${n}tatuajes y sex shop en ${municipio} con lubricantes, dildos, lenceria y accesorios. Tatuajes en ${municipio} por WhatsApp.`,
+    internet: `${n}reparacion y venta de celulares y computadores, venta de tecnologia y WiFi hasta 120 mb en ${municipio}. Instalacion WiFi urbana y rural para fincas por WhatsApp.`,
+    services: `${n}taller mecanico de motos y carros en ${municipio}, reparacion de neveras, estufas y aires, redes de gas y electricas. Cotiza por WhatsApp.`,
+    lodging: `${n}hoteles y hospedaje en ${municipio} con piscina, fincas y cabañas. Hoteles en ${municipio} con reserva directa por WhatsApp.`,
+    beauty: `${n}barberia y peluqueria en ${municipio} con citas por WhatsApp. Corte, uñas y estética.`,
+    transport: `${n}mototaxis y domicilios en ${municipio} 24h. Servicio rapido por WhatsApp.`,
     shopping: `${n}supermercados y tiendas en ${municipio} con domicilio a fincas y veredas.`,
     desserts: `${n}heladerias en ${municipio} con helados, salpicones, wafles y sandwiches. Helado artesanal, salpicon de frutas, wafles con helado y sandwiches con domicilio a fincas por WhatsApp.`,
     fresh: `${n}legumbreria y charcuteria en ${municipio}: frutas, verduras, carnes y alimentos frescos con domicilio a fincas y veredas. Pide por WhatsApp.`,
@@ -204,7 +204,7 @@ function getFaqs(categoryName:string, municipio:string, slug?:string) {
     return [
       { q: `¿Dónde reparar celulares en ${municipio}?`, a: `En Ooasys listamos reparación y venta de celulares y computadores en ${municipio}.` },
       { q: `¿Dónde instalar WiFi en ${municipio} para fincas?`, a: `En Ooasys encuentras instalación WiFi en zona urbana y rural para fincas en ${municipio} con planes hasta 120 mb de velocidad.` },
-      { q: `¿Cómo cotizar WiFi y tecnología en ${municipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Cotiza reparación de celulares, computadores y planes WiFi directo." },
+      { q: `¿Cómo cotizar WiFi y tecnología en ${municipio}?`, a: "Usa el botón de WhatsApp en la ficha. Cotiza reparación de celulares, computadores y planes WiFi directo." },
     ];
   }
   if (niche === "fresh") {
@@ -230,7 +230,7 @@ function getFaqs(categoryName:string, municipio:string, slug?:string) {
   }
   if (niche === "desserts") {
     return [
-      { q: `¿Dónde encontrar helados en ${municipio}?`, a: `En Ooasys listamos heladerías en ${municipio} con helados, salpicones, wafles y sandwiches con domicilio y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo, cerca del parque.` },
+      { q: `¿Dónde encontrar helados en ${municipio}?`, a: `En Ooasys listamos heladerías en ${municipio} con helados, salpicones, wafles y sandwiches con domicilio y WhatsApp directo, cerca del parque.` },
       { q: `¿Qué heladerías en ${municipio} tienen salpicón, wafles y sandwiches?`, a: `La mayoría de heladerías en ${municipio} tienen salpicón de frutas, wafles con helado, malteadas y sandwiches. Revisa cada ficha en Ooasys.` },
       { q: `¿Cómo pedir helado a domicilio en ${municipio}?`, a: "Usa el botón de WhatsApp en la ficha. Pide helados, salpicones, wafles y sandwiches directo sin intermediarios." },
     ];
@@ -246,7 +246,7 @@ function getFaqs(categoryName:string, municipio:string, slug?:string) {
     return [
       { q: `¿Dónde encontrar hoteles en ${municipio}?`, a: `En Ooasys listamos hoteles y hospedaje en ${municipio} con piscina, fotos y WhatsApp directo, cerca del parque.` },
       { q: `¿Hay hospedaje con piscina en ${municipio}?`, a: `Sí, la mayoría de hoteles y hospedaje en ${municipio} tienen piscina, BBQ y parqueadero. Revisa su ficha en Ooasys.` },
-      { q: `¿Cómo reservar un hotel en ${municipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Reserva directa sin intermediarios ni comisiones." },
+      { q: `¿Cómo reservar un hotel en ${municipio}?`, a: "Usa el botón de WhatsApp en la ficha. Reserva directa sin intermediarios ni comisiones." },
     ];
   }
   if (niche === "beauty") {
@@ -258,7 +258,7 @@ function getFaqs(categoryName:string, municipio:string, slug?:string) {
   }
   if (niche === "shopping") {
     return [
-      { q: `¿Dónde encontrar supermercado en ${municipio}?`, a: `En Ooasys listamos supermercados y tiendas en ${municipio} con domicilio y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo.` },
+      { q: `¿Dónde encontrar supermercado en ${municipio}?`, a: `En Ooasys listamos supermercados y tiendas en ${municipio} con domicilio y WhatsApp directo.` },
       { q: `¿Qué tiendas en ${municipio} tienen domicilio?`, a: `La mayoría de supermercados y tiendas en ${municipio} hacen domicilio a fincas y veredas.` },
       { q: `¿Cómo contactar un supermercado en ${municipio}?`, a: "Usa el botón de WhatsApp en la ficha. Contacto directo." },
     ];
@@ -288,7 +288,7 @@ function getSeoTitle(categoryName:string, municipio:string, slug?:string) {
   if (niche === "adult") return `Tatuajes y Sex Shop en ${municipio} Lencería | Ooasys`;
   if (niche === "internet") return `Reparación de Celulares y WiFi 120 mb en ${municipio} | Ooasys`;
   if (niche === "desserts") return `Helados, Salpicones, Wafles y Sandwiches en ${municipio} | Ooasys`;
-  if (niche === "transport") return `Mototaxis en ${municipio} 24h con 【entity-WhatsApp¦canonical_name=WhatsApp】 | Ooasys`;
+  if (niche === "transport") return `Mototaxis en ${municipio} 24h con WhatsApp | Ooasys`;
   if (niche === "lodging") return `Hoteles y Hospedaje en ${municipio} con Piscina | Ooasys`;
   if (niche === "beauty") return `Barbería y Peluquería en ${municipio} con WhatsApp | Ooasys`;
   if (niche === "shopping") return `Supermercados y Tiendas en ${municipio} con Domicilio | Ooasys`;
@@ -375,7 +375,7 @@ export default async function MunicipioPage({ params }: Props) {
         <Link href={`/categorias/${slug}`} className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-6">
           <ArrowLeft className="h-4 w-4"/> Volver a {displayTitle} en Occidente
         </Link>
-        <h1 className="text-3xl font-extrabold md:text-4xl">{displayTitle} {niche !== "religion" && <span className="text-primary text-2xl block md:inline font-normal">con 【entity-WhatsApp¦canonical_name=WhatsApp】 directo</span>}</h1>
+        <h1 className="text-3xl font-extrabold md:text-4xl">{displayTitle} {niche !== "religion" && <span className="text-primary text-2xl block md:inline font-normal">con WhatsApp directo</span>}</h1>
         <p className="mt-4 max-w-3xl text-foreground/80">
           {niche === "gifts" ? (
             <>Encuentra <strong>{businesses.length} floristerías y boutiques en {nombreMunicipio}</strong>. ¿Buscas detalles y regalos, rosas y arreglos florales en {nombreMunicipio}? Pide directo por WhatsApp sin comisiones. Revisa fotos, ubicación y horarios.</>

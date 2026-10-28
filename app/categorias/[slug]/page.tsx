@@ -94,19 +94,19 @@ function detectNiche(categoryName: string, slug?: string): Niche {
 function buildCategoryDescription(categoryName: string, count: number, region: string, slug?: string): string {
   const n = count > 0 ? `${count} ` : "";
   const byNiche: Record<Niche, string> = {
-    gifts: `${n}floristerias y boutiques en ${region} con rosas y arreglos florales. Detalles y regalos en ${MUNI_TEXT} por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    food: `${n}restaurantes, comidas rapidas y postres en ${region} con domicilio a fincas. Donde comer en ${MUNI_TEXT} por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    home: `${n}tiendas, supermercados y abarrotes en ${region} con mercado y productos para el hogar. Supermercado en ${MUNI_TEXT} con domicilio por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    health: `${n}farmacia, drogueria, odontologia, fisioterapia, gym y crossfit en ${region} con domicilio. Medicamentos y citas por 【entity-WhatsApp¦canonical_name=WhatsApp】 en ${MUNI_TEXT}.`,
-    financial: `${n}bancos, cajeros y retiro de plata en ${region}. Banco y cajero en ${MUNI_TEXT} con ubicacion y horarios por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    fashion: `${n}moda y estilo, ropa, tenis y joyeria oro 18k en ${region}. Almacen y joyeria en ${MUNI_TEXT} por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    nightlife: `${n}licoreras y bares en ${region} con domicilio y horarios. Cerveza, aguardiente y ron con 【entity-WhatsApp¦canonical_name=WhatsApp】 directo.`,
-    party: `${n}discotecas y bares en ${region} con farra y hora loca. Rumba en ${MUNI_TEXT} por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    adult: `${n}tatuajes y sex shop en ${region} con lubricantes, lenceria y accesorios. Tatuajes y arte corporal en Sopetran y San Jeronimo por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    shopping: `${n}supermercados y tiendas en ${region} con domicilio a casas y fincas. Pide por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    beauty: `${n}barberia y peluqueria en ${region}. Cortes, uñas y estetica con citas por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    transport: `${n}mototaxis y domicilios en ${region} 24h. Servicio rapido por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
-    moving: `${n}trasteos y mudanzas en ${region}. Cotiza tu trasteo y transporte de carga por 【entity-WhatsApp¦canonical_name=WhatsApp】.`,
+    gifts: `${n}floristerias y boutiques en ${region} con rosas y arreglos florales. Detalles y regalos en ${MUNI_TEXT} por WhatsApp.`,
+    food: `${n}restaurantes, comidas rapidas y postres en ${region} con domicilio a fincas. Donde comer en ${MUNI_TEXT} por WhatsApp.`,
+    home: `${n}tiendas, supermercados y abarrotes en ${region} con mercado y productos para el hogar. Supermercado en ${MUNI_TEXT} con domicilio por WhatsApp.`,
+    health: `${n}farmacia, drogueria, odontologia, fisioterapia, gym y crossfit en ${region} con domicilio. Medicamentos y citas por WhatsApp en ${MUNI_TEXT}.`,
+    financial: `${n}bancos, cajeros y retiro de plata en ${region}. Banco y cajero en ${MUNI_TEXT} con ubicacion y horarios por WhatsApp.`,
+    fashion: `${n}moda y estilo, ropa, tenis y joyeria oro 18k en ${region}. Almacen y joyeria en ${MUNI_TEXT} por WhatsApp.`,
+    nightlife: `${n}licoreras y bares en ${region} con domicilio y horarios. Cerveza, aguardiente y ron con WhatsApp directo.`,
+    party: `${n}discotecas y bares en ${region} con farra y hora loca. Rumba en ${MUNI_TEXT} por WhatsApp.`,
+    adult: `${n}tatuajes y sex shop en ${region} con lubricantes, lenceria y accesorios. Tatuajes y arte corporal en Sopetran y San Jeronimo por WhatsApp.`,
+    shopping: `${n}supermercados y tiendas en ${region} con domicilio a casas y fincas. Pide por WhatsApp.`,
+    beauty: `${n}barberia y peluqueria en ${region}. Cortes, uñas y estetica con citas por WhatsApp.`,
+    transport: `${n}mototaxis y domicilios en ${region} 24h. Servicio rapido por WhatsApp.`,
+    moving: `${n}trasteos y mudanzas en ${region}. Cotiza tu trasteo y transporte de carga por WhatsApp.`,
     emergency: `${n}estaciones de bomberos y policia en ${region} para incendios, robos y peleas. Emergencia 24h en ${MUNI_TEXT} con contacto directo.`,
     religion: `${n}parroquias e iglesias en ${region} con horarios de misa y servicios parroquiales. Parroquia en ${MUNI_TEXT}.`,
     tourism: `${n}turismo y aventura en ${region}: cuatrimotos, caminatas y planes turisticos. Reserva directo.`,
@@ -141,7 +141,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   if (niche === "emergency") {
     return [
       { q: `¿Qué hacer si hay un incendio en ${region}?`, a: `En Ooasys listamos bomberos y policía en ${region} para incendios, robos y peleas con emergencia 24h en ${MUNI_TEXT}.` },
-      { q: `¿Dónde denunciar un robo en ${region}?`, a: `En Ooasys encuentras policía en ${region} para denunciar robos y peleas con contacto directo por 【entity-WhatsApp¦canonical_name=WhatsApp】.` },
+      { q: `¿Dónde denunciar un robo en ${region}?`, a: `En Ooasys encuentras policía en ${region} para denunciar robos y peleas con contacto directo por WhatsApp.` },
       { q: `¿Hay bomberos 24h en ${region}?`, a: "Sí, bomberos y policía en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya trabajan 24h. Revisa su ficha." },
     ];
   }
@@ -149,7 +149,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
     return [
       { q: `¿Dónde hay bancos y cajeros en ${region}?`, a: `En Ooasys listamos bancos y cajeros en ${region} con retiro de plata en ${MUNI_TEXT}.` },
       { q: `¿Dónde retirar plata en Sopetrán?`, a: `En Ooasys encuentras cajeros y bancos en Sopetrán para retiro de plata con ubicación y horarios.` },
-      { q: `¿Cómo contactar un banco en ${region}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Contacto directo." },
+      { q: `¿Cómo contactar un banco en ${region}?`, a: "Usa el botón de WhatsApp en la ficha. Contacto directo." },
     ];
   }
   if (niche === "fashion") {
@@ -162,13 +162,13 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   if (niche === "health") {
     return [
       { q: `¿Dónde encontrar droguería en ${region}?`, a: `En Ooasys listamos farmacia y droguería en ${region} con domicilio y WhatsApp directo en ${MUNI_TEXT}.` },
-      { q: `¿Dónde hay gym y crossfit en ${region}?`, a: `En Ooasys encuentras gym, crossfit, odontología y fisioterapia en ${region} con citas por 【entity-WhatsApp¦canonical_name=WhatsApp】 directo.` },
+      { q: `¿Dónde hay gym y crossfit en ${region}?`, a: `En Ooasys encuentras gym, crossfit, odontología y fisioterapia en ${region} con citas por WhatsApp directo.` },
       { q: `¿Cómo pedir medicamentos y citas en ${region}?`, a: "Usa el botón de WhatsApp en la ficha. Pide medicamentos, agenda odontología, fisioterapia y gym directo." },
     ];
   }
   if (niche === "food") {
     return [
-      { q: `¿Dónde comer en ${region}?`, a: `En Ooasys listamos restaurantes, comidas rápidas y postres en ${region} con domicilio y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo en ${MUNI_TEXT}.` },
+      { q: `¿Dónde comer en ${region}?`, a: `En Ooasys listamos restaurantes, comidas rápidas y postres en ${region} con domicilio y WhatsApp directo en ${MUNI_TEXT}.` },
       { q: `¿Qué comidas rápidas en Sopetrán tienen domicilio?`, a: `La mayoría de restaurantes y comidas rápidas en Sopetrán hacen domicilio a fincas y veredas. Pide por WhatsApp.` },
       { q: `¿Dónde encontrar postres en ${region}?`, a: "Usa el botón de WhatsApp en la ficha. Pide postres, helados y comidas rápidas directo sin intermediarios." },
     ];
@@ -182,7 +182,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   }
   if (niche === "nightlife") {
     return [
-      { q: `¿Dónde encontrar licorera en ${region}?`, a: `En Ooasys listamos licoreras y bares en ${region} con domicilio y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo. Cerveza, aguardiente y ron en ${MUNI_TEXT}.` },
+      { q: `¿Dónde encontrar licorera en ${region}?`, a: `En Ooasys listamos licoreras y bares en ${region} con domicilio y WhatsApp directo. Cerveza, aguardiente y ron en ${MUNI_TEXT}.` },
       { q: `¿Qué licoreras en Sopetrán tienen cerveza, aguardiente y ron?`, a: `La mayoría de licoreras en Sopetrán tienen cerveza, aguardiente y ron con domicilio a fincas y veredas.` },
       { q: `¿Cómo pedir licor a domicilio en Sopetrán?`, a: "Usa el botón de WhatsApp en la ficha. Pide cerveza, aguardiente y ron directo sin intermediarios." },
     ];
@@ -197,7 +197,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   if (niche === "adult") {
     return [
       { q: `¿Dónde hacer tatuajes en ${region}?`, a: `En Ooasys listamos arte corporal y tatuajes en ${region} con citas por WhatsApp directo en Sopetrán y San Jerónimo.` },
-      { q: `¿Dónde comprar lencería y lubricantes en ${region}?`, a: `En Ooasys encuentras sex shop en ${region} con lubricantes, lencería y accesorios. Contacta por 【entity-WhatsApp¦canonical_name=WhatsApp】.` },
+      { q: `¿Dónde comprar lencería y lubricantes en ${region}?`, a: `En Ooasys encuentras sex shop en ${region} con lubricantes, lencería y accesorios. Contacta por WhatsApp.` },
       { q: `¿Cómo contactar un sex shop en ${region}?`, a: "Usa el botón de WhatsApp en la ficha. Contacto directo y discreto." },
     ];
   }
@@ -217,7 +217,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   }
   if (niche === "campo") {
     return [
-      { q: `¿Dónde comprar cuido para perros y gatos en Sopetrán?`, a: `En Ooasys listamos todo para el campo en ${MUNI_TEXT}: cuidos y comida para perros, gatos, caballos y peces, con domicilio y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo.` },
+      { q: `¿Dónde comprar cuido para perros y gatos en Sopetrán?`, a: `En Ooasys listamos todo para el campo en ${MUNI_TEXT}: cuidos y comida para perros, gatos, caballos y peces, con domicilio y WhatsApp directo.` },
       { q: `¿Dónde encontrar agroinsumos en San Jerónimo?`, a: `En Ooasys encuentras agroinsumos, concentrados y veterinaria en San Jerónimo y Sopetrán para fincas y campo. Cotiza por WhatsApp.` },
       { q: `¿Cómo pedir cuido a domicilio en Sopetrán?`, a: "Usa el botón de WhatsApp en la ficha. Pide cuido para perros, gatos, caballos y peces directo." },
     ];
@@ -233,7 +233,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
     return [
       { q: `¿Dónde encontrar hoteles en ${region}?`, a: `En Ooasys listamos hoteles, hospedaje y glamping en ${region} con piscina, fotos y WhatsApp directo, cerca del parque de ${MUNI_TEXT}.` },
       { q: `¿Hay hospedaje y glamping con piscina en ${region}?`, a: "Sí, la mayoría de hoteles, fincas, cabañas y glamping en el Occidente tienen piscina, BBQ y parqueadero. Revisa cada ficha en Ooasys." },
-      { q: `¿Cómo reservar un hotel o glamping en ${region}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Reserva directa sin intermediarios ni comisiones." },
+      { q: `¿Cómo reservar un hotel o glamping en ${region}?`, a: "Usa el botón de WhatsApp en la ficha. Reserva directa sin intermediarios ni comisiones." },
     ];
   }
   if (niche === "desserts") {
@@ -260,7 +260,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   if (niche === "tourism") {
     return [
       { q: `¿Qué hacer en ${region}?`, a: `En Ooasys encuentras turismo y aventura en ${region}: cuatrimotos, caminatas y planes turisticos.` },
-      { q: `¿Dónde alquilar cuatrimotos en ${region}?`, a: `En Ooasys listamos cuatrimotos y aventura en ${region} con reserva por 【entity-WhatsApp¦canonical_name=WhatsApp】.` },
+      { q: `¿Dónde alquilar cuatrimotos en ${region}?`, a: `En Ooasys listamos cuatrimotos y aventura en ${region} con reserva por WhatsApp.` },
       { q: `¿Cómo reservar un plan turistico en ${region}?`, a: "Usa el botón de WhatsApp en la ficha. Reserva directa." },
     ];
   }
@@ -268,7 +268,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
     return [
       { q: `¿Donde encontrar mototaxi en ${region}?`, a: `En Ooasys listamos mototaxis, domicilios y encomiendas en ${region} con telefono y WhatsApp directo.` },
       { q: `¿Cuánto vale un mototaxi en ${region}?`, a: `El precio depende de la distancia y si es dentro del pueblo o a una finca. Escribele directo por WhatsApp al mototaxi en Ooasys y cotiza sin intermediarios.` },
-      { q: `¿Hay mototaxis 24 horas en ${region}?`, a: `Si, varios mototaxis y domicilios en ${region} trabajan 24h, sobre todo en Sopetran y San Jeronimo. Revisa en su ficha su horario y 【entity-WhatsApp¦canonical_name=WhatsApp】.` },
+      { q: `¿Hay mototaxis 24 horas en ${region}?`, a: `Si, varios mototaxis y domicilios en ${region} trabajan 24h, sobre todo en Sopetran y San Jeronimo. Revisa en su ficha su horario y WhatsApp.` },
     ];
   }
   return [
@@ -303,7 +303,7 @@ function getSeoTitle(categoryName: string, region: string, slug?: string): strin
   if (niche === "moving") return `Trasteos y Mudanzas en ${region} | Ooasys`;
   if (niche === "tourism") return `Turismo y Aventura en ${region} Cuatrimotos | Ooasys`;
   if (niche === "agro") return `Agroinsumos y Veterinaria en ${region} | Ooasys`;
-  return `${categoryName} en ${region} con 【entity-WhatsApp¦canonical_name=WhatsApp】 y Domicilio | Ooasys`;
+  return `${categoryName} en ${region} con WhatsApp y Domicilio | Ooasys`;
 }
 
 function getDisplayTitle(categoryName: string, region: string, slug?: string): string {
