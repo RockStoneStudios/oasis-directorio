@@ -60,11 +60,12 @@ function getTopMunicipio(businesses: any[]): string {
 
 type Niche =
   | "lodging" | "food" | "beauty" | "nightlife" | "shopping" | "transport" | "moving"
-  | "health" | "emergency" | "religion" | "tourism" | "agro" | "internet" | "services" | "general";
+  | "health" | "emergency" | "religion" | "tourism" | "agro" | "internet" | "services" | "desserts" | "general";
 
 function detectNiche(categoryName: string): Niche {
   const c = normalize(categoryName);
   const has = (...words: string[]) => words.some((w) => c.includes(w));
+  if (has("heladeria", "helado", "postre", "dulce", "salpicon", "waffle", "wafle", "sandwich", "crepes", "malteada", "frappe", "dulceria")) return "desserts";
   if (has("alojamiento", "bienes raices", "finca", "glamping", "inmobiliaria", "arriendo", "hospedaje", "hotel", "cabana", "cabaña")) return "lodging";
   if (has("barberia", "peluqueria", "estetica", "uñas", "unas", "spa", "belleza")) return "beauty";
   if (has("restaurante & bar", "discoteca", "licorera", "rumba") || /\bbares?\b/.test(c)) return "nightlife";
@@ -99,6 +100,7 @@ function buildCategoryDescription(categoryName: string, count: number, topMunici
     agro: `${n}agroinsumos y veterinaria en ${topMunicipio}. Fertilizantes y concentrados con domicilio.`,
     internet: `${n}internet y WiFi en ${topMunicipio} para casas y fincas. Instalacion WiFi por WhatsApp.`,
     services: `${n}servicios tecnicos en ${topMunicipio}: electricistas, plomeros y tecnicos. Cotiza por WhatsApp.`,
+    desserts: `${n}heladerias en ${topMunicipio} con helados, salpicones, wafles y sandwiches. Helado artesanal, salpicon de frutas, wafles con helado y sandwiches con domicilio a fincas por WhatsApp.`,
     general: `${n}${categoryName} en ${topMunicipio} cerca del parque. Telefono y WhatsApp directo en Ooasys.`,
   };
   return stripHtmlAndTruncate(byNiche[detectNiche(categoryName)], 155);
@@ -110,42 +112,49 @@ function getCategoryFaqs(categoryName: string, topMunicipio: string) {
     return [
       { q: `¿Dónde encontrar hoteles en ${topMunicipio}?`, a: `En Ooasys listamos hoteles, hospedaje y glamping en ${topMunicipio} con piscina, fotos y WhatsApp directo, cerca del parque de Sopetrán, San Jerónimo y Santa Fe de Antioquia.` },
       { q: `¿Hay hospedaje y glamping con piscina en ${topMunicipio}?`, a: "Sí, la mayoría de hoteles, fincas, cabañas y glamping en el Occidente tienen piscina, BBQ y parqueadero. Revisa cada ficha en Ooasys." },
-      { q: `¿Cómo reservar un hotel o glamping en ${topMunicipio}?`, a: "Usa el botón de WhatsApp en la ficha. Reserva directa sin intermediarios ni comisiones." },
+      { q: `¿Cómo reservar un hotel o glamping en ${topMunicipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Reserva directa sin intermediarios ni comisiones." },
+    ];
+  }
+  if (niche === "desserts") {
+    return [
+      { q: `¿Dónde encontrar helados en ${topMunicipio}?`, a: `En Ooasys listamos heladerías en ${topMunicipio} con helados, salpicones, wafles y sandwiches con domicilio y WhatsApp directo.` },
+      { q: `¿Qué heladerías en ${topMunicipio} tienen salpicón, wafles y sandwiches?`, a: `La mayoría de heladerías en ${topMunicipio} tienen salpicón de frutas, wafles con helado, malteadas y sandwiches. Revisa cada ficha en Ooasys.` },
+      { q: `¿Cómo pedir helado a domicilio en ${topMunicipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Pide helados, salpicones, wafles y sandwiches directo sin intermediarios." },
     ];
   }
   if (niche === "beauty") {
     return [
       { q: `¿Dónde encontrar barbería en ${topMunicipio}?`, a: `En Ooasys listamos barbería y peluquería en ${topMunicipio} con citas por WhatsApp.` },
       { q: `¿Dónde hacer uñas en ${topMunicipio}?`, a: `En Ooasys encuentras peluquerías y estética en ${topMunicipio} con servicio de uñas y corte.` },
-      { q: `¿Cómo agendar en una peluquería en ${topMunicipio}?`, a: "Usa el botón de WhatsApp en la ficha. Agenda directa." },
+      { q: `¿Cómo agendar en una peluquería en ${topMunicipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Agenda directa." },
     ];
   }
   if (niche === "nightlife") {
     return [
       { q: `¿Dónde encontrar licorera en ${topMunicipio}?`, a: `En Ooasys listamos licoreras y bares en ${topMunicipio} con domicilio y WhatsApp directo.` },
       { q: `¿Qué licoreras en ${topMunicipio} tienen domicilio?`, a: `La mayoría de licoreras en ${topMunicipio} hacen domicilio a fincas y veredas.` },
-      { q: `¿Cómo contactar una licorera en ${topMunicipio}?`, a: "Usa el botón de WhatsApp en la ficha. Contacto directo." },
+      { q: `¿Cómo contactar una licorera en ${topMunicipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Contacto directo." },
     ];
   }
   if (niche === "shopping") {
     return [
       { q: `¿Dónde encontrar supermercado en ${topMunicipio}?`, a: `En Ooasys listamos supermercados y tiendas en ${topMunicipio} con domicilio y WhatsApp directo.` },
       { q: `¿Qué tiendas en ${topMunicipio} tienen domicilio?`, a: `La mayoría de supermercados en ${topMunicipio} hacen domicilio a fincas y veredas.` },
-      { q: `¿Cómo pedir domicilio en ${topMunicipio}?`, a: "Usa el botón de WhatsApp en la ficha." },
+      { q: `¿Cómo pedir domicilio en ${topMunicipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha." },
     ];
   }
   if (niche === "health") {
     return [
       { q: `¿Dónde encontrar farmacia en ${topMunicipio}?`, a: `En Ooasys listamos farmacia y droguería en ${topMunicipio} con domicilio y WhatsApp directo.` },
       { q: `¿Hay droguería con domicilio en ${topMunicipio}?`, a: `Sí, varias droguerías en ${topMunicipio} hacen domicilio a fincas y veredas.` },
-      { q: `¿Cómo pedir medicamentos en ${topMunicipio}?`, a: "Usa el botón de WhatsApp en la ficha." },
+      { q: `¿Cómo pedir medicamentos en ${topMunicipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha." },
     ];
   }
   if (niche === "tourism") {
     return [
       { q: `¿Qué hacer en ${topMunicipio}?`, a: `En Ooasys encuentras turismo y aventura en ${topMunicipio}: cuatrimotos, caminatas y planes turisticos.` },
       { q: `¿Dónde alquilar cuatrimotos en ${topMunicipio}?`, a: `En Ooasys listamos cuatrimotos y aventura en ${topMunicipio} con reserva por WhatsApp.` },
-      { q: `¿Cómo reservar un plan turistico en ${topMunicipio}?`, a: "Usa el botón de WhatsApp en la ficha. Reserva directa." },
+      { q: `¿Cómo reservar un plan turistico en ${topMunicipio}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Reserva directa." },
     ];
   }
   if (niche === "transport") {
@@ -164,10 +173,11 @@ function getCategoryFaqs(categoryName: string, topMunicipio: string) {
 
 function getSeoTitle(categoryName: string, topMunicipio: string): string {
   const niche = detectNiche(categoryName);
+  if (niche === "desserts") return `Helados, Salpicones, Wafles y Sandwiches en ${topMunicipio} | Ooasys`;
   if (niche === "transport") return `Mototaxis, Domicilios y Encomiendas en ${topMunicipio} | Ooasys`;
   if (niche === "lodging") return `Hoteles, Hospedaje y Glamping en ${topMunicipio} con Piscina | Ooasys`;
-  if (niche === "food") return `Restaurantes en ${topMunicipio} con Domicilio y WhatsApp | Ooasys`;
-  if (niche === "beauty") return `Barbería y Peluquería en ${topMunicipio} con WhatsApp | Ooasys`;
+  if (niche === "food") return `Restaurantes en ${topMunicipio} con Domicilio y 【entity-WhatsApp¦canonical_name=WhatsApp】 | Ooasys`;
+  if (niche === "beauty") return `Barbería y Peluquería en ${topMunicipio} con 【entity-WhatsApp¦canonical_name=WhatsApp】 | Ooasys`;
   if (niche === "nightlife") return `Licoreras y Bares en ${topMunicipio} con Domicilio | Ooasys`;
   if (niche === "shopping") return `Supermercados y Tiendas en ${topMunicipio} con Domicilio | Ooasys`;
   if (niche === "health") return `Farmacia y Droguería en ${topMunicipio} con Domicilio | Ooasys`;
@@ -183,6 +193,7 @@ function getSeoTitle(categoryName: string, topMunicipio: string): string {
 
 function getDisplayTitle(categoryName: string, topMunicipio: string): string {
   const niche = detectNiche(categoryName);
+  if (niche === "desserts") return `Heladerías y Postres en ${topMunicipio}`;
   if (niche === "transport") return `Mototaxis, Domicilios y Encomiendas en ${topMunicipio}`;
   if (niche === "lodging") return `Hoteles, Hospedaje y Glamping en ${topMunicipio}`;
   if (niche === "food") return `Restaurantes en ${topMunicipio}`;
@@ -297,7 +308,9 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
           </h1>
           <div className="mt-4 max-w-3xl">
             <p className="text-foreground/80 leading-relaxed">
-              {niche === "transport" ? (
+              {niche === "desserts" ? (
+                <>Encuentra <strong>{businesses.length} heladerías en {topMunicipio}</strong> y todo el Occidente Antioqueño. ¿Buscas helados, salpicones, wafles y sandwiches en Sopetrán, San Jerónimo o Santa Fe de Antioquia? ¿Helado artesanal, salpicón de frutas, wafles con helado y sandwiches con domicilio a fincas y veredas? Aquí los pides directo por WhatsApp sin comisiones ni intermediarios. Revisa fotos, ubicación y horarios.</>
+              ) : niche === "transport" ? (
                 <>Encuentra <strong>{businesses.length} mototaxis, domicilios y encomiendas en {topMunicipio}</strong> y todo el Occidente Antioqueño. ¿Buscas mototaxi cerca del parque de Sopetrán, San Jerónimo o Santa Fe de Antioquia? ¿Con domicilio a fincas y veredas? Aquí los contactas directo por WhatsApp sin comisiones ni intermediarios. Revisa fotos, ubicación y horarios.</>
               ) : niche === "lodging" ? (
                 <>Encuentra <strong>{businesses.length} hoteles, hospedaje y glamping en {topMunicipio}</strong> y todo el Occidente Antioqueño. ¿Buscas hotel en Sopetrán, San Jerónimo o Santa Fe de Antioquia? ¿Hospedaje y glamping con piscina en {topMunicipio} para fin de semana? Mira fotos, ubicación y reserva directo por WhatsApp sin comisiones.</>
