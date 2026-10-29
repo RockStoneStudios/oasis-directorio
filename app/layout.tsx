@@ -1,10 +1,10 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Inter, Sora } from "next/font/google";
-import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 import { SanityLive } from "@/lib/sanity/live";
 import { ThemeProvider } from "@/components/theme-provider";
+import { GoogleAnalytics } from '@next/third-parties/google';
 //@ts-ignore
 import "./globals.css";
 
@@ -180,21 +180,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <head>
           <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
           <link rel="preconnect" href="https://www.google.com" />
-          {/* Carga e inicialización directa de Google Analytics (GA4) */}
-          <Script
-            src="https://www.googletagmanager.com/gtag/js?id=G-CWSZKFVJ0R"
-            strategy="afterInteractive"
-          />
-          <Script id="google-analytics" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-CWSZKFVJ0R', {
-                page_path: window.location.pathname,
-              });
-            `}
-          </Script>
         </head>
         <body 
           className={`font-body antialiased`}
@@ -215,6 +200,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Toaster />
             <SanityLive />
           </ThemeProvider>
+          <GoogleAnalytics gaId="G-CWSZKFVJ0R" />
         </body>
       </html>
     </ClerkProvider>
