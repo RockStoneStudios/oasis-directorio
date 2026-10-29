@@ -66,7 +66,7 @@ function detectNiche(categoryName: string, slug?: string): Niche {
   const s = normalize(slug || "");
   const has = (...words: string[]) => words.some((w) => c.includes(w) || s.includes(w));
   if (has("detalles y regalos", "detalles-y-regalos", "detalles", "regalos", "floristeria", "boutique", "floreria")) return "gifts";
-  if (has("servicios financieros", "servicios-financieros", "financiero", "banco", "cajero", "retiro de plata", "【entity-bancolombia¦canonical_name=Bancolombia】")) return "financial";
+  if (has("servicios financieros", "servicios-financieros", "financiero", "banco", "cajero", "retiro de plata", " bancolombia")) return "financial";
   if (has("moda & accesorios", "moda-accesorios", "moda", "accesorios", "joyeria", "almacen", "ropa")) return "fashion";
   if (has("arte corporal", "arte-corporal", "sex shop", "sexshop", "tatuaje", "tatuajes")) return "adult";
   if (has("noche & diversion", "noche-diversion", "noche", "diversion", "discoteca", "farra", "hora loca")) return "party";
@@ -110,7 +110,7 @@ function buildCategoryDescription(categoryName: string, count: number, region: s
     emergency: `${n}estaciones de bomberos y policia en ${region} para incendios, robos y peleas. Emergencia 24h en ${MUNI_TEXT} con contacto directo.`,
     religion: `${n}parroquias e iglesias en ${region} con horarios de misa y servicios parroquiales. Parroquia en ${MUNI_TEXT}.`,
     tourism: `${n}turismo y aventura en ${region}: cuatrimotos, caminatas y planes turisticos. Reserva directo.`,
-    lodging: `${n}hoteles, hospedaje y glamping en ${region} con piscina, fincas y cabañas. Hoteles y glamping en ${MUNI_TEXT} con reserva por WhatsApp.`,
+    lodging: `${n}hoteles, glamping, fincas y cabañas en ${region} - solo negocios serios verificados que alquilan fincas con piscina, jacuzzi y BBQ.`,
     agro: `${n}agroinsumos y veterinaria en ${region}. Fertilizantes y concentrados con domicilio.`,
     internet: `${n}reparacion y venta de celulares y computadores, venta de tecnologia y WiFi hasta 120 mb en ${region}. Instalacion WiFi urbana y rural para fincas por WhatsApp.`,
     services: `${n}taller mecanico de motos y carros, reparacion de neveras, estufas y aires acondicionados, redes de gas y electricas en ${MUNI_TEXT}. Cotiza por WhatsApp.`,
@@ -124,6 +124,17 @@ function buildCategoryDescription(categoryName: string, count: number, region: s
 
 function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   const niche = detectNiche(categoryName, slug);
+  if (niche === "lodging") {
+    return [
+      { q: `¿Dónde encontrar hoteles en ${region}?`, a: `En Ooasys solo listamos negocios serios verificados que alquilan fincas, hoteles, glamping y cabañas en ${region} con piscina, fotos reales y WhatsApp directo.` },
+      { q: `¿Hay glamping en ${region}?`, a: `Sí, en Ooasys encuentras glamping y cabañas boutique en ${region} con jacuzzi, bosque privado, piscina, BBQ y parqueadero. Todos son negocios serios verificados, no particulares.` },
+      { q: `¿Los hoteles y fincas en ${region} son verificados?`, a: `Sí, todos en Ooasys son negocios serios verificados que alquilan fincas en ${region}. Validamos fotos, dirección y WhatsApp del dueño para evitar estafas de fincas y glamping.` },
+      { q: `¿Son particulares o negocios serios que alquilan fincas en ${region}?`, a: `En Ooasys solo listamos negocios serios que alquilan fincas en ${region}. No listamos particulares. Todos tienen NIT o Cámara de Comercio, fotos reales y WhatsApp directo del dueño.` },
+      { q: `¿Cómo evitar estafas de fincas y glamping en ${region}?`, a: `Reserva solo negocios serios verificados en Ooasys con 【entity-WhatsApp¦canonical_name=WhatsApp】 directo del dueño. Nunca consignes sin videollamada. Solo publicamos negocios serios, no particulares.` },
+      { q: `¿Hay hospedaje con piscina en ${region} para fin de semana?`, a: `Sí, la mayoría de nuestros negocios serios en ${region} que alquilan fincas, hoteles y glamping tienen piscina, BBQ, jacuzzi y zona verde para día de sol y fin de semana.` },
+      { q: `¿Cómo reservar un hotel o glamping en ${region}?`, a: `Usa el botón de WhatsApp en la ficha del negocio serio. Reserva directa con el dueño sin comisiones ni intermediarios. Pide videollamada y ubicación en tiempo real.` },
+    ];
+  }
   if (niche === "gifts") {
     return [
       { q: `¿Dónde encontrar floristería en ${region}?`, a: `En Ooasys listamos floristerías y boutiques en ${region} con rosas y arreglos florales en ${MUNI_TEXT}.` },
@@ -141,7 +152,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   if (niche === "emergency") {
     return [
       { q: `¿Qué hacer si hay un incendio en ${region}?`, a: `En Ooasys listamos bomberos y policía en ${region} para incendios, robos y peleas con emergencia 24h en ${MUNI_TEXT}.` },
-      { q: `¿Dónde denunciar un robo en ${region}?`, a: `En Ooasys encuentras policía en ${region} para denunciar robos y peleas con contacto directo por WhatsApp.` },
+      { q: `¿Dónde denunciar un robo en ${region}?`, a: `En Ooasys encuentras policía en ${region} para denunciar robos y peleas con contacto directo por 【entity-WhatsApp¦canonical_name=WhatsApp】.` },
       { q: `¿Hay bomberos 24h en ${region}?`, a: "Sí, bomberos y policía en Sopetrán, San Jerónimo, Santa Fe de Antioquia, Liborina y Olaya trabajan 24h. Revisa su ficha." },
     ];
   }
@@ -149,7 +160,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
     return [
       { q: `¿Dónde hay bancos y cajeros en ${region}?`, a: `En Ooasys listamos bancos y cajeros en ${region} con retiro de plata en ${MUNI_TEXT}.` },
       { q: `¿Dónde retirar plata en Sopetrán?`, a: `En Ooasys encuentras cajeros y bancos en Sopetrán para retiro de plata con ubicación y horarios.` },
-      { q: `¿Cómo contactar un banco en ${region}?`, a: "Usa el botón de WhatsApp en la ficha. Contacto directo." },
+      { q: `¿Cómo contactar un banco en ${region}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Contacto directo." },
     ];
   }
   if (niche === "fashion") {
@@ -175,16 +186,16 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   }
   if (niche === "home") {
     return [
-      { q: `¿Dónde encontrar supermercado en ${region}?`, a: `En Ooasys listamos tiendas, supermercados y abarrotes en ${region} con mercado y productos para el hogar con domicilio y WhatsApp directo.` },
+      { q: `¿Dónde encontrar supermercado en ${region}?`, a: `En Ooasys listamos tiendas, supermercados y abarrotes en ${region} con mercado y productos para el hogar con domicilio y 【entity-WhatsApp¦canonical_name=WhatsApp】 directo.` },
       { q: `¿Qué tiendas en Sopetrán venden abarrotes?`, a: `En Ooasys encuentras tiendas y supermercados en Sopetrán con abarrotes, mercado y productos para el hogar con domicilio a fincas.` },
-      { q: `¿Cómo pedir mercado a domicilio en ${region}?`, a: "Usa el botón de WhatsApp en la ficha. Pide abarrotes y mercado directo sin intermediarios." },
+      { q: `¿Cómo pedir mercado a domicilio en ${region}?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Pide abarrotes y mercado directo sin intermediarios." },
     ];
   }
   if (niche === "nightlife") {
     return [
       { q: `¿Dónde encontrar licorera en ${region}?`, a: `En Ooasys listamos licoreras y bares en ${region} con domicilio y WhatsApp directo. Cerveza, aguardiente y ron en ${MUNI_TEXT}.` },
       { q: `¿Qué licoreras en Sopetrán tienen cerveza, aguardiente y ron?`, a: `La mayoría de licoreras en Sopetrán tienen cerveza, aguardiente y ron con domicilio a fincas y veredas.` },
-      { q: `¿Cómo pedir licor a domicilio en Sopetrán?`, a: "Usa el botón de WhatsApp en la ficha. Pide cerveza, aguardiente y ron directo sin intermediarios." },
+      { q: `¿Cómo pedir licor a domicilio en Sopetrán?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Pide cerveza, aguardiente y ron directo sin intermediarios." },
     ];
   }
   if (niche === "party") {
@@ -219,21 +230,14 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
     return [
       { q: `¿Dónde comprar cuido para perros y gatos en Sopetrán?`, a: `En Ooasys listamos todo para el campo en ${MUNI_TEXT}: cuidos y comida para perros, gatos, caballos y peces, con domicilio y WhatsApp directo.` },
       { q: `¿Dónde encontrar agroinsumos en San Jerónimo?`, a: `En Ooasys encuentras agroinsumos, concentrados y veterinaria en San Jerónimo y Sopetrán para fincas y campo. Cotiza por WhatsApp.` },
-      { q: `¿Cómo pedir cuido a domicilio en Sopetrán?`, a: "Usa el botón de WhatsApp en la ficha. Pide cuido para perros, gatos, caballos y peces directo." },
+      { q: `¿Cómo pedir cuido a domicilio en Sopetrán?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Pide cuido para perros, gatos, caballos y peces directo." },
     ];
   }
   if (niche === "services") {
     return [
       { q: `¿Dónde encontrar taller mecánico en Sopetrán?`, a: `En Ooasys listamos talleres mecánicos de motos y carros en ${MUNI_TEXT} con reparación y mantenimiento por WhatsApp directo.` },
       { q: `¿Quién repara aires, neveras y estufas en Sopetrán?`, a: `En Ooasys encuentras técnicos en Sopetrán para instalación y reparación de aires acondicionados, neveras y estufas.` },
-      { q: `¿Quién instala redes de gas y eléctricas en Sopetrán?`, a: "Usa el botón de WhatsApp en la ficha. Cotiza instalación de redes de gas y eléctricas directo sin intermediarios." },
-    ];
-  }
-  if (niche === "lodging") {
-    return [
-      { q: `¿Dónde encontrar hoteles en ${region}?`, a: `En Ooasys listamos hoteles, hospedaje y glamping en ${region} con piscina, fotos y WhatsApp directo, cerca del parque de ${MUNI_TEXT}.` },
-      { q: `¿Hay hospedaje y glamping con piscina en ${region}?`, a: "Sí, la mayoría de hoteles, fincas, cabañas y glamping en el Occidente tienen piscina, BBQ y parqueadero. Revisa cada ficha en Ooasys." },
-      { q: `¿Cómo reservar un hotel o glamping en ${region}?`, a: "Usa el botón de WhatsApp en la ficha. Reserva directa sin intermediarios ni comisiones." },
+      { q: `¿Quién instala redes de gas y eléctricas en Sopetrán?`, a: "Usa el botón de 【entity-WhatsApp¦canonical_name=WhatsApp】 en la ficha. Cotiza instalación de redes de gas y eléctricas directo sin intermediarios." },
     ];
   }
   if (niche === "desserts") {
@@ -267,7 +271,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
   if (niche === "transport") {
     return [
       { q: `¿Donde encontrar mototaxi en ${region}?`, a: `En Ooasys listamos mototaxis, domicilios y encomiendas en ${region} con telefono y WhatsApp directo.` },
-      { q: `¿Cuánto vale un mototaxi en ${region}?`, a: `El precio depende de la distancia y si es dentro del pueblo o a una finca. Escribele directo por WhatsApp al mototaxi en Ooasys y cotiza sin intermediarios.` },
+      { q: `¿Cuánto vale un mototaxi en ${region}?`, a: `El precio depende de la distancia y si es dentro del pueblo o a una finca. Escribele directo por 【entity-WhatsApp¦canonical_name=WhatsApp】 al mototaxi en Ooasys y cotiza sin intermediarios.` },
       { q: `¿Hay mototaxis 24 horas en ${region}?`, a: `Si, varios mototaxis y domicilios en ${region} trabajan 24h, sobre todo en Sopetran y San Jeronimo. Revisa en su ficha su horario y WhatsApp.` },
     ];
   }
@@ -297,7 +301,7 @@ function getSeoTitle(categoryName: string, region: string, slug?: string): strin
   if (niche === "internet") return `Reparación de Celulares y WiFi 120 mb en Sopetrán | Ooasys`;
   if (niche === "desserts") return `Helados, Salpicones, Wafles y Sandwiches en ${region} | Ooasys`;
   if (niche === "transport") return `Mototaxis, Domicilios y Encomiendas en ${region} | Ooasys`;
-  if (niche === "lodging") return `Hoteles, Hospedaje y Glamping en ${region} con Piscina | Ooasys`;
+  if (niche === "lodging") return `Hoteles, Glamping y Fincas Solo Negocios Serios | Ooasys`;
   if (niche === "beauty") return `Barbería y Peluquería en ${region} con WhatsApp | Ooasys`;
   if (niche === "shopping") return `Supermercados y Tiendas en ${region} con Domicilio | Ooasys`;
   if (niche === "moving") return `Trasteos y Mudanzas en ${region} | Ooasys`;
@@ -426,12 +430,14 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
           <h1 className="text-3xl font-extrabold tracking-tight font-heading md:text-4xl text-foreground">
             {displayTitle}
             {niche !== "religion" && (
-              <span className="text-primary text-2xl md:text-3xl block md:inline font-normal font-sans"> con WhatsApp directo</span>
+              <span className="text-primary text-2xl md:text-3xl block md:inline font-normal font-sans"> solo negocios serios</span>
             )}
           </h1>
           <div className="mt-4 max-w-3xl">
             <p className="text-foreground/80 leading-relaxed">
-              {niche === "gifts" ? (
+              {niche === "lodging" ? (
+                <>Encuentra <strong>{businesses.length} hoteles, glamping, fincas y cabañas en {REGION} - solo negocios serios que alquilan fincas</strong> y todo el Occidente Antioqueño. ¿Buscas hotel en {MUNI_TEXT}? ¿Glamping con jacuzzi y piscina en {REGION} para fin de semana? ¿Finca con BBQ? En Ooasys solo listamos negocios serios y verificados que alquilan fincas, hoteles y glamping con fotos reales, ubicación y WhatsApp del dueño, no alquilamos por particulares. Reserva directo sin comisiones y evita estafas.</>
+              ) : niche === "gifts" ? (
                 <>Encuentra <strong>{businesses.length} floristerías y boutiques en {REGION}</strong>. ¿Buscas detalles y regalos, rosas y arreglos florales en {MUNI_TEXT}? Pide directo por WhatsApp sin comisiones. Revisa fotos, ubicación y horarios.</>
               ) : niche === "religion" ? (
                 <>Encuentra <strong>{businesses.length} parroquias e iglesias en {REGION}</strong>. ¿Buscas horarios de misa y servicios parroquiales en {MUNI_TEXT}? Revisa horarios, ubicación y servicios.</>
@@ -465,8 +471,6 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
                 <>Encuentra <strong>{businesses.length} heladerías en {REGION}</strong> y todo el Occidente Antioqueño. ¿Buscas helados, salpicones, wafles y sandwiches en {MUNI_TEXT}? ¿Helado artesanal, salpicón de frutas, wafles con helado y sandwiches con domicilio a fincas y veredas? Aquí los pides directo por WhatsApp sin comisiones ni intermediarios. Revisa fotos, ubicación y horarios.</>
               ) : niche === "transport" ? (
                 <>Encuentra <strong>{businesses.length} mototaxis, domicilios y encomiendas en {REGION}</strong> y todo el Occidente Antioqueño. ¿Buscas mototaxi cerca del parque de {MUNI_TEXT}? ¿Con domicilio a fincas y veredas? Aquí los contactas directo por WhatsApp sin comisiones ni intermediarios. Revisa fotos, ubicación y horarios.</>
-              ) : niche === "lodging" ? (
-                <>Encuentra <strong>{businesses.length} hoteles, hospedaje y glamping en {REGION}</strong> y todo el Occidente Antioqueño. ¿Buscas hotel en {MUNI_TEXT}? ¿Hospedaje y glamping con piscina en {REGION} para fin de semana? Mira fotos, ubicación y reserva directo por WhatsApp sin comisiones.</>
               ) : niche === "beauty" ? (
                 <>Encuentra <strong>{businesses.length} barbería y peluquería en {REGION}</strong>. ¿Buscas barbería cerca del parque de {MUNI_TEXT}? ¿Peluquería y uñas en {REGION}? Agenda directo por WhatsApp sin comisiones.</>
               ) : niche === "shopping" ? (
@@ -491,7 +495,7 @@ export default async function CategoryBusinessPage({ params }: CategoryPageProps
               <Link href="/mapa" className="text-xs bg-primary text-primary-foreground px-3 py-1.5 rounded-full">Ver mapa del Occidente</Link>
             </div>
           </div>
-          <p className="text-muted-foreground mt-4 text-sm">{businesses.length} {businesses.length === 1 ? "negocio verificado" : "negocios verificados"} en {REGION} y alrededores.</p>
+          <p className="text-muted-foreground mt-4 text-sm">{businesses.length} {businesses.length === 1 ? "negocio serio verificado" : "negocios serios verificados"} que alquilan fincas en {REGION}.</p>
         </div>
         {businesses.length === 0 ? (
           <div className="text-center py-20 rounded-3xl border border-dashed border-border/50 bg-accent/10">
