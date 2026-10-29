@@ -4,6 +4,7 @@ import { Geist_Mono, Inter, Sora } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SanityLive } from "@/lib/sanity/live";
 import { ThemeProvider } from "@/components/theme-provider";
+import { GoogleAnalytics } from '@next/third-parties/google';
 //@ts-ignore
 import "./globals.css";
 
@@ -199,6 +200,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Toaster />
             <SanityLive />
           </ThemeProvider>
+          <GoogleAnalytics gaId="G-CWSZKFVJ0R" />
         </body>
       </html>
     </ClerkProvider>
