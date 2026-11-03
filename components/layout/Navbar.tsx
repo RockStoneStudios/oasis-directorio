@@ -69,7 +69,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
   // Refs para el pulso GSAP
-  const sanDiegoRef = useRef<HTMLAnchorElement>(null);
+  const llanadas = useRef<HTMLAnchorElement>(null);
   const sanJeronimoRef = useRef<HTMLAnchorElement>(null);
 
   const isAgent =
@@ -117,7 +117,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
     if (!mounted) return;
 
     // Pulso San Diego - naranja
-    const tlDiego = gsap.to(sanDiegoRef.current, {
+    const tlDiego = gsap.to(llanadas.current, {
       scale: 1.03,
       boxShadow: "0 0 0 4px rgba(234,88,12,0.15), 0 0 20px rgba(234,88,12,0.25)",
       duration: 0.9,
@@ -382,7 +382,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                   <nav className="flex flex-col gap-2 mt-6">
                     <Link href="/categorias" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><Grid3x3 className="h-5 w-5" />Buscar por Categoría</Link>
                     <Link href="/mapa" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><MapPin className="h-5 w-5" />Cerca de mí</Link>
-                    <Link href="/atm" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><BadgeDollarSign className="h-5 w-5" /> ¿Dónde retirar dinero?</Link>
+                    {/* <Link href="/atm" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><BadgeDollarSign className="h-5 w-5" /> ¿Dónde retirar dinero?</Link> */}
                     <Link href="/estereo" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><RadioIcon className="h-5 w-5" /> Emisoras del occidente antioqueño</Link>
                     
                     {/* FIESTAS SAN JERONIMO - PULSO VERDE / AMARILLO */}
@@ -404,14 +404,14 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
 
                     {/* FIESTAS SAN DIEGO - PULSO NARANJA */}
                     <Link
-                      ref={sanDiegoRef}
-                      href="/fiestas-san-diego-liborina"
+                      ref={llanadas}
+                      href="/fiestas-llanadas"
                       onClick={() => setIsOpen(false)}
                       className="relative flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl bg-[#EA580C]/10 border border-[#EA580C]/30 hover:bg-[#EA580C]/20 transition-all will-change-transform"
                     >
                       <PartyPopper className="h-5 w-5 text-[#EA580C] shrink-0" />
-                      <span className="text-[#EA580C]">
-                        Fiestas de San Diego Liborina
+                      <span className="text-[#d3f14c]">
+                        Fiestas del Campesino Llanadas
                       </span>
                       <span className="ml-auto flex h-2.5 w-2.5 relative shrink-0">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EA580C] opacity-75"></span>
