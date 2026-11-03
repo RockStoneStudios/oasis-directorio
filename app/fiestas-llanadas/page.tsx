@@ -10,7 +10,7 @@ export const revalidate = 3600;
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.ooasys.com';
 const pageUrl = `${baseUrl}/fiestas-llanadas`;
 const ogImagePath = '/llanadas.jpg';
-const ogImageAbsolute = `${baseUrl}${ogImagePath}`;
+const ogImageAbsolute = `https://www.ooasys.com${ogImagePath}`;
 
 const WHATSAPP_URL = 'https://wa.me/573206209817?text=Hola%2C%20quiero%20inscribir%20mi%20negocio%20en%20Ooasys';
 const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=Parque+Corregimiento+Llanadas+Olaya+Antioquia';
@@ -20,7 +20,7 @@ const description =
   'Programación oficial Fiestas del Campesino y el Progreso en Llanadas, Olaya 2026 del 13 al 15 de noviembre. Concurso de Sancochos, Día del Campesino, Bingo, Noche Campesina con Gato Negro, 【entity-Hebert Vargas¦canonical_name=Hebert Vargas】 y Rikarena.';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(baseUrl),
+  metadataBase: new URL('https://www.ooasys.com'),
   title: { absolute: title },
   description,
   alternates: {
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description:
-      'Vive las Fiestas del Campesino y el Progreso del 13 al 15 de noviembre de 2026 en Llanadas, Olaya. Concurso de Sancochos, Día del Campesino, Bingo, cultura y conciertos con Gato Negro, Manuel Alcaraz, 【entity-Hebert Vargas¦canonical_name=Hebert Vargas】 y Rikarena.',
+      'Vive las Fiestas del Campesino y el Progreso del 13 al 15 de noviembre de 2026 en Llanadas, Olaya. Concurso de Sancochos, Día del Campesino, Bingo, cultura y conciertos con Gato Negro, Manuel Alcaraz, Hebert Vargas y Rikarena.',
     url: pageUrl,
     siteName: 'Ooasys',
     type: 'website',
@@ -156,7 +156,7 @@ export default async function FiestasLlanadasOlayaPage() {
     performer: [
       { '@type': 'Person', name: 'Gato Negro' },
       { '@type': 'MusicGroup', name: 'Manuel Alcaraz y su Conjunto' },
-      { '@type': 'Person', name: '【entity-Hebert Vargas - Yo Me Llamo¦canonical_name=Hebert Vargas】' },
+      { '@type': 'Person', name: ' 【entity-Hebert Vargas¦canonical_name=Hebert Vargas】 - Yo Me Llamo' },
       { '@type': 'Person', name: 'Rikarena - Yo Me Llamo' },
       { '@type': 'Person', name: 'El Enamorado del Despecho' },
       { '@type': 'MusicGroup', name: 'Los Rumberos Montañeros' },
@@ -231,7 +231,7 @@ export default async function FiestasLlanadasOlayaPage() {
             </div>
 
             <div className="order-1 lg:order-2 relative mt-12 lg:mt-0">
-              <div className="relative aspect-4/5 rounded-[2.5rem] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.4)] border-8 border-white/60 rotate-1 bg-[#E8F5E9]">
+              <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.4)] border-8 border-white/60 rotate-1 bg-[#E8F5E9]">
                 <Image src={ogImagePath} alt="Fiestas del Campesino y el Progreso 2026 en Llanadas, Olaya, Antioquia" fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 50vw" />
               </div>
               <div className="absolute -bottom-6 -left-6 bg-[#FFD600] text-black font-black px-6 py-3 rounded-2xl -rotate-4 shadow-xl z-30">
