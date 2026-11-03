@@ -9,16 +9,15 @@ export const revalidate = 3600;
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.ooasys.com';
 const pageUrl = `${baseUrl}/fiestas-llanadas`;
-const ogImage = '/llanadas.jpg';
+const ogImagePath = '/llanadas.jpg';
+const ogImageAbsolute = `${baseUrl}${ogImagePath}`;
 
 const WHATSAPP_URL = 'https://wa.me/573206209817?text=Hola%2C%20quiero%20inscribir%20mi%20negocio%20en%20Ooasys';
 const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=Parque+Corregimiento+Llanadas+Olaya+Antioquia';
 
-// 1. TÍTULO OPTIMIZADO
 const title = 'Fiestas del Campesino y el Progreso Llanadas Olaya 2026: Programación Oficial';
-// 2. META DESCRIPTION
 const description =
-  'Programación oficial Fiestas del Campesino y el Progreso en Llanadas, Olaya 2026 del 13 al 15 de noviembre. Concurso de Sancochos, Día del Campesino, Bingo, Noche Campesina con Gato Negro, Hebert Vargas y Rikarena.';
+  'Programación oficial Fiestas del Campesino y el Progreso en Llanadas, Olaya 2026 del 13 al 15 de noviembre. Concurso de Sancochos, Día del Campesino, Bingo, Noche Campesina con Gato Negro, 【entity-Hebert Vargas¦canonical_name=Hebert Vargas】 y Rikarena.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -42,18 +41,18 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description:
-      'Vive las Fiestas del Campesino y el Progreso del 13 al 15 de noviembre de 2026 en Llanadas, Olaya. Concurso de Sancochos, Día del Campesino, Bingo, cultura y conciertos con Gato Negro, Manuel Alcaraz, Hebert Vargas y Rikarena.',
+      'Vive las Fiestas del Campesino y el Progreso del 13 al 15 de noviembre de 2026 en Llanadas, Olaya. Concurso de Sancochos, Día del Campesino, Bingo, cultura y conciertos con Gato Negro, Manuel Alcaraz, 【entity-Hebert Vargas¦canonical_name=Hebert Vargas】 y Rikarena.',
     url: pageUrl,
     siteName: 'Ooasys',
     type: 'website',
     locale: 'es_CO',
-    images: [{ url: ogImage, width: 1200, height: 630, alt: 'Fiestas del Campesino y el Progreso 2026 en Llanadas, Olaya, Antioquia' }],
+    images: [{ url: ogImageAbsolute, width: 1200, height: 630, alt: 'Fiestas del Campesino y el Progreso 2026 en Llanadas, Olaya, Antioquia' }],
   },
   twitter: {
     card: 'summary_large_image',
     title,
     description: 'Del 13 al 15 nov 2026: Programación oficial, Concurso de Sancochos, Día del Campesino, Gran Bingo y noche con Gato Negro, Manuel Alcaraz, Hebert Vargas y Rikarena. Entrada libre.',
-    images: [ogImage],
+    images: [ogImageAbsolute],
   },
 };
 
@@ -140,7 +139,7 @@ export default async function FiestasLlanadasOlayaPage() {
     url: pageUrl,
     inLanguage: 'es-CO',
     isAccessibleForFree: true,
-    image: [`${baseUrl}${ogImage}`],
+    image: [ogImageAbsolute],
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     location: {
@@ -157,7 +156,7 @@ export default async function FiestasLlanadasOlayaPage() {
     performer: [
       { '@type': 'Person', name: 'Gato Negro' },
       { '@type': 'MusicGroup', name: 'Manuel Alcaraz y su Conjunto' },
-      { '@type': 'Person', name: 'Hebert Vargas - Yo Me Llamo' },
+      { '@type': 'Person', name: '【entity-Hebert Vargas - Yo Me Llamo¦canonical_name=Hebert Vargas】' },
       { '@type': 'Person', name: 'Rikarena - Yo Me Llamo' },
       { '@type': 'Person', name: 'El Enamorado del Despecho' },
       { '@type': 'MusicGroup', name: 'Los Rumberos Montañeros' },
@@ -187,7 +186,6 @@ export default async function FiestasLlanadasOlayaPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: toJsonLd(breadcrumbJsonLd) }} />
 
       <main className="min-h-screen bg-[#F6F9F2] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors font-sans">
-        {/* HERO - VERDE CAFÉ LLANADAS */}
         <section className="relative overflow-hidden bg-gradient-to-b from-[#E8F5E9] via-[#A5D6A7] to-[#1B5E20] text-[#0D2810]">
           <div className="absolute top-6 left-4 md:left-8 z-50">
             <Link href="/" className="inline-flex items-center gap-2 bg-black/40 hover:bg-black/60 backdrop-blur-md text-white px-4 py-2.5 rounded-full text-sm font-bold transition-all border border-white/30 shadow-lg group">
@@ -234,7 +232,7 @@ export default async function FiestasLlanadasOlayaPage() {
 
             <div className="order-1 lg:order-2 relative mt-12 lg:mt-0">
               <div className="relative aspect-4/5 rounded-[2.5rem] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.4)] border-8 border-white/60 rotate-1 bg-[#E8F5E9]">
-                <Image src={ogImage} alt="Fiestas del Campesino y el Progreso 2026 en Llanadas, Olaya, Antioquia" fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 50vw" />
+                <Image src={ogImagePath} alt="Fiestas del Campesino y el Progreso 2026 en Llanadas, Olaya, Antioquia" fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 50vw" />
               </div>
               <div className="absolute -bottom-6 -left-6 bg-[#FFD600] text-black font-black px-6 py-3 rounded-2xl -rotate-4 shadow-xl z-30">
                 <span aria-hidden="true">🍲</span> CONCURSO DE SANCOCHOS
@@ -246,7 +244,6 @@ export default async function FiestasLlanadasOlayaPage() {
           </div>
         </section>
 
-        {/* INFO RÁPIDA */}
         <section aria-label="Resumen de las fiestas" className="max-w-7xl mx-auto px-4 -mt-8 relative z-30 grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             { t: 'Concurso de Sancochos', d: 'Domingo 15 nov - 7:00 AM Parque', i: '🍲' },
@@ -263,7 +260,6 @@ export default async function FiestasLlanadasOlayaPage() {
           ))}
         </section>
 
-        {/* PROGRAMACIÓN */}
         <section id="programacion" className="max-w-7xl mx-auto px-4 py-16 lg:py-24 scroll-mt-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl lg:text-6xl font-black tracking-tight">PROGRAMACIÓN LLANADAS</h2>
@@ -305,7 +301,6 @@ export default async function FiestasLlanadasOlayaPage() {
           </div>
         </section>
 
-        {/* CÓMO LLEGAR Y DÓNDE QUEDARSE */}
         <section className="max-w-7xl mx-auto px-4 pb-16 lg:pb-24">
           <div className="bg-white dark:bg-zinc-900 dark:border-zinc-800 rounded-3xl border border-zinc-100 shadow-lg p-6 md:p-10">
             <h2 className="text-3xl font-black tracking-tight">Cómo llegar y dónde quedarte</h2>
@@ -334,7 +329,6 @@ export default async function FiestasLlanadasOlayaPage() {
           </div>
         </section>
 
-        {/* TEXTO + FAQ */}
         <section className="bg-[#1B5E20] text-white py-16">
           <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12">
             <div>
@@ -361,7 +355,6 @@ export default async function FiestasLlanadasOlayaPage() {
           </div>
         </section>
 
-        {/* CTA FINAL */}
         <section className="py-12 px-4 text-center">
           <p className="text-zinc-600 dark:text-zinc-400 text-sm">Página informativa de Ooasys - Directorio del Occidente Antioqueño</p>
           <h2 className="font-black text-2xl mt-2">¿Tienes un negocio en Olaya? ¡Inscríbelo en Ooasys!</h2>
