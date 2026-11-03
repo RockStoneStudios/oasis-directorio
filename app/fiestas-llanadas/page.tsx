@@ -9,7 +9,7 @@ export const revalidate = 3600;
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.ooasys.com';
 const pageUrl = `${baseUrl}/fiestas-campesino-progreso-llanadas-olaya`;
-const ogImage = 'llanadas.jpg';
+const ogImage = '/llanadas.jpg';
 
 const WHATSAPP_URL = 'https://wa.me/573206209817?text=Hola%2C%20quiero%20inscribir%20mi%20negocio%20en%20Ooasys';
 const MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=Parque+Corregimiento+Llanadas+Olaya+Antioquia';
