@@ -200,7 +200,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Toaster />
             <SanityLive />
           </ThemeProvider>
-          <GoogleAnalytics gaId="G-CWSZKFVJ0R" />
+          <GoogleAnalytics gaId="G-HVR9KF7SX6" />
         </body>
       </html>
     </ClerkProvider>
