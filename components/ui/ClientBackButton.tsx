@@ -9,7 +9,7 @@ export function ClientBackButton() {
 
   return (
     <button
-      onClick={() => router.back()}
+      onClick={() => router.push("/")}
       className="w-full h-full flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 cursor-pointer active:scale-95
         /* ☀️ Modo Claro: Neón naranja suave */
         bg-white/80 border border-orange-100 text-zinc-800 shadow-[0_0_10px_rgba(251,146,60,0.1)] 

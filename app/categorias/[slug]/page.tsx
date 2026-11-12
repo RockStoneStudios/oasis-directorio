@@ -285,7 +285,7 @@ function getCategoryFaqs(categoryName: string, region: string, slug?: string) {
 function getSeoTitle(categoryName: string, region: string, slug?: string): string {
   const niche = detectNiche(categoryName, slug);
   if (niche === "gifts") return `Floristería y Boutique en Sopetrán Rosas | Ooasys`;
-  if (niche === "religion") return `Parroquias en Sopetrán Horarios de Misa | Ooasys`;
+  if (niche === "religion") return `Parroquias en ${region} Horarios de Misa | Ooasys`;
   if (niche === "food") return `Restaurantes y Comidas Rápidas en Sopetrán | Ooasys`;
   if (niche === "home") return `Supermercados y Abarrotes en Sopetrán | Ooasys`;
   if (niche === "health") return `Farmacia, Odontología y Fisioterapia en Sopetrán | Ooasys`;
