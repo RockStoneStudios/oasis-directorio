@@ -10,6 +10,7 @@ import { sanityFetch } from "@/lib/sanity/live";
 import { MUNICIPALITIES_LIST_QUERY } from "@/lib/sanity/queries";
 import { HomeSearch } from "@/components/HomeSearch";
 import { Pagination } from "@/components/Pagination";
+import { FestivalsBanner } from "@/components/FestivalsBanner";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://www.ooasys.com";
 
@@ -174,6 +175,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       suppressHydrationWarning
     >
       <Navbar municipalities={municipalitiesList} />
+      <FestivalsBanner />
       
       <main id="main">
         {/* Hero Section */}

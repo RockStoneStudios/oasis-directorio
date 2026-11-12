@@ -1,4 +1,5 @@
- import { Footer } from "@/components/layout/Footer";
+ import { FestivalsBanner } from "@/components/FestivalsBanner";
+import { Footer } from "@/components/layout/Footer";
  import { Navbar } from "@/components/layout/Navbar";
 
  export default function MainLayout({
@@ -8,7 +9,7 @@
  }) {
    return (
      <div className="min-h-screen flex flex-col">
-       <Navbar />
+       {/* <Navbar /> */}
        <main id="main" className="flex-1">
          {children}
        </main>

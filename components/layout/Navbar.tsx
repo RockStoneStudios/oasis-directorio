@@ -71,6 +71,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
   // Refs para el pulso GSAP
   const llanadas = useRef<HTMLAnchorElement>(null);
   const sanJeronimoRef = useRef<HTMLAnchorElement>(null);
+  const liborinaRef = useRef<HTMLAnchorElement>(null);
 
   const isAgent =
     user?.publicMetadata?.plan === "agent" ||
@@ -116,7 +117,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
   useEffect(() => {
     if (!mounted) return;
 
-    // Pulso San Diego - naranja
+    // Pulso Llanadas (Olaya) - naranja
     const tlDiego = gsap.to(llanadas.current, {
       scale: 1.03,
       boxShadow: "0 0 0 4px rgba(234,88,12,0.15), 0 0 20px rgba(234,88,12,0.25)",
@@ -137,9 +138,21 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
       delay: 0.45,
     });
 
+    // Pulso Liborina - rojo / terracota
+    const tlLiborina = gsap.to(liborinaRef.current, {
+      scale: 1.03,
+      boxShadow: "0 0 0 4px rgba(220,38,38,0.2), 0 0 20px rgba(220,38,38,0.3)",
+      duration: 0.9,
+      ease: "power1.inOut",
+      yoyo: true,
+      repeat: -1,
+      delay: 0.25,
+    });
+
     return () => {
       tlDiego?.kill();
       tlJero?.kill();
+      tlLiborina?.kill();
     };
   }, [mounted, isOpen]);
 
@@ -402,7 +415,24 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                       </span>
                     </Link>
 
-                    {/* FIESTAS SAN DIEGO - PULSO NARANJA */}
+                    {/* FIESTAS DEL FRÍJOL LIBORINA - PULSO ROJO / TERRACOTA */}
+                    <Link
+                      ref={liborinaRef}
+                      href="/fiestas-del-frijol-liborina"
+                      onClick={() => setIsOpen(false)}
+                      className="relative flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl bg-gradient-to-r from-[#DC2626]/15 to-[#991B1B]/10 border border-[#DC2626]/35 hover:from-[#DC2626]/25 hover:to-[#991B1B]/20 transition-all will-change-transform"
+                    >
+                      <PartyPopper className="h-5 w-5 text-[#DC2626] shrink-0" />
+                      <span className="text-[#DC2626] dark:text-[#F87171]">
+                        Fiestas del Fríjol Liborina
+                      </span>
+                      <span className="ml-auto flex h-2.5 w-2.5 relative shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DC2626] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#DC2626]"></span>
+                      </span>
+                    </Link>
+
+                    {/* FIESTAS LLANADAS (OLAYA) - PULSO NARANJA */}
                     <Link
                       ref={llanadas}
                       href="/fiestas-llanadas"

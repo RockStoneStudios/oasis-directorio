@@ -7,6 +7,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { GoogleAnalytics } from '@next/third-parties/google';
 //@ts-ignore
 import "./globals.css";
+import { FestivalsBanner } from "@/components/FestivalsBanner";
+import { Navbar } from "@/components/layout/Navbar";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 const sora = Sora({ 
@@ -196,6 +198,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             disableTransitionOnChange 
             enableColorScheme={false}
           >
+            
             {children}
             <Toaster />
             <SanityLive />
