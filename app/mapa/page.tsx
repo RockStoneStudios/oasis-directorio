@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: "Mapa Interactivo y AR del Occidente Antioqueño | Ooasys",
     description:
       "Explora comercios y turismo del Occidente Antioqueño en mapa interactivo y AR.",
-    images: ["/mapa-occidente.jpg"],
+    images: ["/mapa.PNG"],
   },
 };
 
