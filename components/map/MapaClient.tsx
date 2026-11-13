@@ -19,9 +19,23 @@ const CATEGORY_ICONS: Record<string, any> = {
   "compras": ShoppingBag,
 };
 
-// 1. Coordenadas por defecto (Sopetrán) en caso de que el usuario deniegue el permiso
-const DEFAULT_LAT = 6.500962;
-const DEFAULT_LNG = -75.742505;
+// Coordenadas de los parques principales
+const MUNICIPALITY_COORDS: Record<string, { lat: number, lng: number }> = {
+  "sopetran": { lat: 6.500962, lng: -75.742505 },
+  "san jeronimo": { lat: 6.443258, lng: -75.729591 }, 
+  "liborina": { lat: 6.677481, lng: -75.811774 },
+  "santa fe de antioquia": { lat: 6.556077, lng: -75.826861 },
+  "olaya": { lat: 6.627451, lng: -75.778905 }, 
+  "llanadas": { lat: 6.627451, lng: -75.778905 },
+};
+
+const DEFAULT_LAT = MUNICIPALITY_COORDS["sopetran"].lat;
+const DEFAULT_LNG = MUNICIPALITY_COORDS["sopetran"].lng;
+
+// Función para normalizar texto (quitar tildes y pasar a minúsculas)
+const normalizeText = (text: string) => {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+};
 
 const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
   const R = 6371;
@@ -49,29 +63,26 @@ export default function MapaClient() {
   const [loading, setLoading] = useState(true);
   const [isMapReady, setIsMapReady] = useState(false);
 
-  // 2. NUEVO: Estado para guardar la ubicación del usuario
-  const [userLocation, setUserLocation] = useState({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
+  const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
+  const [hasLocationPermission, setHasLocationPermission] = useState<boolean>(false);
 
-  // 3. NUEVO: Efecto para pedir la ubicación al navegador
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          // Si el usuario da permiso, actualizamos el estado
           setUserLocation({
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
+          setHasLocationPermission(true);
         },
         (error) => {
-          // Si dice que no o hay error, se queda con Sopetrán por defecto
-          console.warn("No se pudo obtener la ubicación, usando Sopetrán por defecto.");
+          console.warn("No se pudo obtener la ubicación, usando parques municipales por defecto.");
         }
       );
     }
   }, []);
 
-  // 4. MODIFICADO: Ahora calcula las distancias basándose en 'userLocation'
   useEffect(() => {
     async function fetchMapData() {
       try {
@@ -81,14 +92,46 @@ export default function MapaClient() {
           page: 1, pageSize: 200,
         });
         
-        const adaptedBusinesses = businesses.map((b: any) => ({
-          ...b,
-          address: { lat: b.location?.lat, lng: b.location?.lng },
-          distance: b.location?.lat && b.location?.lng
-            // Usamos userLocation.lat y userLocation.lng en lugar de REF_LAT
-            ? calculateDistance(userLocation.lat, userLocation.lng, b.location.lat, b.location.lng)
-            : Infinity
-        }));
+        const adaptedBusinesses = businesses.map((b: any) => {
+          // Normalizamos el nombre del municipio para evitar fallos por tildes o mayúsculas
+          const rawMunicipality = b.municipality?.name || "";
+          const munName = normalizeText(rawMunicipality);
+          
+          let refLat = DEFAULT_LAT;
+          let refLng = DEFAULT_LNG;
+          let isUsingUserLocation = false;
+
+          if (hasLocationPermission && userLocation) {
+            refLat = userLocation.lat;
+            refLng = userLocation.lng;
+            isUsingUserLocation = true;
+          } else if (MUNICIPALITY_COORDS[munName]) {
+            refLat = MUNICIPALITY_COORDS[munName].lat;
+            refLng = MUNICIPALITY_COORDS[munName].lng;
+          } else {
+            // Si no encuentra el municipio en la lista, calculamos respecto al pueblo más cercano de la lista
+            let minDistanceToTown = Infinity;
+            Object.values(MUNICIPALITY_COORDS).forEach(town => {
+              const dist = calculateDistance(b.location?.lat || 0, b.location?.lng || 0, town.lat, town.lng);
+              if (dist < minDistanceToTown) {
+                minDistanceToTown = dist;
+                refLat = town.lat;
+                refLng = town.lng;
+              }
+            });
+          }
+
+          return {
+            ...b,
+            // Pasamos el nombre del municipio para que el mapa lo muestre
+            municipalityName: rawMunicipality,
+            isDistanceFromUser: isUsingUserLocation,
+            address: { lat: b.location?.lat, lng: b.location?.lng },
+            distance: b.location?.lat && b.location?.lng
+              ? calculateDistance(refLat, refLng, b.location.lat, b.location.lng)
+              : Infinity
+          };
+        });
         
         setAllBusinesses(adaptedBusinesses);
         setFilteredBusinesses(adaptedBusinesses);
@@ -100,7 +143,7 @@ export default function MapaClient() {
       }
     }
     fetchMapData();
-  }, [userLocation]); // Se vuelve a ejecutar si la ubicación cambia
+  }, [hasLocationPermission, userLocation]);
 
   const applyFilters = useCallback((category: string | null, radius: number | null) => {
     let result = [...allBusinesses];

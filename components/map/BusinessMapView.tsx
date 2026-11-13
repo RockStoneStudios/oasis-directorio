@@ -14,16 +14,17 @@ import { formatDistance } from "@/lib/utils-geo/distance";
 import { urlFor } from "@/lib/sanity/image";
 
 interface BusinessWithPoint {
-  business: BusinessCardData & { distance?: number; marker?: any; slug?: any };
+  business: BusinessCardData & { distance?: number; marker?: any; slug?: any; municipalityName?: string; isDistanceFromUser?: boolean };
   point: LatLng;
 }
 
+// Actualizamos las coordenadas de los parques para que coincidan con las de MapaClient
 const PARQUES: Record<string, { lat: number; lng: number }> = {
-  sopetran: { lat: 6.5025, lng: -75.74281 },
-  san_jeronimo: { lat: 6.443, lng: -75.732 },
-  santa_fe: { lat: 6.5572, lng: -75.8274 },
-  olaya: { lat: 6.6269, lng: -75.6843 },
-  liborina: { lat: 6.678154, lng: -75.811229 },
+  sopetran: { lat: 6.500962, lng: -75.742505 },
+  san_jeronimo: { lat: 6.443258, lng: -75.729591 }, 
+  santa_fe: { lat: 6.556077, lng: -75.826861 },
+  olaya: { lat: 6.627451, lng: -75.778905 },
+  liborina: { lat: 6.677481, lng: -75.811774 },
 };
 
 export function BusinessMapView({ businesses, className }: { businesses: any[], className?: string }) {
@@ -62,12 +63,10 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
     const map = mapRef.current.getMap();
     if (!map) return;
 
-    // Por defecto, si el usuario no da permisos, se va a Sopetrán
     let center = PARQUES.sopetran;
 
     if (userLocation) {
       let minDist = Infinity;
-      // Buscamos el parque más cercano sin importar la distancia
       for (const key in PARQUES) {
         const p = PARQUES[key];
         const d = Math.hypot(p.lat - userLocation.lat, p.lng - userLocation.lng);
@@ -81,7 +80,7 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
 
     map.flyTo({
       center: [center.lng, center.lat],
-      zoom: 16, // Zoom ajustado para ver el pueblo y sus alrededores
+      zoom: 16,
       pitch: 61, 
       bearing: -15, 
       duration: 2700,
@@ -181,11 +180,21 @@ export function BusinessMapView({ businesses, className }: { businesses: any[], 
             <Link href={getBusinessHref(selectedBusiness.business)} className="block p-1 min-w-">
               <h3 className="text-sm font-bold text-slate-900">{selectedBusiness.business.name}</h3>
               <RatingStars rating={selectedBusiness.business.rating} />
+              
+              {/* 👇 AQUÍ ESTÁ LA CORRECCIÓN DEL TEXTO 👇 */}
               {selectedBusiness.business.distance !== undefined && (
                 <p className="mt-1 text- text-emerald-600 font-bold flex items-center gap-1">
-                  <MapPin className="h-3 w-3" /> {formatDistance(selectedBusiness.business.distance)} del parque
+                  <MapPin className="h-3 w-3" /> 
+                  {formatDistance(selectedBusiness.business.distance)}{" "}
+                  {selectedBusiness.business.isDistanceFromUser 
+                    ? "de ti" 
+                    : selectedBusiness.business.municipalityName 
+                      ? `del parque de ${selectedBusiness.business.municipalityName}` 
+                      : "del parque"}
                 </p>
               )}
+              {/* 👆 FIN DE LA CORRECCIÓN 👆 */}
+
               <p className="mt-0.5 text- text-slate-500">{formatAddress(selectedBusiness.business.address)}</p>
             </Link>
           </Popup>
