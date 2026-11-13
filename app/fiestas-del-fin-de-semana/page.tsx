@@ -12,13 +12,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Fiestas y Eventos este Fin de Semana | Occidente Antioqueño",
     description: "Conoce la agenda de eventos: Fiestas del Sol, Fiestas del Fríjol y más celebraciones en el Occidente de Antioquia.",
-    url: "/fiestas-fin-de-semana",
+    url: "https://www.ooasys.com/fiestas-del-fin-de-semana",
     siteName: "Ooasys",
     locale: "es_CO",
     type: "website",
     images: [
       {
-        url: "/fiestas.jpg",
+        url: "https://www.ooasys.com/fiestas.jpg",
         width: 1200,
         height: 630,
         alt: "Fiestas tradicionales en el Occidente Antioqueño",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Fiestas y Eventos en el Occidente Antioqueño | Ooasys",
     description: "Agenda de eventos y fiestas tradicionales este fin de semana.",
-    images: ["/fiestas.jpg"],
+    images: ["https://www.ooasys.com/fiestas.jpg"],
   },
 };
 
