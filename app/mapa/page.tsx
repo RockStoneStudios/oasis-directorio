@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/mapa-occidente.jpg",
+        url: "/mapa.PNG",
         width: 1200,
         height: 630,
         alt: "Mapa interactivo y AR de negocios del Occidente Antioqueño",
