@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: "/mapa",
   },
   openGraph: {
-    title: "Mapa Interactivo y AR del Occidente Antioqueño",
+    title: "Mapa Interactivo en Realidad Aumentada del Occidente Antioqueño",
     description:
       "Descubre restaurantes, hospedaje, salud y turismo en el Occidente Antioqueño con mapa interactivo y experiencia AR.",
     url: "/mapa",
