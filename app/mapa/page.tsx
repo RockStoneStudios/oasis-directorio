@@ -3,32 +3,35 @@ import MapaClient from "../../components/map/MapaClient";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.ooasys.com"),
-  title: "Mapa de Negocios en Sopetrán, Antioquia",
-  description: "Mapa interactivo de Sopetrán con más de 200 negocios locales. Filtra por restaurantes, salud, hospedaje y encuentra lo que necesitas a 500m o 1km de ti.",
+  title: "Mapa Interactivo y AR de Negocios del Occidente Antioqueño",
+  description:
+    "Explora los 19 municipios del Occidente Antioqueño: Santa Fe de Antioquia, Sopetrán, San Jerónimo y más. Mapa interactivo con vista previa AR de comercios locales, filtrable por categoría y distancia.",
   alternates: {
     canonical: "/mapa",
   },
   openGraph: {
-    title: "Mapa Interactivo de Sopetrán - Restaurantes, Salud, Hospedaje",
-    description: "Explora todos los negocios de Sopetrán en un solo mapa. Filtra por categoría y distancia.",
+    title: "Mapa Interactivo y AR del Occidente Antioqueño",
+    description:
+      "Descubre restaurantes, hospedaje, salud y turismo en el Occidente Antioqueño con mapa interactivo y experiencia AR.",
     url: "/mapa",
     siteName: "Ooasys",
     locale: "es_CO",
     type: "website",
     images: [
       {
-        url: "/mapa.PNG",
+        url: "/mapa-occidente.jpg",
         width: 1200,
         height: 630,
-        alt: "Mapa de negocios en Sopetrán, Antioquia",
+        alt: "Mapa interactivo y AR de negocios del Occidente Antioqueño",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mapa de Negocios en Sopetrán | Ooasys",
-    description: "Encuentra restaurantes, hoteles y servicios cerca de ti.",
-    images: ["/mapa.PNG"],
+    title: "Mapa Interactivo y AR del Occidente Antioqueño | Ooasys",
+    description:
+      "Explora comercios y turismo del Occidente Antioqueño en mapa interactivo y AR.",
+    images: ["/mapa-occidente.jpg"],
   },
 };
 
@@ -36,8 +39,9 @@ export default function Page() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Mapa Local de Negocios en Sopetrán",
-    description: "Directorio geolocalizado de comercios en Sopetrán, Antioquia",
+    name: "Mapa Interactivo y AR de Negocios del Occidente Antioqueño",
+    description:
+      "Directorio geolocalizado con mapa interactivo y vista previa AR de comercios y servicios turísticos en los 19 municipios del Occidente Antioqueño, Antioquia, Colombia.",
     url: "https://www.ooasys.com/mapa",
     isPartOf: {
       "@type": "WebSite",
@@ -45,19 +49,33 @@ export default function Page() {
       url: "https://www.ooasys.com",
     },
     about: {
-      "@type": "Place",
-      name: "Sopetrán, Antioquia, Colombia",
+      "@type": "AdministrativeArea",
+      name: "Occidente Antioqueño",
+      containedInPlace: {
+        "@type": "AdministrativeArea",
+        name: "Antioquia, Colombia",
+      },
       geo: {
         "@type": "GeoCoordinates",
-        latitude: 6.500962,
-        longitude: -75.742505,
+        latitude: 6.556,
+        longitude: -75.828,
       },
     },
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Inicio", item: "https://www.ooasys.com" },
-        { "@type": "ListItem", position: 2, name: "Mapa", item: "https://www.ooasys.com/mapa" },
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Inicio",
+          item: "https://www.ooasys.com",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Mapa del Occidente Antioqueño",
+          item: "https://www.ooasys.com/mapa",
+        },
       ],
     },
   };
