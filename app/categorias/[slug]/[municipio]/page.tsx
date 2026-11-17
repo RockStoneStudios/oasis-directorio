@@ -343,8 +343,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     alternates: { canonical: url, languages: { "es-CO": url, es: url } },
     robots: filtered.length===0 ? { index:false, follow:true } : { index:true, follow:true },
-    openGraph: { title, description, url, type:"website", siteName:"Ooasys", locale:"es_CO", images:[{url:`${baseUrl}/og-categories.png`, width:1200, height:630, alt:title}] },
-    twitter: { card:"summary_large_image", title, description, images:[`${baseUrl}/og-categories.png`] },
+    openGraph: { title, description, url, type:"website", siteName:"Ooasys", locale:"es_CO", images:[{url:`${baseUrl}/categorias.png`, width:1200, height:630, alt:title}] },
+    twitter: { card:"summary_large_image", title, description, images:[`${baseUrl}/categorias.png`] },
   };
 }
 

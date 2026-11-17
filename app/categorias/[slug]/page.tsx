@@ -355,7 +355,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     robots: count === 0 ? { index: false, follow: true } : { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
     other: { "geo.region": "CO-ANT", "geo.placename": REGION },
     openGraph: { title, description, url, type: "website", siteName: "Ooasys", locale: "es_CO", images: [{ url: `${baseUrl}/categorias.png`, width: 1200, height: 630, alt: `${categoryName} en ${REGION} - Ooasys` }] },
-    twitter: { card: "summary_large_image", title, description, images: [`${baseUrl}/og-categories.png`] },
+    twitter: { card: "summary_large_image", title, description, images: [`${baseUrl}/categorias.png`] },
   };
 }
 
