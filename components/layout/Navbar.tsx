@@ -398,57 +398,7 @@ export function Navbar({ municipalities = [] }: NavbarProps) {
                     {/* <Link href="/atm" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><BadgeDollarSign className="h-5 w-5" /> ¿Dónde retirar dinero?</Link> */}
                     <Link href="/estereo" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#44403C] dark:text-[#D6D3D1] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10 transition-all"><RadioIcon className="h-5 w-5" /> Emisoras del occidente antioqueño</Link>
                     
-                    {/* FIESTAS SAN JERONIMO - PULSO VERDE / AMARILLO */}
-                    <Link
-                      ref={sanJeronimoRef}
-                      href="/fiestas-del-sol-san-jeronimo"
-                      onClick={() => setIsOpen(false)}
-                      className="relative flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl bg-gradient-to-r from-[#FFC107]/20 to-[#1B5E20]/10 border border-[#FFC107]/40 dark:border-[#1B5E20]/50 hover:from-[#FFC107]/30 hover:to-[#1B5E20]/20 transition-all will-change-transform"
-                    >
-                      <PartyPopper className="h-5 w-5 text-[#1B5E20] shrink-0" />
-                      <span className="bg-linear-to-r from-[#dfa514] via-[#1B5E20] to-[#2E7D32] bg-clip-text text-transparent">
-                        Fiestas del Sol San Jerónimo
-                      </span>
-                      <span className="ml-auto flex h-2.5 w-2.5 relative shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFC107] opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1B5E20]"></span>
-                      </span>
-                    </Link>
-
-                    {/* FIESTAS DEL FRÍJOL LIBORINA - PULSO ROJO / TERRACOTA */}
-                    <Link
-                      ref={liborinaRef}
-                      href="/fiestas-del-frijol-liborina"
-                      onClick={() => setIsOpen(false)}
-                      className="relative flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl bg-gradient-to-r from-[#DC2626]/15 to-[#991B1B]/10 border border-[#DC2626]/35 hover:from-[#DC2626]/25 hover:to-[#991B1B]/20 transition-all will-change-transform"
-                    >
-                      <PartyPopper className="h-5 w-5 text-[#DC2626] shrink-0" />
-                      <span className="text-[#DC2626] dark:text-[#F87171]">
-                        Fiestas del Fríjol Liborina
-                      </span>
-                      <span className="ml-auto flex h-2.5 w-2.5 relative shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DC2626] opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#DC2626]"></span>
-                      </span>
-                    </Link>
-
-                    {/* FIESTAS LLANADAS (OLAYA) - PULSO NARANJA */}
-                    <Link
-                      ref={llanadas}
-                      href="/fiestas-llanadas"
-                      onClick={() => setIsOpen(false)}
-                      className="relative flex items-center gap-3 px-4 py-3 text-base font-bold rounded-xl bg-[#EA580C]/10 border border-[#EA580C]/30 hover:bg-[#EA580C]/20 transition-all will-change-transform"
-                    >
-                      <PartyPopper className="h-5 w-5 text-[#EA580C] shrink-0" />
-                      <span className="text-[#d3f14c]">
-                        Fiestas del Campesino Llanadas
-                      </span>
-                      <span className="ml-auto flex h-2.5 w-2.5 relative shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EA580C] opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#EA580C]"></span>
-                      </span>
-                    </Link>
-                   
+                 
                     <Link
                       href="/preguntas-frecuentes"
                       onClick={() => setIsOpen(false)}

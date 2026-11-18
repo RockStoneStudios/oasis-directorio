@@ -175,7 +175,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       suppressHydrationWarning
     >
       <Navbar municipalities={municipalitiesList} />
-      <FestivalsBanner />
       
       <main id="main">
         {/* Hero Section */}
